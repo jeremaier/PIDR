@@ -1,45 +1,44 @@
 package src.daoImpl;
 
-import src.dao.InclusionDao;
-import src.table.Inclusion;
+import src.dao.PatientDao;
+import src.table.Patient;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class InclusionDaoImpl implements InclusionDao {
+public class PatientDaolmpl implements PatientDao {
     private Connection connection;
 
-    public InclusionDaoImpl(Connection connection) {
+    public PatientDaolmpl(Connection connection) {
         this.connection = connection;
     }
 
-    @Override
-    public void createInclusionTable() {
-        Statement statement = null;
 
+    @Override
+    public void creationPatientTable() {
+        Statement statement = null;
         try {
             statement = connection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS inclusion (id SMALLINT PRIMARY KEY UNIQUE," +
-                    "idPatient SMALLINT," +
-                    "teflon MESSAGE_TEXT (55)" + /////////
-                    "dateInclusion CURRENT_DATE " +
-                    "numAnaPat SMALLINT)"); //////////
+            statement.execute("CREATE TABLE IF NOT EXISTS Patient(id int PRIMARY KEY UNIQUE auto_increment, " +
+                    "nom VARCHAR(2)" +
+                    "genre VARCHAR(1)" +
+                    "dateNaissance YEAR)")
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
-                  } catch (SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-
             if (connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -47,18 +46,16 @@ public class InclusionDaoImpl implements InclusionDao {
     }
 
     @Override
-    public void insert(Inclusion inclusion) {
+    public void insert(Patient patient) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO inclusion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
-            preparedStatement.setInt( 0, inclusion.getId());
-            preparedStatement.setInt(1, inclusion.getIdPatient());
-            preparedStatement.setSQLXML(2, inclusion.getTeflon()); ////////////
-            preparedStatement.setDate(3, inclusion.getDateInclusion());
-            preparedStatement.setInt(4, inclusion.getNumAnaPat());
+            preparedStatement = connection.prepareStatement("INSERT INTO patient (nom,genre,dateBirth) " + "VALUES (?,?,?)");
+            preparedStatement.setString(1, patient.getNom());
+            preparedStatement.setString(2, patient.getGenre());
+            preparedStatement.setDate(3, patient.getDateNaissance());
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO inclusion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
+            System.out.println("INSERT INTO patient (nom,genre,dateBirth) " + "VALUES (?,?,?)");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -69,7 +66,6 @@ public class InclusionDaoImpl implements InclusionDao {
                     e.printStackTrace();
                 }
             }
-
             if (connection != null) {
                 try {
                     connection.close();
@@ -77,24 +73,26 @@ public class InclusionDaoImpl implements InclusionDao {
                     e.printStackTrace();
                 }
             }
+
         }
     }
 
     @Override
-    public Inclusion selectById(int id) {
-        Inclusion inclusion = new Inclusion();
+    public Patient selectById(int id) {
+        Patient patient = new Patient();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE id = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE id = ?");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                inclusion.setId(resultSet.getInt("id"));
-                inclusion.setFirstName(resultSet.getString("first_name"));
-                inclusion.setLastName(resultSet.getString("last_name"));
+                patient.setId(resultSet.getInt("id"));
+                patient.setNom(resultSet.getString("nom"));
+                patient.setGenre(resultSet.getString("genre"));
+                patient.setDateNaissance(resultSet.getDate("dateNaissance"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,25 +122,26 @@ public class InclusionDaoImpl implements InclusionDao {
             }
         }
 
-        return inclusion;
+        return patient;
     }
 
     @Override
-    public List<Inclusion> selectAll() {
-        List<Inclusion> inclusions = new ArrayList<>();
+    public List<Patient> selectAll() {
+        List<Patient> patients = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM inclusion");
+            resultSet = statement.executeQuery("SELECT * FROM patient");
 
             while (resultSet.next()) {
-                Inclusion inclusion = new Inclusion();
-                inclusion.setId(resultSet.getInt("id"));
-                inclusion.setFirstName(resultSet.getString("first_name"));
-                inclusion.setLastName(resultSet.getString("last_name"));
-                inclusions.add(inclusion);
+                Patient patient = new Patient();
+                patient.setId(resultSet.getInt("id"));
+                patient.setNom(resultSet.getString("nom"));
+                patient.setGenre(resultSet.getString("genre"));
+                patient.setDateNaissance(resultSet.getDate("dateNaissance"));
+                patients.add(patient);
             }
 
         } catch (Exception e) {
@@ -173,18 +172,19 @@ public class InclusionDaoImpl implements InclusionDao {
             }
         }
 
-        return inclusions;
+        return patients;
     }
+
 
     @Override
     public void delete(int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("DELETE FROM inclusion WHERE id = ?");
+            preparedStatement = connection.prepareStatement("DELETE FROM patient WHERE id = ?");
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            System.out.println("DELETE FROM inclusion WHERE id = ?");
+            System.out.println("DELETE FROM patient WHERE id = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -206,17 +206,19 @@ public class InclusionDaoImpl implements InclusionDao {
         }
     }
 
+
     @Override
-    public void update(Inclusion inclusion, int id) {
+    public void update(Patient patient, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "first_name = ?, last_name = ? WHERE id = ?");
-            preparedStatement.setString(1, inclusion.getFirstName());
-            preparedStatement.setString(2, inclusion.getLastName());
-            preparedStatement.setInt(3, id);
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "nom = ?, genre = ?, dateNaissance = ? WHERE id = ?");
+            preparedStatement.setString(1, patient.getNom());
+            preparedStatement.setString(2, patient.getGenre());
+            preparedStatement.setDate(3, patient.getDateNaissance());
+            preparedStatement.setInt(4, id);
             preparedStatement.executeUpdate();
-            System.out.println("UPDATE inclusion SET " + "first_name = ?, last_name = ? WHERE id = ?");
+            System.out.println("UPDATE patient SET " + "nom = ?, genre = ?, dateNaissance WHERE id = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -236,5 +238,22 @@ public class InclusionDaoImpl implements InclusionDao {
                 }
             }
         }
+    }
+
+
+
+    @Override
+    public List<Patient> selectByName(String nom) {
+        ;
+    }
+
+    @Override
+    public List<Patient> selectByGenre(String genre) {
+        return null;
+    }
+
+    @Override
+    public List<Patient> selectByDate(Date dateNaissance) {
+        return null;
     }
 }
