@@ -15,5 +15,5 @@ public interface InclusionDao {
 
     void delete(int id);
 
-    void update(Inclusion inclusion,int id);
+    void update(Inclusion inclusion, int id);
 }

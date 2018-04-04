@@ -44,7 +44,7 @@ public class LoginController implements Initializable {
     }
 
     private void checkLog() {
-        if(!this.user.getText().equals("") && !this.password.getText().equals("")) {
+        if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
             try {
@@ -71,7 +71,7 @@ public class LoginController implements Initializable {
                 this.user.clear();
                 this.connectButton.setDisable(false);
             } finally {
-                if(this.connection.getConnection() != null) {
+                if (this.connection.getConnection() != null) {
                     try {
                         this.connection.closeConnection();
                     } catch (SQLException e) {
@@ -94,7 +94,7 @@ public class LoginController implements Initializable {
             e.printStackTrace();
         }
 
-        if(file.length() > 0) {
+        if (file.length() > 0) {
             try {
                 fIn = new FileInputStream(file);
                 oIn = new ObjectInputStream(fIn);
@@ -111,7 +111,7 @@ public class LoginController implements Initializable {
     }
 
     private void saveLoginInFile() {
-        if(this.user != null && this.password != null) {
+        if (this.user != null && this.password != null) {
             FileOutputStream fOut;
             ObjectOutputStream oOut;
 

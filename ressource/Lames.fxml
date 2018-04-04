@@ -1,41 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.awt.Image?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="600.0" minWidth="800.0" prefHeight="600.0"
+            prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121"
+            fx:controller="ressource.Lames">
 
-<AnchorPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ressource.Lames">
-
-   <children>
-      <Text layoutX="220.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lames Histologiques" textAlignment="CENTER" AnchorPane.bottomAnchor="537.0" AnchorPane.leftAnchor="220.0" AnchorPane.rightAnchor="219.5703125" AnchorPane.topAnchor="25.5">
-         <font>
-            <Font name="SansSerif Regular" size="40.0" />
-         </font>
-      </Text>
-      <TableView layoutX="12.0" layoutY="135.0" prefHeight="370.0" prefWidth="788.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="10.87890625">
-        <columns>
-          <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Numéro de lame" />
-          <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Site de coupe" />
-            <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Orientation couleur verte" />
-            <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Orientation couleur noire" />
-            <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Coloration" />
-        </columns>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
-      <Button disable="true" layoutX="25.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0" text="Photo" />
-      <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Retour" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <font>
-            <Font size="14.0" />
-         </font></Button>
-      <Button layoutX="495.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0" text="Ajouter +" />
-      <Button layoutX="656.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0" text="Supprimer -" />
-      <Button layoutX="335.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0" text="Modifier" />
-   </children>
+    <children>
+        <TableView layoutX="12.0" layoutY="56.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0"
+                   AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+            <columns>
+                <TableColumn minWidth="135.0" prefWidth="135.0" resizable="false" text="Numéro de lame"/>
+                <TableColumn minWidth="125.0" prefWidth="125.0" resizable="false" text="Site de coupe"/>
+                <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur verte"/>
+                <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur noire"/>
+                <TableColumn minWidth="180.0" prefWidth="160.0" resizable="false" text="Coloration"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <Button disable="true" layoutX="25.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0"
+                prefWidth="130.0" text="Photo"/>
+        <Button layoutX="14.0" layoutY="11.0" minHeight="30.0" mnemonicParsing="false" prefHeight="30.0"
+                prefWidth="80.0" text="Retour" textAlignment="CENTER" AnchorPane.leftAnchor="20.0"
+                AnchorPane.topAnchor="15.0">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Button>
+        <Button layoutX="495.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
+                text="Ajouter +"/>
+        <Button layoutX="656.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
+                text="Supprimer -"/>
+        <Button layoutX="335.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
+                text="Modifier"/>
+    </children>
 </AnchorPane>

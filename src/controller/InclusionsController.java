@@ -51,7 +51,7 @@ public class InclusionsController implements Initializable {
     Button searchDocButton;
 
     @FXML
-    Button downloadDocButton ;
+    Button downloadDocButton;
 
     @FXML
     Button removeDocButton;

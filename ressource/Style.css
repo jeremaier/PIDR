@@ -6,21 +6,21 @@
         Light Metro style sheet for use in JavaFX applications
 */
 
-.root{
+.root {
     -fx-background-color: #EEEEEE;
 }
 
-.background{
+.background {
     -fx-background-color: white;
 }
 
-.header{
+.header {
     -fx-font-size: 3.5em;
     -fx-font-family: "Segoe UI Semilight";
     -fx-text-fill: black;
 }
 
-.item-title{
+.item-title {
     -fx-font-size: 1em;
     -fx-font-family: "Segoe UI";
     -fx-text-fill: black;
@@ -47,18 +47,16 @@
     -fx-text-fill: black;
 }
 
-.button:hover{
+.button:hover {
     -fx-background-color: #d8d8d8;
 }
 
-.button:pressed, .button:default:hover:pressed
-{
+.button:pressed, .button:default:hover:pressed {
     -fx-background-color: black;
     -fx-text-fill: white;
 }
 
-.button:focused
-{
+.button:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-border-style: solid, segments(1, 2);
@@ -68,23 +66,20 @@
     -fx-border-insets: 1 1 1 1, 0;
 }
 
-.button:disabled, .button:default:disabled
-{
+.button:disabled, .button:default:disabled {
     -fx-opacity: 0.4;
     -fx-background-color: #cccccc;
     -fx-text-fill: #212121;
 }
 
-.button:default
-{
+.button:default {
     -fx-background-color: #008287;
     -fx-text-fill: #ffffff;
 }
 
-.button:default:hover{
+.button:default:hover {
     -fx-background-color: #219297;
 }
-
 
 /*******************************************************************************
  *                                                                             *
@@ -155,11 +150,10 @@
     -fx-padding: 1;
 }
 
-
 .check-box > .box > .mark {
     -fx-background-insets: 0;
 
-    -fx-padding:7px;
+    -fx-padding: 7px;
     -fx-shape: "M9.005,17.766l13.759,14.739h1.716L49.02,0l10.298,8.488L25.997,50.453h-3.629L0,26.897L9.005,17.766z"
 }
 
@@ -169,7 +163,7 @@
 
 /* focused */
 
-.check-box:focused > .box{
+.check-box:focused > .box {
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-border-color: black, #bababa;
@@ -177,50 +171,44 @@
     -fx-border-style: segments(1, 2), solid;
 }
 
-.check-box:focused:hover > .box{
+.check-box:focused:hover > .box {
     -fx-border-color: black, #919191;
 }
 
 .check-box:indeterminate > .box > .mark {
     -fx-background-color: black;
     -fx-background-insets: 2.8;
-    -fx-padding:7px;
+    -fx-padding: 7px;
     -fx-shape: null;
 }
 
-.check-box:selected > .box > .mark{
+.check-box:selected > .box > .mark {
     -fx-background-color: black;
 }
 
-.check-box:disabled
-{
+.check-box:disabled {
     -fx-opacity: 0.4;
 }
 
-.check-box:disabled > .box
-{
+.check-box:disabled > .box {
     -fx-background-color: #cdcdcd;
     -fx-border-color: #aaa;
 }
 
-.check-box:armed > .box
-{
+.check-box:armed > .box {
     -fx-background-color: white, black;
     -fx-background-insets: -1, 2;
     -fx-background-radius: 0, 0;
     -fx-border-color: black;
 }
 
-.check-box:pressed:selected > .box > .mark
-{
+.check-box:pressed:selected > .box > .mark {
     -fx-background-color: white;
 }
 
-.check-box:armed > .box > .mark
-{
+.check-box:armed > .box > .mark {
     -fx-background-color: black;
 }
-
 
 /*******************************************************************************
  *                                                                             *
@@ -232,7 +220,7 @@
     -fx-text-fill: #212121;
 }
 
-.radio-button > .radio  {
+.radio-button > .radio {
     -fx-background-color: transparent;
     -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
     -fx-background-insets: 0;
@@ -259,19 +247,16 @@
     -fx-border-color: #919191;
 }
 
-.radio-button:disabled
-{
+.radio-button:disabled {
     -fx-opacity: 0.5;
 }
 
-.radio-button:disabled > .radio
-{
+.radio-button:disabled > .radio {
     -fx-background-color: #e6e6e6;
     -fx-border-color: #d9d9d9;
 }
 
-.radio-button:focused > .radio
-{
+.radio-button:focused > .radio {
     -fx-background-color: transparent;
     -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
     -fx-background-insets: 0;
@@ -285,24 +270,20 @@
     -fx-padding: 4px; /* 4 -- padding from outside edge to the inner black dot */
 }
 
-.radio-button:focused:hover > .radio
-{
+.radio-button:focused:hover > .radio {
     -fx-border-color: #919191, black;
 }
 
-.radio-button:focused:pressed > .radio
-{
+.radio-button:focused:pressed > .radio {
     -fx-border-color: #212121, black;
 }
 
-.radio-button:pressed > .radio
-{
+.radio-button:pressed > .radio {
     -fx-background-color: #212121;
     -fx-border-color: #212121;
 }
 
-.radio-button:pressed:selected > .radio > .dot
-{
+.radio-button:pressed:selected > .radio > .dot {
     -fx-background-color: white;
 }
 
@@ -317,7 +298,7 @@
     -fx-background-insets: 0;
     -fx-background-radius: 0 0 0 0;
 
-    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;  /*4 8 4 8 */
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /*4 8 4 8 */
 
     -fx-font-family: "Segoe UI Semilight", "Segoe UI Light", "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-text-fill: rgba(0, 0, 0, 0.6);
@@ -327,7 +308,6 @@
 
     -fx-effect: null;
 }
-
 
 /*******************************************************************************
  *                                                                             *
@@ -346,13 +326,13 @@
 }
 
 .context-menu .separator {
-    -fx-padding: 0.58333275em 1.333332em 0.58333275em 1.333332em;  /*7 16 7 16 */
+    -fx-padding: 0.58333275em 1.333332em 0.58333275em 1.333332em; /*7 16 7 16 */
 }
 
 /* TODO: try to scope the menu-item style to the contextmenu */
 .menu-item {
     -fx-background-color: transparent;
-    -fx-padding: 0.666666em 1.333332em 0.666666em 1.333332em;   /*8 16 8 16 */
+    -fx-padding: 0.666666em 1.333332em 0.666666em 1.333332em; /*8 16 8 16 */
 }
 
 .menu-item .label {
@@ -367,14 +347,12 @@
     -fx-background-color: #dedede;
 }
 
-.menu-item:pressed
-{
+.menu-item:pressed {
     -fx-background-color: #212121;
     -fx-text-fill: white;
 }
 
-.menu-item:pressed .label
-{
+.menu-item:pressed .label {
     -fx-text-fill: white;
 }
 
@@ -384,7 +362,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.scroll-bar > .thumb{
+.scroll-bar > .thumb {
     -fx-background-color: #cdcdcd;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -403,6 +381,7 @@
     -fx-background-insets: 0;
     -fx-background-radius: 0;
 }
+
 .scroll-bar > .track-background {
     -fx-background-color: #f0f0f0;
     -fx-background-insets: 0;
@@ -418,7 +397,7 @@
 }
 
 .scroll-bar > .increment-button:hover,
-.scroll-bar > .decrement-button:hover  {
+.scroll-bar > .decrement-button:hover {
     -fx-background-color: #dadada;
 }
 
@@ -428,7 +407,7 @@
 }
 
 .scroll-bar > .decrement-button > .decrement-arrow,
-.scroll-bar > .increment-button > .increment-arrow{
+.scroll-bar > .increment-button > .increment-arrow {
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-background-color: transparent, #606060;
     -fx-effect: null;
@@ -487,14 +466,13 @@
     -fx-background-insets: 1 0 0 1; /* have the square on the corner be centered */
 }
 
-
 /*******************************************************************************
  *                                                                             *
  * ComboBox                                                                    *
  *                                                                             *
  ******************************************************************************/
 
-.combo-box-base  {
+.combo-box-base {
     -fx-background-color: transparent, #bababa, transparent, white;
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0em 0.166667em 0em 0.166667em; /* 0 2px 0 2px*/
@@ -546,13 +524,13 @@
     -fx-padding: 4 0 4 5;
 }
 
-.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover{
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover {
     -fx-background-color: #dedede;
     -fx-text-fill: black;
 }
 
-.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected{
-    -fx-background-color: #55c4fe;  /* TODO: this probably is the "active" color" */
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #55c4fe; /* TODO: this probably is the "active" color" */
 }
 
 /*******************************************************************************
@@ -569,12 +547,14 @@
     -fx-padding: 16 16;
     -fx-background-image-repeat: no-repeat;
 }
+
 .rating > .container > .button.strong {
     -fx-background-color: #00828b;
     -fx-border-color: transparent;
     -fx-background-image: null;
 
 }
+
 .rating > .container:hover > .button.strong {
     -fx-background-color: #329aa3;
 }
@@ -591,7 +571,7 @@
     -fx-background-color: #25bbc4;
 }
 
-.rating:disabled{
+.rating:disabled {
     -fx-opacity: .6;
 }
 
@@ -612,16 +592,16 @@
     -fx-highlight-text-fill: white;
 }
 
-.text-field:hover{
+.text-field:hover {
     -fx-background-color: #8f8f8f, #F4F4F4;
 }
 
-.text-field:focused{
+.text-field:focused {
     -fx-background-color: #5c5c5c, #F4F4F4;
     -fx-text-fill: black;
 }
 
-.text-input{
+.text-input {
     -fx-background-insets: 0, 0 0 2 0;
 }
 
@@ -637,12 +617,12 @@
     -fx-highlight-text-fill: white;
 }
 
-.text-area .content:hover{
+.text-area .content:hover {
     -fx-background-color: #8f8f8f, white;
     -fx-background-insets: 0, 2 2 2 2;
 }
 
-.text-area .content:focused{
+.text-area .content:focused {
     -fx-background-color: #5c5c5c, white;
     -fx-background-insets: 0, 2 2 2 2;
     -fx-text-fill: black;
@@ -655,7 +635,7 @@
  ******************************************************************************/
 
 .password-field > .right-button > .right-button-graphic {
-    -fx-shape            : "M307.688,399.564c0,1.484-1.203,2.688-2.688,2.688c-1.484,0-2.688-1.203-2.688-2.688s1.203-2.688,2.688-2.688C306.484,396.876,307.688,398.08,307.688,399.564z M297.5,399h2.5c0,0,1.063-4,5-4c3.688,0,5,4,5,4h2.5c0,0-2.063-6.5-7.5-6.5C299,392.5,297.5,399,297.5,399z";
+    -fx-shape: "M307.688,399.564c0,1.484-1.203,2.688-2.688,2.688c-1.484,0-2.688-1.203-2.688-2.688s1.203-2.688,2.688-2.688C306.484,396.876,307.688,398.08,307.688,399.564z M297.5,399h2.5c0,0,1.063-4,5-4c3.688,0,5,4,5,4h2.5c0,0-2.063-6.5-7.5-6.5C299,392.5,297.5,399,297.5,399z";
     -fx-scale-shape: false;
     -fx-background-color: black;
 }
@@ -682,28 +662,28 @@
  * ProgressBar                                                                 *
  *                                                                             *
  ******************************************************************************/
- 
-.progress-indicator {    
-    -fx-progress-color: rgb(45,137,239);    
+
+.progress-indicator {
+    -fx-progress-color: rgb(45, 137, 239);
 }
 
 .progress-indicator .indicator {
-    -fx-background-color:rgb(231,231,231);
-    -fx-border-color: -fx-box-border;  
+    -fx-background-color: rgb(231, 231, 231);
+    -fx-border-color: -fx-box-border;
 }
 
 .progress-indicator .progress {
-    -fx-background-color: transparent;       
-     -fx-padding: 2em; 
+    -fx-background-color: transparent;
+    -fx-padding: 2em;
 }
 
-.progress-indicator:indeterminate .spinner {    
+.progress-indicator:indeterminate .spinner {
     -fx-padding: 1.5em;
 }
 
 .progress-indicator .percentage {
-    -fx-font: 11px "Segoe UI";    
-    -fx-text-fill: #212121;    
+    -fx-font: 11px "Segoe UI";
+    -fx-text-fill: #212121;
 }
 
 /*******************************************************************************
@@ -724,6 +704,7 @@
 
     -fx-effect: null;
 }
+
 .slider:focused .thumb {
     -fx-background-radius: 0em;
 }
@@ -761,32 +742,30 @@
 
 .toggle-switch .thumb {
     -fx-background-color: black;
-    -fx-padding: 0.583333em 0.333333em 0.583333em 0.333333em;  /* 7 4 7 4*/
+    -fx-padding: 0.583333em 0.333333em 0.583333em 0.333333em; /* 7 4 7 4*/
 }
 
-.toggle-switch:selected .thumb-area{
+.toggle-switch:selected .thumb-area {
     -fx-background-insets: 0, 1, 2;
     -fx-background-color: #a6a6a6, white, #219297; /* The last one is the accent color */
 }
 
-.toggle-switch .thumb-area{
+.toggle-switch .thumb-area {
     -fx-background-insets: 0, 1, 2;
     -fx-background-color: #a6a6a6, white, #a6a6a6;
 }
 
-.toggle-switch:selected:pressed .thumb-area{
+.toggle-switch:selected:pressed .thumb-area {
     -fx-background-insets: 0, 1, 2;
     -fx-background-color: #a6a6a6, white, #25bbc4; /* The last one is the accent color */
 }
 
-.toggle-switch .thumb-area
-{
+.toggle-switch .thumb-area {
     -fx-padding: 0.583333em 1.333333em 0.583333em 1.333333em; /* 7 16 7 16 */
 
 }
 
-.toggle-switch:disabled
-{
+.toggle-switch:disabled {
     -fx-opacity: 0.4;
 }
 
@@ -824,21 +803,26 @@
     -fx-shape: "M4,-4 L0,0 L4,4 Z";
     -fx-scale-shape: false;
 }
+
 .ListSpinner .right-arrow {
     -fx-shape: "M0,-4 L4,0 L0,4 Z";
     -fx-scale-shape: false;
 }
+
 .ListSpinner .down-arrow {
     -fx-shape: "M-4,-2 L0,2 L4,-2 Z";
     -fx-scale-shape: false;
 }
+
 .ListSpinner .up-arrow {
     -fx-shape: "M4,2 L-4,2 L0,-2 Z";
     -fx-scale-shape: false;
 }
+
 .ListSpinner .idle {
     -fx-background-color: -fx-mark-color;
 }
+
 .ListSpinner .clicked {
     -fx-background-color: -fx-focus-color;
 }
@@ -855,7 +839,7 @@
     -fx-background-radius: 0;
 }
 
-.spinner > .text-field{
+.spinner > .text-field {
     -fx-skin: "com.sun.javafx.scene.control.skin.TextFieldSkin";
 }
 
@@ -865,7 +849,7 @@
     -fx-background-radius: 0;
 }
 
-.spinner .increment-arrow-button, .spinner .decrement-arrow-button  {
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
     -fx-background-color: #f0f0f0;
     /*Change the two 0's here to -1 to get rid of the horizontal line */
     -fx-background-insets: 0;
@@ -876,7 +860,6 @@
     -fx-background-color: -fx-mark-color;
 }
 
-
 .spinner .increment-arrow-button:hover, .spinner .decrement-arrow-button:hover {
     -fx-background-color: #dadada;
 }
@@ -885,10 +868,9 @@
     -fx-background-color: #606060;
 }
 
-.spinner.split-arrows-horizontal .increment-arrow-button:pressed .increment-arrow, .spinner.split-arrows-horizontal .decrement-arrow-button:pressed .decrement-arrow{
+.spinner.split-arrows-horizontal .increment-arrow-button:pressed .increment-arrow, .spinner.split-arrows-horizontal .decrement-arrow-button:pressed .decrement-arrow {
     -fx-background-color: white;
 }
-
 
 /*******************************************************************************
  *                                                                             *
@@ -903,11 +885,11 @@
     -fx-scale-shape: true;
 }
 
-.date-picker .text-field{
+.date-picker .text-field {
     -fx-skin: "com.sun.javafx.scene.control.skin.TextFieldSkin";
 }
 
-.date-picker .text-input{
+.date-picker .text-input {
     -fx-background-radius: 0, 0;
     -fx-background-color: transparent, white;
     -fx-background-insets: 2, 2;
@@ -996,7 +978,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.choice-box  {
+.choice-box {
     -fx-background-color: transparent, #bababa, transparent, #DDDDDD;
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0em 0.166667em 0em 0.166667em; /* 0 2px 0 2px*/
@@ -1022,7 +1004,7 @@
 
 .radio-menu-item:checked > .left-container > .radio {
     -fx-shape: "M9.005,17.766l13.759,14.739h1.716L49.02,0l10.298,8.488L25.997,50.453h-3.629L0,26.897L9.005,17.766z";
-    -fx-padding:7px;
+    -fx-padding: 7px;
     -fx-scale-shape: true;
 }
 

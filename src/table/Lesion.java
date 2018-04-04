@@ -1,17 +1,16 @@
 package src.table;
 
-import java.sql.*;
-
 public class Lesion {
     private int id;
     private int idInclusion;
     private String siteAnatomique;
     private Diag diag;
-    public Lesion(int id, int idInclusion, String siteAnatomique, String diagnostique){
-        this.id=id;
-        this.idInclusion=idInclusion;
-        this.siteAnatomique=siteAnatomique;
-        this.diag=Diag.valueOf(diagnostique);
+
+    public Lesion(int id, int idInclusion, String siteAnatomique, String diagnostique) {
+        this.id = id;
+        this.idInclusion = idInclusion;
+        this.siteAnatomique = siteAnatomique;
+        this.diag = Diag.valueOf(diagnostique);
     }
 
 
@@ -39,13 +38,12 @@ public class Lesion {
         this.siteAnatomique = siteAnatomique;
     }
 
-
-    public void setDiag(String diag){
-        this.diag=Diag.valueOf(diag);
+    public Diag getDiag() {
+        return this.diag;
     }
 
-    public Diag getDiag(){
-        return  this.diag;
+    public void setDiag(String diag) {
+        this.diag = Diag.valueOf(diag);
     }
 }
 

@@ -31,7 +31,7 @@ public class InclusionDaoImpl implements InclusionDao {
             if (statement != null) {
                 try {
                     statement.close();
-                  } catch (SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -52,7 +52,7 @@ public class InclusionDaoImpl implements InclusionDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO inclusion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
-            preparedStatement.setInt( 0, inclusion.getId());
+            preparedStatement.setInt(0, inclusion.getId());
             preparedStatement.setInt(1, inclusion.getIdPatient());
             preparedStatement.setSQLXML(2, inclusion.getTeflon()); ////////////
             preparedStatement.setDate(3, inclusion.getDateInclusion());

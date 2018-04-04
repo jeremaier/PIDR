@@ -10,7 +10,8 @@ public class Inclusion {
     private Date dateInclusion;
     private int numAnaPat;
 
-    public Inclusion() {}
+    public Inclusion() {
+    }
 
     public Inclusion(int idPatient, File teflon, Date dateInclusion, int numAnaPat) {
         this.idPatient = idPatient;

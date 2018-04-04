@@ -6,10 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class siteController implements Initializable {
+public class SiteController implements Initializable {
     @FXML
     Button retour;
 

@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import src.controller.siteController;
+import src.controller.SiteController;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class SiteView {
 
         stage.setTitle("Vision d'un site");
         viewLoader.setLocation(getClass().getResource("../ressource/Site.fxml"));
-        viewLoader.setControllerFactory(iC -> new siteController());
+        viewLoader.setControllerFactory(iC -> new SiteController());
 
         try {
             rootLog = viewLoader.load();

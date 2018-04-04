@@ -8,7 +8,7 @@ import java.util.List;
 public interface PatientDao {
     void creationPatientTable();
 
-    void insert (Patient patient);
+    void insert(Patient patient);
 
     Patient selectById(int id);
 
@@ -20,7 +20,7 @@ public interface PatientDao {
 
     List<Patient> selectAll();
 
-    void delete( int id);
+    void delete(int id);
 
     void update(Patient patient, int id);
 

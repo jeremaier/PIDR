@@ -241,7 +241,6 @@ public class PatientDaolmpl implements PatientDao {
     }
 
 
-
     @Override
     public List<Patient> selectByName(String nom) {
         ;

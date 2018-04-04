@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.siteController">
-   <children>
-      <Button fx:id="retour" layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="75.0" text="Retour" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Button fx:id="ajouter" layoutX="455.0" layoutY="542.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Ajouter +" textAlignment="CENTER" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="245.0" />
-      <Button fx:id="modifier" layoutX="680.0" layoutY="542.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Modifer" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="20.0" />
-      <Button fx:id="supprimer" layoutX="567.0" layoutY="542.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Supprimer -" textAlignment="CENTER" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="133.0" />
-      <TabPane layoutY="106.0" prefHeight="320.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="174.0" AnchorPane.leftAnchor="0.0">
-        <tabs>
-          <Tab fx:id="affecte" text="Affecté">
-            <content>
-              <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="284.0" prefWidth="800.0">
-                     <children>
-                        <TableView fx:id="affecteTab" layoutX="20.0" layoutY="27.0" prefHeight="222.0" prefWidth="760.0" AnchorPane.topAnchor="25.0">
-                          <columns>
-                            <TableColumn editable="false" prefWidth="190.0" resizable="false" text="Site anatomique" />
-                            <TableColumn prefWidth="190.0" resizable="false" text="Mesures" />
-                              <TableColumn prefWidth="190.0" resizable="false" text="Orientation" />
-                              <TableColumn prefWidth="190.0" resizable="false" text="Diagnostic" />
-                          </columns>
-                        </TableView>
-                        <Button fx:id="transcriptomique" layoutX="617.0" layoutY="253.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="163.0" text="Analyse transcriptomique" AnchorPane.topAnchor="253.0" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab fx:id="sain" text="Sain">
-            <content>
-              <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="sainTab" layoutX="20.0" layoutY="23.0" prefHeight="222.0" prefWidth="760.0" AnchorPane.topAnchor="25.0">
-                          <columns>
-                            <TableColumn prefWidth="380.0" resizable="false" text="Site" />
-                            <TableColumn prefWidth="380.0" resizable="false" text="Diagnostic" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-      <ListView fx:id="spectreList" layoutX="23.0" layoutY="462.0" prefHeight="115.0" prefWidth="185.0" />
-      <Label layoutX="23.0" layoutY="445.0" text="Spectres optiques :" />
-      <Button fx:id="suprSpectre" layoutX="211.0" layoutY="462.0" mnemonicParsing="false" text="Supprimer spectre" />
-      <Button fx:id="fichierMoy"  layoutX="617.0" layoutY="430.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="163.0" text="Fichier moyenné" />
-   </children>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0"
+            prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121"
+            fx:controller="src.controller.SiteController">
+    <children>
+        <Button fx:id="retour" layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="80.0"
+                text="Retour" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Button>
+        <Button fx:id="ajouter" layoutX="455.0" layoutY="542.0" mnemonicParsing="false" prefHeight="35.0"
+                prefWidth="100.0" text="Ajouter +" textAlignment="CENTER" AnchorPane.bottomAnchor="23.0"
+                AnchorPane.rightAnchor="245.0"/>
+        <Button fx:id="modifier" disable="true" layoutX="680.0" layoutY="542.0" mnemonicParsing="false"
+                prefHeight="35.0" prefWidth="100.0" text="Modifer" AnchorPane.bottomAnchor="23.0"
+                AnchorPane.rightAnchor="20.0"/>
+        <Button fx:id="supprimer" disable="true" layoutX="567.0" layoutY="542.0" mnemonicParsing="false"
+                prefHeight="35.0" prefWidth="100.0" text="Supprimer -" textAlignment="CENTER"
+                AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="133.0"/>
+        <TabPane layoutY="106.0" prefHeight="386.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE"
+                 AnchorPane.bottomAnchor="165.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="60.0">
+            <tabs>
+                <Tab fx:id="affecte" text="Affecté">
+                    <content>
+                        <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="281.0"
+                                    prefWidth="800.0">
+                            <children>
+                                <TableView fx:id="affecteTab" layoutX="20.0" layoutY="27.0" prefHeight="264.0"
+                                           prefWidth="760.0" AnchorPane.topAnchor="25.0">
+                                    <columns>
+                                        <TableColumn editable="false" prefWidth="253.0" resizable="false"
+                                                     text="Site anatomique"/>
+                                        <TableColumn prefWidth="253.0" resizable="false" text="Orientation"/>
+                                        <TableColumn prefWidth="254.0" resizable="false" text="Diagnostic"/>
+                                    </columns>
+                                </TableView>
+                                <Button fx:id="transcriptomique" layoutX="583.0" layoutY="302.0" mnemonicParsing="false"
+                                        prefHeight="31.0" prefWidth="197.0" text="Analyse transcriptomique"
+                                        AnchorPane.topAnchor="302.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="sain" text="Sain">
+                    <content>
+                        <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                    prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="sainTab" layoutX="20.0" layoutY="23.0" prefHeight="222.0"
+                                           prefWidth="760.0" AnchorPane.topAnchor="25.0">
+                                    <columns>
+                                        <TableColumn prefWidth="380.0" resizable="false" text="Site"/>
+                                        <TableColumn prefWidth="380.0" resizable="false" text="Diagnostic"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <Label layoutX="22.0" layoutY="430.0" text="Spectres optiques des mesures :"/>
+        <Button fx:id="suprSpectre" disable="true" layoutX="148.0" layoutY="536.0" mnemonicParsing="false"
+                prefHeight="31.0" prefWidth="166.0" text="Supprimer le spectre"/>
+        <Button fx:id="fichierMoy" disable="true" layoutX="582.0" layoutY="440.0" mnemonicParsing="false"
+                prefHeight="31.0" prefWidth="196.0" text="Fichier moyenné"/>
+        <ListView layoutX="22.0" layoutY="454.0" prefHeight="133.0" prefWidth="112.0"/>
+        <Button disable="true" layoutX="148.0" layoutY="471.0" mnemonicParsing="false" text="Télécharger le spectre"/>
+    </children>
 </AnchorPane>

@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddLesionController implements Initializable{
+public class AddLesionController implements Initializable {
 
     @FXML
     TextField siteAnatomique;
