@@ -1,4 +1,4 @@
-package src.view;
+package src.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +11,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class LogViewController implements Initializable {
+public class LoginController implements Initializable {
     @FXML
     TextField password;
     @FXML

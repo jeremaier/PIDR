@@ -6,20 +6,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import src.controller.LoginController;
 
 import java.io.IOException;
 
-public class LogView {
-    public LogView(Stage primaryStage) {
+public class LoginView {
+    public LoginView(Stage primaryStage) {
         Parent rootLog = null;
-        FXMLLoader logViewLoader = new FXMLLoader();
+        FXMLLoader viewLoader = new FXMLLoader();
 
         primaryStage.setTitle("SpectroLive");
-        logViewLoader.setLocation(getClass().getResource("../ressource/Login.fxml"));
-        logViewLoader.setControllerFactory(iC -> new LogViewController());
+        viewLoader.setLocation(getClass().getResource("../ressource/Login.fxml"));
+        viewLoader.setControllerFactory(iC -> new LoginController());
 
         try {
-            rootLog = logViewLoader.load();
+            rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,4 +32,3 @@ public class LogView {
         primaryStage.show();
     }
 }
-
