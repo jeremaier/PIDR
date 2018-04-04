@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="515.0" maxWidth="506.0" prefHeight="338.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ressource.AddLesions">
+<AnchorPane maxHeight="515.0" maxWidth="506.0" prefHeight="338.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ressource.AddLesions">
     <children>
         <GridPane prefHeight="332.0" prefWidth="506.0">
             <columnConstraints>
@@ -48,7 +51,7 @@
                         <Insets left="20.0" />
                     </GridPane.margin>
                 </Label>
-                <ChoiceBox prefHeight="25.0" prefWidth="105.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <ChoiceBox prefHeight="31.0" prefWidth="109.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>

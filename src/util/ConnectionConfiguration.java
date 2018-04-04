@@ -34,6 +34,12 @@ public class ConnectionConfiguration extends Task<Connection> {
     }
 
     public void closeConnection() throws SQLException {
-        this.connection.close();
+        try {
+            if (this.connection != null && !this.connection.isClosed())
+                this.connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
