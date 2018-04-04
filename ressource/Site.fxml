@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ressource.Site">
+   <children>
+      <Text layoutX="214.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sites cutanés" textAlignment="CENTER" wrappingWidth="371.13671875" AnchorPane.bottomAnchor="521.296875" AnchorPane.leftAnchor="214.0" AnchorPane.rightAnchor="214.86328125" AnchorPane.topAnchor="25.5">
+         <font>
+            <Font name="SansSerif Regular" size="40.0" />
+         </font>
+      </Text>
+      <Button layoutX="20.0" layoutY="547.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="182.0" text="Spectre(s) optique(s)" AnchorPane.bottomAnchor="23.0" AnchorPane.topAnchor="547.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="75.0" text="Retour" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Ajouter" textAlignment="CENTER" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="150.0" />
+      <Button layoutX="-74.0" layoutY="-12.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Modifer" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="275.0" />
+      <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Supprimer" textAlignment="CENTER" AnchorPane.bottomAnchor="23.0" AnchorPane.rightAnchor="23.0" />
+      <Button layoutX="214.0" layoutY="545.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="163.0" text="Fichier moyenné" />
+      <TabPane layoutY="106.0" prefHeight="435.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="0.0">
+        <tabs>
+          <Tab text="Affecté">
+            <content>
+              <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="402.0" prefWidth="800.0">
+                     <children>
+                        <TableView layoutX="20.0" layoutY="27.0" prefHeight="336.0" prefWidth="760.0" AnchorPane.topAnchor="25.0">
+                          <columns>
+                            <TableColumn editable="false" prefWidth="190.0" resizable="false" text="Site anatomique" />
+                            <TableColumn prefWidth="190.0" resizable="false" text="Mesures" />
+                              <TableColumn prefWidth="190.0" resizable="false" text="Orientation" />
+                              <TableColumn prefWidth="190.0" resizable="false" text="Diagnostic" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="216.0" layoutY="371.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="163.0" text="Analyse transcriptomique" AnchorPane.topAnchor="371.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Sain">
+            <content>
+              <AnchorPane focusTraversable="true" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="20.0" layoutY="23.0" prefHeight="336.0" prefWidth="760.0" AnchorPane.topAnchor="25.0">
+                          <columns>
+                            <TableColumn prefWidth="380.0" resizable="false" text="Site" />
+                            <TableColumn prefWidth="380.0" resizable="false" text="Diagnostic" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
