@@ -3,6 +3,7 @@ package src.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import src.util.ConnectionConfiguration;
 import src.util.FileManager;
 
@@ -55,10 +56,11 @@ public class LoginController implements Initializable {
                         this.saveLoginInFile();
                     else this.deleteLoginFile();
 
-                    /*Stage stage = (Stage) connectButton.getScene().getWindow();
-                    stage.close();*/
-
+                    Stage stage = (Stage) connectButton.getScene().getWindow();
+                    stage.close();
                     System.out.println("Connection established");
+
+                    new InclusionsController();
                 }
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);

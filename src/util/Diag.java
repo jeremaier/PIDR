@@ -1,0 +1,5 @@
+package src.util;
+
+public enum Diag {
+    BASO_CELLULAIRE, SPINO_CELLULAIRE, KERATOSE_ACTINIQUE, PAS_DE_MALIGNITE
+}

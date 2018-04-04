@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import src.controller.SiteController;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class AddSiteView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'un site cutané");
-        viewLoader.setLocation(getClass().getResource("../ressource/Transcriptomique.fxml"));
-        viewLoader.setControllerFactory(iC -> new TranscriptomieController());
+        viewLoader.setLocation(getClass().getResource("../ressource/Site.fxml"));
+        viewLoader.setControllerFactory(iC -> new SiteController());
 
         try {
             rootLog = viewLoader.load();

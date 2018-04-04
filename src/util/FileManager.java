@@ -1,6 +1,6 @@
 package src.util;
 
-import java.io.File;
+import java.io.*;
 
 public class FileManager {
     public static String getFilePath(String name) {

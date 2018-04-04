@@ -1,45 +1,46 @@
 package src.table;
 
+import src.util.Diag;
+
 public class Lesion {
     private int id;
     private int idInclusion;
-    private String siteAnatomique;
+    private String anatomicalSite;
     private Diag diag;
 
-    public Lesion(int id, int idInclusion, String siteAnatomique, String diagnostique) {
+    public Lesion(int id, int idInclusion, String anatomicalSite, String diagnostic) {
         this.id = id;
         this.idInclusion = idInclusion;
-        this.siteAnatomique = siteAnatomique;
-        this.diag = Diag.valueOf(diagnostique);
+        this.anatomicalSite = anatomicalSite;
+        this.diag = Diag.valueOf(diagnostic);
     }
-
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getIdInclusion() {
         return idInclusion;
     }
 
-    public void setIdInclusion(int idInclusion) {
-        this.idInclusion = idInclusion;
-    }
-
-    public String getSiteAnatomique() {
-        return siteAnatomique;
-    }
-
-    public void setSiteAnatomique(String siteAnatomique) {
-        this.siteAnatomique = siteAnatomique;
+    public String getAnatomicalSite() {
+        return anatomicalSite;
     }
 
     public Diag getDiag() {
         return this.diag;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setIdInclusion(int idInclusion) {
+        this.idInclusion = idInclusion;
+    }
+
+    public void setAnatomicalSite(String anatomicalSite) {
+        this.anatomicalSite = anatomicalSite;
     }
 
     public void setDiag(String diag) {

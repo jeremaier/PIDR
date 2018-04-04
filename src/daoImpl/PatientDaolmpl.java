@@ -24,7 +24,7 @@ public class PatientDaolmpl implements PatientDao {
             statement.execute("CREATE TABLE IF NOT EXISTS Patient(id int PRIMARY KEY UNIQUE auto_increment, " +
                     "nom VARCHAR(2)" +
                     "genre VARCHAR(1)" +
-                    "dateNaissance YEAR)")
+                    "dateNaissance YEAR)");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

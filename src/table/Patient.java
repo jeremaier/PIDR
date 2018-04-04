@@ -4,51 +4,46 @@ import java.sql.Date;
 
 public class Patient {
     private int id;
-    private String nom;
-    private String genre;
-    private Date dateNaissance;
+    private String initials;
+    private String gender;
+    private Date birthDate;
 
-    public Patient() {
-    }
-
-
-    public Patient(int id, String nom, String genre, Date dateBirth) {
+    public Patient(int id, String initials, String gender, Date birthDate) {
         this.id = id;
-        this.nom = nom;
-        this.genre = genre;
-        this.dateNaissance = dateBirth;
-
+        this.initials = initials;
+        this.gender = gender;
+        this.birthDate = birthDate;
     }
 
     public int getId() {
         return this.id;
     }
 
+    public String getGender() {
+        return this.gender;
+    }
+
+    public String getInitials() {
+        return this.initials;
+    }
+
+    public Date getBirthDate() {
+        return this.birthDate;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getNom() {
-        return this.nom;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setInitials(String initials) {
+        this.initials = initials;
     }
 
-    public String getGenre() {
-        return this.genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public Date getDateNaissance() {
-        return this.dateNaissance;
-    }
-
-    public void setDateNaissance(Date dateNaissance) {
-        this.dateNaissance = dateNaissance;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 }
