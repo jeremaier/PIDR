@@ -8,6 +8,8 @@ public class Patient {
     private String gender;
     private Date birthDate;
 
+    public Patient() {}
+
     public Patient(int id, String initials, String gender, Date birthDate) {
         this.id = id;
         this.initials = initials;

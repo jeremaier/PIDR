@@ -15,47 +15,17 @@ public class PatientDaolmpl implements PatientDao {
         this.connection = connection;
     }
 
-
-    @Override
-    public void creationPatientTable() {
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS Patient(id int PRIMARY KEY UNIQUE auto_increment, " +
-                    "nom VARCHAR(2)" +
-                    "genre VARCHAR(1)" +
-                    "dateNaissance YEAR)");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Override
     public void insert(Patient patient) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO patient (nom,genre,dateBirth) " + "VALUES (?,?,?)");
-            preparedStatement.setString(1, patient.getNom());
-            preparedStatement.setString(2, patient.getGenre());
-            preparedStatement.setDate(3, patient.getDateNaissance());
+            preparedStatement = connection.prepareStatement("INSERT INTO patient (initials, gender, birthDate) " + "VALUES (?, ?, ?)");
+            preparedStatement.setString(1, patient.getInitials());
+            preparedStatement.setString(2, patient.getGender());
+            preparedStatement.setDate(3, patient.getBirthDate());
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO patient (nom,genre,dateBirth) " + "VALUES (?,?,?)");
+            System.out.println("INSERT INTO patient (initials, gender, birthDate)");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -90,10 +60,12 @@ public class PatientDaolmpl implements PatientDao {
 
             while (resultSet.next()) {
                 patient.setId(resultSet.getInt("id"));
-                patient.setNom(resultSet.getString("nom"));
-                patient.setGenre(resultSet.getString("genre"));
-                patient.setDateNaissance(resultSet.getDate("dateNaissance"));
+                patient.setInitials(resultSet.getString("initials"));
+                patient.setGender(resultSet.getString("gender"));
+                patient.setBirthDate(resultSet.getDate("birthDate"));
             }
+
+            System.out.println("SELECT * FROM patient WHERE id = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -138,12 +110,13 @@ public class PatientDaolmpl implements PatientDao {
             while (resultSet.next()) {
                 Patient patient = new Patient();
                 patient.setId(resultSet.getInt("id"));
-                patient.setNom(resultSet.getString("nom"));
-                patient.setGenre(resultSet.getString("genre"));
-                patient.setDateNaissance(resultSet.getDate("dateNaissance"));
+                patient.setInitials(resultSet.getString("initials"));
+                patient.setGender(resultSet.getString("gender"));
+                patient.setBirthDate(resultSet.getDate("birthDate"));
                 patients.add(patient);
             }
 
+            System.out.println("SELECT * FROM patient");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -212,13 +185,13 @@ public class PatientDaolmpl implements PatientDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "nom = ?, genre = ?, dateNaissance = ? WHERE id = ?");
-            preparedStatement.setString(1, patient.getNom());
-            preparedStatement.setString(2, patient.getGenre());
-            preparedStatement.setDate(3, patient.getDateNaissance());
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "initials = ?, gender = ?, birthDate = ? WHERE id = ?");
+            preparedStatement.setString(1, patient.getInitials());
+            preparedStatement.setString(2, patient.getGender());
+            preparedStatement.setDate(3, patient.getBirthDate());
             preparedStatement.setInt(4, id);
             preparedStatement.executeUpdate();
-            System.out.println("UPDATE patient SET " + "nom = ?, genre = ?, dateNaissance WHERE id = ?");
+            System.out.println("UPDATE patient SET " + "initials = ?, gender = ?, birthDate = ? WHERE id = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -238,21 +211,5 @@ public class PatientDaolmpl implements PatientDao {
                 }
             }
         }
-    }
-
-
-    @Override
-    public List<Patient> selectByName(String nom) {
-        ;
-    }
-
-    @Override
-    public List<Patient> selectByGenre(String genre) {
-        return null;
-    }
-
-    @Override
-    public List<Patient> selectByDate(Date dateNaissance) {
-        return null;
     }
 }

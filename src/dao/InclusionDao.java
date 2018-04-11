@@ -5,8 +5,6 @@ import src.table.Inclusion;
 import java.util.List;
 
 public interface InclusionDao {
-    void createInclusionTable();
-
     void insert(Inclusion inclusion);
 
     Inclusion selectById(int id);
