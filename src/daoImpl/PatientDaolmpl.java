@@ -1,13 +1,14 @@
 package src.daoImpl;
 
 import src.dao.PatientDao;
+import src.table.Inclusion;
 import src.table.Patient;
 import src.utils.Gender;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class PatientDaolmpl implements PatientDao {
+public class PatientDaolmpl extends daoImpl implements PatientDao {
     private Connection connection;
 
     public PatientDaolmpl(Connection connection) {
@@ -20,9 +21,7 @@ public class PatientDaolmpl implements PatientDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO patient (INITIALS, GENDER, BIRTHDATE) " + "VALUES (?, ?, ?)");
-            preparedStatement.setString(1, patient.getInitials());
-            preparedStatement.setString(2, patient.getGender());
-            preparedStatement.setDate(3, patient.getBirthDate());
+            preparedStatement = this.setPreparedStatement(preparedStatement, patient);
             preparedStatement.executeUpdate();
             System.out.println("INSERT INTO patient (initials, gender, birthDate)");
         } catch (Exception e) {
@@ -57,12 +56,8 @@ public class PatientDaolmpl implements PatientDao {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                patient.setId(resultSet.getInt("ID"));
-                patient.setInitials(resultSet.getString("INITIALS"));
-                patient.setGender(resultSet.getString("GENDER"));
-                patient.setBirthDate(resultSet.getDate("BIRTHDATE"));
-            }
+            while (resultSet.next())
+                patient = this.addToPatient(patient, resultSet);
 
             System.out.println("SELECT * FROM patient WHERE ID = ?");
         } catch (Exception e) {
@@ -158,7 +153,7 @@ public class PatientDaolmpl implements PatientDao {
     public ArrayList<Patient> selectAll() {
         ArrayList<Patient> patients = new ArrayList<>();
         Statement statement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         try {
             statement = connection.createStatement();
@@ -194,14 +189,9 @@ public class PatientDaolmpl implements PatientDao {
         ArrayList<Patient> patients = new ArrayList<>();
 
         try {
-            while (resultSet.next()) {
-                Patient patient = new Patient();
-                patient.setId(resultSet.getInt("ID"));
-                patient.setInitials(resultSet.getString("INITIALS"));
-                patient.setGender(resultSet.getString("GENDER"));
-                patient.setBirthDate(resultSet.getDate("BIRTHDATE"));
-                patients.add(patient);
-            }
+            while (resultSet.next())
+                patients.add(this.addToPatient(new Patient(), resultSet));
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -217,35 +207,17 @@ public class PatientDaolmpl implements PatientDao {
         return patients;
     }
 
-    @Override
+    private Patient addToPatient(Patient patient, ResultSet resultSet) throws SQLException {
+        patient.setId(resultSet.getInt("ID"));
+        patient.setInitials(resultSet.getString("INITIALS"));
+        patient.setGender(resultSet.getString("GENDER"));
+        patient.setBirthDate(resultSet.getDate("BIRTHDATE"));
+
+        return patient;
+    }
+
     public void delete(int id) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("DELETE FROM patient WHERE id = ?");
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-
-            System.out.println("DELETE FROM patient WHERE id = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.delete(connection, "patient", id);
     }
 
 
@@ -254,12 +226,11 @@ public class PatientDaolmpl implements PatientDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "initials = ?, gender = ?, birthDate = ? WHERE id = ?");
-            preparedStatement.setString(1, patient.getInitials());
-            preparedStatement.setString(2, patient.getGender());
-            preparedStatement.setDate(3, patient.getBirthDate());
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALS = ?, GENDER = ?, BIRTHDATE = ? WHERE ID = ?");
+            preparedStatement = this.setPreparedStatement(preparedStatement, patient);
             preparedStatement.setInt(4, id);
             preparedStatement.executeUpdate();
+
             System.out.println("UPDATE patient SET " + "initials = ?, gender = ?, birthDate = ? WHERE id = ?");
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,5 +251,13 @@ public class PatientDaolmpl implements PatientDao {
                 }
             }
         }
+    }
+
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
+        preparedStatement.setString(1, ((Patient) object).getInitials());
+        preparedStatement.setString(2, ((Patient) object).getGender());
+        preparedStatement.setDate(3, ((Patient) object).getBirthDate());
+
+        return preparedStatement;
     }
 }

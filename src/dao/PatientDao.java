@@ -15,7 +15,5 @@ public interface PatientDao {
 
     List<Patient> selectAll();
 
-    void delete(int id);
-
     void update(Patient patient, int id);
 }

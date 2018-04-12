@@ -1,15 +1,12 @@
 package src.daoImpl;
 
-import src.dao.InclusionDao;
 import src.dao.LesionDao;
-import src.table.Inclusion;
 import src.table.Lesion;
-import src.utils.Diag;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class LesionDaoImpl implements LesionDao {
+public class LesionDaoImpl extends daoImpl implements LesionDao {
     private Connection connection;
 
     public LesionDaoImpl(Connection connection) {
@@ -21,15 +18,11 @@ public class LesionDaoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, lesion.getId());
-            preparedStatement.setInt(2, lesion.getIdPatient());
-            preparedStatement.setBlob(3, lesion.getReference1());
-            preparedStatement.setBlob(4, lesion.getReference2());
-            preparedStatement.setDate(5, lesion.getDateInclusion());
-            preparedStatement.setInt(6, lesion.getNumAnaPat());
+            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO lesion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
+
+            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?))");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -58,18 +51,10 @@ public class LesionDaoImpl implements LesionDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, inclusion.getId());
+            preparedStatement = connection.prepareStatement("SELECT * FROM lesion WHERE ID = ?");
+            preparedStatement.setInt(1, lesion.getId());
             resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                inclusion.setId(resultSet.getInt("ID"));
-                inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-                inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-                inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-                inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-                inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-            }
+            lesion = this.addToLesion(lesion, resultSet);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -102,17 +87,17 @@ public class LesionDaoImpl implements LesionDao {
     }
 
     @Override
-    public ArrayList<Inclusion> selectAll() {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
+    public ArrayList<Lesion> selectAll() {
+        ArrayList<Lesion> lesions = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet;
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM inclusion");
-            inclusions = this.addToList(resultSet);
+            resultSet = statement.executeQuery("SELECT * FROM lesion");
+            lesions = this.addToList(resultSet);
 
-            System.out.println("SELECT * FROM patient");
+            System.out.println("SELECT * FROM lesion");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -133,23 +118,16 @@ public class LesionDaoImpl implements LesionDao {
             }
         }
 
-        return inclusions;
+        return lesions;
     }
 
-    private ArrayList<Inclusion> addToList(ResultSet resultSet) {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
+    private ArrayList<Lesion> addToList(ResultSet resultSet) {
+        ArrayList<Lesion> lesions = new ArrayList<>();
 
         try {
-            while (resultSet.next()) {
-                Inclusion inclusion = new Inclusion();
-                inclusion.setId(resultSet.getInt("ID"));
-                inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-                inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-                inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-                inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-                inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-                inclusions.add(inclusion);
-            }
+            while (resultSet.next())
+                lesions.add(this.addToLesion(new Lesion(), resultSet));
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -162,19 +140,37 @@ public class LesionDaoImpl implements LesionDao {
             }
         }
 
-        return inclusions;
+        return lesions;
     }
 
-    @Override
+    private Lesion addToLesion(Lesion lesion, ResultSet resultSet) throws SQLException {
+        lesion.setId(resultSet.getInt("ID"));
+        lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
+        lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
+        lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
+        lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
+        lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
+        lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
+        lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
+
+        return lesion;
+    }
+
     public void delete(int id) {
+        this.delete(connection, "lesion", id);
+    }
+
+    @Override
+    public void update(Lesion lesion, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("DELETE FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID = ?, ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
+            preparedStatement.setInt(9, id);
 
-            System.out.println("DELETE FROM inclusion WHERE id = ?");
+            preparedStatement.executeUpdate();
+            System.out.println("UPDATE inclusion SET ID = ?, ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -196,39 +192,16 @@ public class LesionDaoImpl implements LesionDao {
         }
     }
 
-    @Override
-    public void update(Inclusion inclusion, int id) {
-        PreparedStatement preparedStatement = null;
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
+        preparedStatement.setInt(1, ((Lesion) object).getId());
+        preparedStatement.setInt(2, ((Lesion) object).getIdInclusion());
+        preparedStatement.setBlob(3, ((Lesion) object).getPhotoSur());
+        preparedStatement.setBlob(4, ((Lesion) object).getPhotoHors());
+        preparedStatement.setBlob(5, ((Lesion) object).getPhotoFixe());
+        preparedStatement.setString(6, ((Lesion) object).getSiteAnatomique());
+        preparedStatement.setString(7, ((Lesion) object).getDiag().toString());
+        preparedStatement.setString(8, ((Lesion) object).getAutreDiag());
 
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
-            preparedStatement.setInt(1, inclusion.getId());
-            preparedStatement.setInt(2, inclusion.getIdPatient());
-            preparedStatement.setDate(3, inclusion.getDateInclusion());
-            preparedStatement.setBlob(4, inclusion.getReference1());
-            preparedStatement.setBlob(5, inclusion.getReference2());
-            preparedStatement.setInt(6, inclusion.getNumAnaPat());
-
-            preparedStatement.executeUpdate();
-            System.out.println("UPDATE inclusion SET ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return preparedStatement;
     }
 }

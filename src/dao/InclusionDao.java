@@ -15,7 +15,5 @@ public interface InclusionDao {
 
     List<Inclusion> selectAll();
 
-    void delete(int id);
-
     void update(Inclusion inclusion, int id);
 }

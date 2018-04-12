@@ -1,28 +1,32 @@
 package src.table;
 
 import src.utils.Diag;
+import src.utils.FileToBlob;
 
 import java.io.File;
+import java.sql.Blob;
 
 public class Lesion {
     private int id;
     private int idInclusion;
-    private File photoSur;
-    private File photoHors;
-    private File photoFixe;
-    private String anatomicalSite;
+    private Blob photoSur;
+    private Blob photoHors;
+    private Blob photoFixe;
+    private String siteAnatomique;
     private Diag diag;
+    private String autreDiag;
 
     public Lesion() {}
 
-    public Lesion(int id, int idInclusion, File photoSur, File photoHors, File photoFixe, String anatomicalSite, String diagnostic) {
+    public Lesion(int id, int idInclusion, File photoSur, File photoHors, File photoFixe, String siteAnatomique, String diag, String autreDiag) {
         this.id = id;
         this.idInclusion = idInclusion;
-        this.photoSur = photoSur;
-        this.photoHors = photoHors;
-        this.photoFixe = photoFixe;
-        this.anatomicalSite = anatomicalSite;
-        this.diag = Diag.valueOf(diagnostic);
+        this.photoSur = new FileToBlob(photoSur).getBlob();
+        this.photoHors = new FileToBlob(photoHors).getBlob();
+        this.photoFixe = new FileToBlob(photoFixe).getBlob();
+        this.siteAnatomique = siteAnatomique;
+        this.diag = Diag.valueOf(diag);
+        this.autreDiag = autreDiag;
     }
 
     public int getId() {
@@ -33,24 +37,28 @@ public class Lesion {
         return idInclusion;
     }
 
-    public File getPhotoSur() {
+    public Blob getPhotoSur() {
         return photoSur;
     }
 
-    public File getPhotoHors() {
+    public Blob getPhotoHors() {
         return photoHors;
     }
 
-    public File getPhotoFixe() {
+    public Blob getPhotoFixe() {
         return photoFixe;
     }
 
-    public String getAnatomicalSite() {
-        return anatomicalSite;
+    public String getSiteAnatomique() {
+        return siteAnatomique;
     }
 
     public Diag getDiag() {
         return this.diag;
+    }
+
+    public String getAutreDiag() {
+        return this.autreDiag;
     }
 
     public void setId(int id) {
@@ -61,24 +69,28 @@ public class Lesion {
         this.idInclusion = idInclusion;
     }
 
-    public void setPhotoSur(File photoSur) {
+    public void setPhotoSur(Blob photoSur) {
         this.photoSur = photoSur;
     }
 
-    public void setPhotoHors(File photoHors) {
+    public void setPhotoHors(Blob photoHors) {
         this.photoHors = photoHors;
     }
 
-    public void setPhotoFixe(File photoFixe) {
+    public void setPhotoFixe(Blob photoFixe) {
         this.photoFixe = photoFixe;
     }
 
-    public void setAnatomicalSite(String anatomicalSite) {
-        this.anatomicalSite = anatomicalSite;
+    public void setSiteAnatomique(String siteAnatomique) {
+        this.siteAnatomique = siteAnatomique;
     }
 
     public void setDiag(String diag) {
         this.diag = Diag.valueOf(diag);
+    }
+
+    public void setAutreDiag(String autreDiag) {
+        this.autreDiag = autreDiag;
     }
 }
 

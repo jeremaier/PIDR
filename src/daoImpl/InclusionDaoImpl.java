@@ -2,12 +2,13 @@ package src.daoImpl;
 
 import src.dao.InclusionDao;
 import src.table.Inclusion;
+import src.table.Lesion;
 import src.utils.Diag;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class InclusionDaoImpl implements InclusionDao {
+public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     private Connection connection;
 
     public InclusionDaoImpl(Connection connection) {
@@ -20,14 +21,9 @@ public class InclusionDaoImpl implements InclusionDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, inclusion.getId());
-            preparedStatement.setInt(2, inclusion.getIdPatient());
-            preparedStatement.setBlob(3, inclusion.getReference1());
-            preparedStatement.setBlob(4, inclusion.getReference2());
-            preparedStatement.setDate(5, inclusion.getDateInclusion());
-            preparedStatement.setInt(6, inclusion.getNumAnaPat());
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion);
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO inclusion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
+            System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -60,14 +56,9 @@ public class InclusionDaoImpl implements InclusionDao {
             preparedStatement.setInt(1, inclusion.getId());
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                inclusion.setId(resultSet.getInt("ID"));
-                inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-                inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-                inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-                inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-                inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-            }
+            while (resultSet.next())
+                inclusion = this.addToPatient(new Inclusion(), resultSet);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -103,7 +94,7 @@ public class InclusionDaoImpl implements InclusionDao {
     public ArrayList<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initials, Diag diag) {
         ArrayList<Inclusion> inclusions = new ArrayList<>();
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         try {
             if(id != 0) {
@@ -199,7 +190,7 @@ public class InclusionDaoImpl implements InclusionDao {
             resultSet = statement.executeQuery("SELECT * FROM inclusion");
             inclusions = this.addToList(resultSet);
 
-            System.out.println("SELECT * FROM patient");
+            System.out.println("SELECT * FROM inclusion");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -227,16 +218,9 @@ public class InclusionDaoImpl implements InclusionDao {
         ArrayList<Inclusion> inclusions = new ArrayList<>();
 
         try {
-            while (resultSet.next()) {
-                Inclusion inclusion = new Inclusion();
-                inclusion.setId(resultSet.getInt("ID"));
-                inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-                inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-                inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-                inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-                inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-                inclusions.add(inclusion);
-            }
+            while (resultSet.next())
+                inclusions.add(this.addToPatient(new Inclusion(), resultSet));
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -252,35 +236,19 @@ public class InclusionDaoImpl implements InclusionDao {
         return inclusions;
     }
 
-    @Override
+    private Inclusion addToPatient(Inclusion inclusion, ResultSet resultSet) throws SQLException {
+        inclusion.setId(resultSet.getInt("ID"));
+        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
+        inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
+        inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
+        inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
+        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
+
+        return inclusion;
+    }
+
     public void delete(int id) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("DELETE FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-
-            System.out.println("DELETE FROM inclusion WHERE id = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.delete(connection, "inclusion", id);
     }
 
     @Override
@@ -289,12 +257,8 @@ public class InclusionDaoImpl implements InclusionDao {
 
         try {
             preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
-            preparedStatement.setInt(1, inclusion.getId());
-            preparedStatement.setInt(2, inclusion.getIdPatient());
-            preparedStatement.setDate(3, inclusion.getDateInclusion());
-            preparedStatement.setBlob(4, inclusion.getReference1());
-            preparedStatement.setBlob(5, inclusion.getReference2());
-            preparedStatement.setInt(6, inclusion.getNumAnaPat());
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion);
+            preparedStatement.setInt(7, id);
 
             preparedStatement.executeUpdate();
             System.out.println("UPDATE inclusion SET ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
@@ -317,5 +281,16 @@ public class InclusionDaoImpl implements InclusionDao {
                 }
             }
         }
+    }
+
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
+        preparedStatement.setInt(1, ((Inclusion) object).getId());
+        preparedStatement.setInt(2, ((Inclusion) object).getIdPatient());
+        preparedStatement.setDate(3, ((Inclusion) object).getDateInclusion());
+        preparedStatement.setBlob(4, ((Inclusion) object).getReference1());
+        preparedStatement.setBlob(5, ((Inclusion) object).getReference2());
+        preparedStatement.setInt(6, ((Inclusion) object).getNumAnaPat());
+
+        return preparedStatement;
     }
 }
