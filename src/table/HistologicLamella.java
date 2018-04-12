@@ -1,7 +1,5 @@
 package src.table;
 
-import src.util.Diag;
-
 public class HistologicLamella {
     private int id;
     private int idLesion;
@@ -9,6 +7,8 @@ public class HistologicLamella {
     private int blackOrientation;
     private int greenOrientation;
     private String coloration;
+
+    public HistologicLamella() {}
 
     public HistologicLamella(int id, int idLesion, char cuttingSite, int blackOrientation, int greenOrientation, String coloration) {
         this.id = id;

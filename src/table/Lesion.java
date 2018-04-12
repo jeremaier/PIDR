@@ -1,16 +1,26 @@
 package src.table;
 
-import src.util.Diag;
+import src.utils.Diag;
+
+import java.io.File;
 
 public class Lesion {
     private int id;
     private int idInclusion;
+    private File photoSur;
+    private File photoHors;
+    private File photoFixe;
     private String anatomicalSite;
     private Diag diag;
 
-    public Lesion(int id, int idInclusion, String anatomicalSite, String diagnostic) {
+    public Lesion() {}
+
+    public Lesion(int id, int idInclusion, File photoSur, File photoHors, File photoFixe, String anatomicalSite, String diagnostic) {
         this.id = id;
         this.idInclusion = idInclusion;
+        this.photoSur = photoSur;
+        this.photoHors = photoHors;
+        this.photoFixe = photoFixe;
         this.anatomicalSite = anatomicalSite;
         this.diag = Diag.valueOf(diagnostic);
     }
@@ -21,6 +31,18 @@ public class Lesion {
 
     public int getIdInclusion() {
         return idInclusion;
+    }
+
+    public File getPhotoSur() {
+        return photoSur;
+    }
+
+    public File getPhotoHors() {
+        return photoHors;
+    }
+
+    public File getPhotoFixe() {
+        return photoFixe;
     }
 
     public String getAnatomicalSite() {
@@ -37,6 +59,18 @@ public class Lesion {
 
     public void setIdInclusion(int idInclusion) {
         this.idInclusion = idInclusion;
+    }
+
+    public void setPhotoSur(File photoSur) {
+        this.photoSur = photoSur;
+    }
+
+    public void setPhotoHors(File photoHors) {
+        this.photoHors = photoHors;
+    }
+
+    public void setPhotoFixe(File photoFixe) {
+        this.photoFixe = photoFixe;
     }
 
     public void setAnatomicalSite(String anatomicalSite) {

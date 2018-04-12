@@ -1,4 +1,4 @@
-package src.util;
+package src.utils;
 
 import javafx.concurrent.Task;
 

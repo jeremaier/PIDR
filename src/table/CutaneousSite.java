@@ -1,6 +1,6 @@
 package src.table;
 
-import src.util.Diag;
+import src.utils.Diag;
 
 public class CutaneousSite {
     private int id;
@@ -10,6 +10,8 @@ public class CutaneousSite {
     private String site;
     private int orientation;
     private Diag diag;
+
+    public CutaneousSite() {}
 
     public CutaneousSite(int id, int idLesion, boolean healthy, int measurementNumber, String site, int orientation, Diag diag) {
         this.id = id;

@@ -4,8 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import src.util.ConnectionConfiguration;
-import src.util.FileManager;
+import src.utils.ConnectionConfiguration;
+import src.utils.FileManager;
 
 import java.io.*;
 import java.net.URL;

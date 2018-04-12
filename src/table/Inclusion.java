@@ -1,23 +1,28 @@
 package src.table;
 
+import src.utils.FileToBlob;
+
 import java.io.File;
+import java.sql.Blob;
 import java.sql.Date;
 
 public class Inclusion {
     private int id;
     private int idPatient;
-    private File reference1;
-    private File reference2;
+    private Blob reference1;
+    private Blob reference2;
     private Date dateInclusion;
-    private int numAnaPat;
+    private int numAnaPath;
 
-    public Inclusion(int id, int idPatient, File reference1, File reference2, Date dateInclusion, int numAnaPat) {
+    public Inclusion() {}
+
+    public Inclusion(int id, int idPatient, File reference1, File reference2, Date dateInclusion, int numAnaPath) {
         this.id = id;
         this.idPatient = idPatient;
-        this.reference1 = reference1;
-        this.reference2 = reference2;
+        this.reference1 = new FileToBlob(reference1).getBlob();
+        this.reference2 = new FileToBlob(reference2).getBlob();
         this.dateInclusion = dateInclusion;
-        this.numAnaPat = numAnaPat;
+        this.numAnaPath = numAnaPath;
     }
 
     public int getId() {
@@ -28,11 +33,11 @@ public class Inclusion {
         return idPatient;
     }
 
-    public File getReference1() {
+    public Blob getReference1() {
         return reference1;
     }
 
-    public File getReference2() {
+    public Blob getReference2() {
         return reference2;
     }
 
@@ -41,7 +46,7 @@ public class Inclusion {
     }
 
     public int getNumAnaPat() {
-        return numAnaPat;
+        return numAnaPath;
     }
 
     public void setId(int id) {
@@ -52,11 +57,11 @@ public class Inclusion {
         this.idPatient = idPatient;
     }
 
-    public void setReference1(File reference) {
+    public void setReference1(Blob reference) {
         this.reference1 = reference;
     }
 
-    public void setReference2(File reference) {
+    public void setReference2(Blob reference) {
         this.reference2 = reference;
     }
 
@@ -64,7 +69,7 @@ public class Inclusion {
         this.dateInclusion = dateInclusion;
     }
 
-    public void setNumAnaPat(int numAnaPat) {
-        this.numAnaPat = numAnaPat;
+    public void setNumAnaPath(int numAnaPath) {
+        this.numAnaPath = numAnaPath;
     }
 }

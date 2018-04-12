@@ -13,6 +13,8 @@ public class TranscriptomicAnalysis {
     private int serialNumber;
     private int lamellaLocation;
 
+    public TranscriptomicAnalysis() {}
+
     public TranscriptomicAnalysis(int id, int idCutaneousSite, int RIN, double concentration, double ARNc, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation) {
         this.id = id;
         this.idCutaneousSite = idCutaneousSite;

@@ -1,33 +1,35 @@
 package src.daoImpl;
 
 import src.dao.InclusionDao;
+import src.dao.LesionDao;
 import src.table.Inclusion;
+import src.table.Lesion;
 import src.utils.Diag;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class InclusionDaoImpl implements InclusionDao {
+public class LesionDaoImpl implements LesionDao {
     private Connection connection;
 
-    public InclusionDaoImpl(Connection connection) {
+    public LesionDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void insert(Inclusion inclusion) {
+    public void insert(Lesion lesion) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, inclusion.getId());
-            preparedStatement.setInt(2, inclusion.getIdPatient());
-            preparedStatement.setBlob(3, inclusion.getReference1());
-            preparedStatement.setBlob(4, inclusion.getReference2());
-            preparedStatement.setDate(5, inclusion.getDateInclusion());
-            preparedStatement.setInt(6, inclusion.getNumAnaPat());
+            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
+            preparedStatement.setInt(1, lesion.getId());
+            preparedStatement.setInt(2, lesion.getIdPatient());
+            preparedStatement.setBlob(3, lesion.getReference1());
+            preparedStatement.setBlob(4, lesion.getReference2());
+            preparedStatement.setDate(5, lesion.getDateInclusion());
+            preparedStatement.setInt(6, lesion.getNumAnaPat());
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO inclusion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
+            System.out.println("INSERT INTO lesion (id,idPatient,teflon,dateInclusion,numAnaPat)" + "VALUES (?,?, ?, ?, ?)");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -50,8 +52,8 @@ public class InclusionDaoImpl implements InclusionDao {
     }
 
     @Override
-    public Inclusion selectById(int id) {
-        Inclusion inclusion = new Inclusion();
+    public Lesion selectById(int id) {
+        Lesion lesion = new Lesion();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
@@ -96,96 +98,7 @@ public class InclusionDaoImpl implements InclusionDao {
             }
         }
 
-        return inclusion;
-    }
-
-    @Override
-    public ArrayList<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initials, Diag diag) {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            if(id != 0) {
-                if(dateInclusion != null) {
-                    if (numAnaPat != 0) {
-                        if (initials != null) {
-                            if (diag.toString() != null) {
-                                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                                preparedStatement.setString(5, diag.toString());
-                            } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ?");
-
-                            preparedStatement.setString(4, initials);
-                        } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ?");
-
-                        preparedStatement.setInt(3, numAnaPat);
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? AND DATE_INCLUSION = ?");
-
-                    preparedStatement.setDate(2, dateInclusion);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
-
-                preparedStatement.setInt(1, id);
-            } else if(dateInclusion != null) {
-                if (numAnaPat != 0) {
-                    if (initials != null) {
-                        if (diag.toString() != null) {
-                            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                            preparedStatement.setString(4, diag.toString());
-                        } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ?");
-
-                        preparedStatement.setString(3, initials);
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ?");
-
-                    preparedStatement.setInt(2, numAnaPat);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE DATE_INCLUSION = ?");
-            } else if (numAnaPat != 0) {
-                if (initials != null) {
-                    if (diag.toString() != null) {
-                        preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                        preparedStatement.setString(3, diag.toString());
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? AND INITIALS = ?");
-
-                    preparedStatement.setString(2, initials);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ?");
-
-                preparedStatement.setInt(1, numAnaPat);
-            } else if (initials != null) {
-                if (diag.toString() != null) {
-                    preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALS = ? AND DIAG = ?");
-                    preparedStatement.setString(2, diag.toString());
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALS = ?");
-
-                preparedStatement.setString(1, initials);
-            } else if (diag.toString() != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DIAG = ?");
-                preparedStatement.setString(1, diag.toString());
-            } else selectAll();
-
-            resultSet = preparedStatement.executeQuery();
-            inclusions = this.addToList(resultSet);
-
-            System.out.println("SELECT * FROM patient WHERE ID ^ ID_PATIENT ^ REFERENCE1 ^ DATE_INCLUSION ^ NUM_ANAPATH");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return inclusions;
+        return lesion;
     }
 
     @Override
