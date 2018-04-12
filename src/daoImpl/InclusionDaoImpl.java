@@ -1,12 +1,12 @@
 package src.daoImpl;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import src.dao.InclusionDao;
 import src.table.Inclusion;
-import src.table.Lesion;
 import src.utils.Diag;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     private Connection connection;
@@ -21,24 +21,24 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion);
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 1);
             preparedStatement.executeUpdate();
             System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -55,33 +55,30 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ?");
             preparedStatement.setInt(1, inclusion.getId());
             resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next())
-                inclusion = this.addToPatient(new Inclusion(), resultSet);
-
-        } catch (Exception e) {
+            inclusion = this.addToInclusion(inclusion, resultSet);
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -91,86 +88,87 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     }
 
     @Override
-    public ArrayList<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initials, Diag diag) {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
+    public ObservableList<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initiales, Diag diag) {
+        ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
+        ObservableList<Inclusion> inclusions2;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
 
         try {
             if(id != 0) {
-                if(dateInclusion != null) {
-                    if (numAnaPat != 0) {
-                        if (initials != null) {
-                            if (diag.toString() != null) {
-                                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                                preparedStatement.setString(5, diag.toString());
-                            } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ?");
-
-                            preparedStatement.setString(4, initials);
-                        } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? AND DATE_INCLUSION = ? AND NUM_ANAPATH = ?");
-
-                        preparedStatement.setInt(3, numAnaPat);
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? AND DATE_INCLUSION = ?");
-
-                    preparedStatement.setDate(2, dateInclusion);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
-
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ?");
                 preparedStatement.setInt(1, id);
-            } else if(dateInclusion != null) {
-                if (numAnaPat != 0) {
-                    if (initials != null) {
-                        if (diag.toString() != null) {
-                            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                            preparedStatement.setString(4, diag.toString());
-                        } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ? AND INITIALS = ?");
+                resultSet = preparedStatement.executeQuery();
+                inclusions = this.addToObservableList(inclusions, resultSet);
+            }
 
-                        preparedStatement.setString(3, initials);
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? AND NUM_ANAPATH = ?");
+            if(dateInclusion != null) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ?");
+                preparedStatement.setDate(1, dateInclusion);
+                resultSet = preparedStatement.executeQuery();
 
-                    preparedStatement.setInt(2, numAnaPat);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE DATE_INCLUSION = ?");
-            } else if (numAnaPat != 0) {
-                if (initials != null) {
-                    if (diag.toString() != null) {
-                        preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? AND INITIALS = ? AND DIAG = ?");
-                        preparedStatement.setString(3, diag.toString());
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? AND INITIALS = ?");
+                if(inclusions != null) {
+                    inclusions2 = this.addToObservableList(inclusions, resultSet);
+                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
+                    inclusions = inclusions2;
+                } else inclusions = this.addToObservableList(inclusions, resultSet);
+            }
 
-                    preparedStatement.setString(2, initials);
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ?");
-
+            if(numAnaPat != 0) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ?");
                 preparedStatement.setInt(1, numAnaPat);
-            } else if (initials != null) {
-                if (diag.toString() != null) {
-                    preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALS = ? AND DIAG = ?");
-                    preparedStatement.setString(2, diag.toString());
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALS = ?");
+                resultSet = preparedStatement.executeQuery();
 
-                preparedStatement.setString(1, initials);
-            } else if (diag.toString() != null) {
+                if(inclusions != null) {
+                    inclusions2 = this.addToObservableList(inclusions, resultSet);
+                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
+                    inclusions = inclusions2;
+                } else inclusions = this.addToObservableList(inclusions, resultSet);
+            }
+
+            if(initiales != null) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALES = ?");
+                preparedStatement.setString(1, initiales);
+                resultSet = preparedStatement.executeQuery();
+
+                if(inclusions != null) {
+                    inclusions2 = this.addToObservableList(inclusions, resultSet);
+                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
+                    inclusions = inclusions2;
+                } else inclusions = this.addToObservableList(inclusions, resultSet);
+            }
+
+            if(diag.toString() != null) {
                 preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DIAG = ?");
-                preparedStatement.setString(1, diag.toString());
-            } else selectAll();
+                preparedStatement.setString(1, initiales);
+                resultSet = preparedStatement.executeQuery();
 
-            resultSet = preparedStatement.executeQuery();
-            inclusions = this.addToList(resultSet);
+                if(inclusions != null) {
+                    inclusions2 = this.addToObservableList(inclusions, resultSet);
+                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
+                    inclusions = inclusions2;
+                } else inclusions = this.addToObservableList(inclusions, resultSet);
+            }
 
-            System.out.println("SELECT * FROM patient WHERE ID ^ ID_PATIENT ^ REFERENCE1 ^ DATE_INCLUSION ^ NUM_ANAPATH");
-        } catch (Exception e) {
+            if(resultSet == null)
+                return this.selectAll();
+
+            System.out.println("SELECT * FROM inclusion WHERE ID ^ DATE_INCLUSION ^ NUM_ANAPATH ^ INITIALES ^ DIAG");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -180,32 +178,32 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     }
 
     @Override
-    public ArrayList<Inclusion> selectAll() {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
+    public ObservableList<Inclusion> selectAll() {
+        ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
         Statement statement = null;
         ResultSet resultSet;
 
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM inclusion");
-            inclusions = this.addToList(resultSet);
+            inclusions = this.addToObservableList(inclusions, resultSet);
 
             System.out.println("SELECT * FROM inclusion");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
+            if(statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -214,20 +212,82 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         return inclusions;
     }
 
-    private ArrayList<Inclusion> addToList(ResultSet resultSet) {
-        ArrayList<Inclusion> inclusions = new ArrayList<>();
+    @Override
+    public void update(int patientId, int id) {
+        PreparedStatement preparedStatement = null;
 
         try {
-            while (resultSet.next())
-                inclusions.add(this.addToPatient(new Inclusion(), resultSet));
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ? WHERE ID = ?");
+            preparedStatement.setInt(1, patientId);
+            preparedStatement.setInt(2, id);
 
-        } catch (Exception e) {
+            preparedStatement.executeUpdate();
+            System.out.println("UPDATE inclusion SET ID_PATIENT = ? WHERE ID = ?");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void update(Inclusion inclusion, int id) {
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
+            preparedStatement.setInt(6, id);
+
+            preparedStatement.executeUpdate();
+            System.out.println("UPDATE inclusion SET ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private ObservableList<Inclusion> addToObservableList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
+        try {
+            while(resultSet.next())
+                inclusions.add(this.addToInclusion(new Inclusion(), resultSet));
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -236,13 +296,15 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         return inclusions;
     }
 
-    private Inclusion addToPatient(Inclusion inclusion, ResultSet resultSet) throws SQLException {
-        inclusion.setId(resultSet.getInt("ID"));
-        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-        inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-        inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-        inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
+    private Inclusion addToInclusion(Inclusion inclusion, ResultSet resultSet) throws SQLException {
+        while(resultSet.next()) {
+            inclusion.setId(resultSet.getInt("ID"));
+            inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
+            inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
+            inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
+            inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
+            inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
+        }
 
         return inclusion;
     }
@@ -251,45 +313,15 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         this.delete(connection, "inclusion", id);
     }
 
-    @Override
-    public void update(Inclusion inclusion, int id) {
-        PreparedStatement preparedStatement = null;
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
+        if(indexDebut == 1)
+            preparedStatement.setInt(indexDebut, ((Inclusion) object).getId());
 
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
-            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion);
-            preparedStatement.setInt(7, id);
-
-            preparedStatement.executeUpdate();
-            System.out.println("UPDATE inclusion SET ID = ?, ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
-        preparedStatement.setInt(1, ((Inclusion) object).getId());
-        preparedStatement.setInt(2, ((Inclusion) object).getIdPatient());
-        preparedStatement.setDate(3, ((Inclusion) object).getDateInclusion());
-        preparedStatement.setBlob(4, ((Inclusion) object).getReference1());
-        preparedStatement.setBlob(5, ((Inclusion) object).getReference2());
-        preparedStatement.setInt(6, ((Inclusion) object).getNumAnaPat());
+        preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
+        preparedStatement.setDate(indexDebut + 2, ((Inclusion) object).getDateInclusion());
+        preparedStatement.setBlob(indexDebut + 3, ((Inclusion) object).getReference1());
+        preparedStatement.setBlob(indexDebut + 4, ((Inclusion) object).getReference2());
+        preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
 
         return preparedStatement;
     }

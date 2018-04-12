@@ -1,51 +1,76 @@
 package src.table;
 
-import java.sql.Date;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Patient {
-    private int id;
-    private String initials;
-    private String gender;
-    private Date birthDate;
+    private IntegerProperty id;
+    private StringProperty initiales;
+    private StringProperty genre;
+    private IntegerProperty anneeDeNaissance;
 
-    public Patient() {}
+    public Patient() {
+        this.id = new SimpleIntegerProperty();
+        this.initiales = new SimpleStringProperty();
+        this.genre = new SimpleStringProperty();
+        this.anneeDeNaissance = new SimpleIntegerProperty();
+    }
 
-    public Patient(int id, String initials, String gender, Date birthDate) {
-        this.id = id;
-        this.initials = initials;
-        this.gender = gender;
-        this.birthDate = birthDate;
+    public Patient(int id, String initiales, String genre, int anneeDeNaissance) {
+        this();
+        this.setId(id);
+        this.setInitiales(initiales);
+        this.setGenre(genre);
+        this.setDateNaissance(anneeDeNaissance);
     }
 
     public int getId() {
-        return this.id;
-    }
-
-    public String getGender() {
-        return this.gender;
-    }
-
-    public String getInitials() {
-        return this.initials;
-    }
-
-    public Date getBirthDate() {
-        return this.birthDate;
+        return this.id.get();
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id.set(id);
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public String getGenre() {
+        return this.genre.get();
     }
 
-    public void setInitials(String initials) {
-        this.initials = initials;
+    public void setGenre(String genre) {
+        this.genre.set(genre);
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public String getInitiales() {
+        return this.initiales.get();
+    }
+
+    public void setInitiales(String initiales) {
+        this.initiales.set(initiales);
+    }
+
+    public int getAnneeNaissance() {
+        return this.anneeDeNaissance.get();
+    }
+
+    public IntegerProperty idProperty() {
+        return this.id;
+    }
+
+    public StringProperty initialesProperty() {
+        return this.initiales;
+    }
+
+    public StringProperty genreProperty() {
+        return this.genre;
+    }
+
+    public IntegerProperty dateNaissanceProperty() {
+        return this.anneeDeNaissance;
+    }
+
+    public void setDateNaissance(int dateNaissance) {
+        this.anneeDeNaissance.set(dateNaissance);
     }
 }

@@ -1,9 +1,7 @@
 package src.dao;
 
 import src.table.Patient;
-import src.utils.Gender;
 
-import java.sql.Date;
 import java.util.List;
 
 public interface PatientDao {
@@ -11,7 +9,7 @@ public interface PatientDao {
 
     Patient selectById(int id);
 
-    List<Patient> selectByFilters(int id, Gender genre, Date anneeDeNaissance);
+    List<Patient> selectByFilters(int id, String initiales);
 
     List<Patient> selectAll();
 

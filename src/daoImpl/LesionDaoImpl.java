@@ -1,10 +1,11 @@
 package src.daoImpl;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import src.dao.LesionDao;
 import src.table.Lesion;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class LesionDaoImpl extends daoImpl implements LesionDao {
     private Connection connection;
@@ -19,25 +20,25 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 1);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?))");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -55,29 +56,29 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement.setInt(1, lesion.getId());
             resultSet = preparedStatement.executeQuery();
             lesion = this.addToLesion(lesion, resultSet);
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -87,32 +88,32 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
     }
 
     @Override
-    public ArrayList<Lesion> selectAll() {
-        ArrayList<Lesion> lesions = new ArrayList<>();
+    public ObservableList<Lesion> selectAll() {
+        ObservableList<Lesion> lesions = FXCollections.observableArrayList();
         Statement statement = null;
         ResultSet resultSet;
 
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM lesion");
-            lesions = this.addToList(resultSet);
+            lesions = this.addToObservableList(lesions, resultSet);
 
             System.out.println("SELECT * FROM lesion");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
+            if(statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -121,20 +122,50 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         return lesions;
     }
 
-    private ArrayList<Lesion> addToList(ResultSet resultSet) {
-        ArrayList<Lesion> lesions = new ArrayList<>();
+    @Override
+    public void update(Lesion lesion, int id) {
+        PreparedStatement preparedStatement = null;
 
         try {
-            while (resultSet.next())
-                lesions.add(this.addToLesion(new Lesion(), resultSet));
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
+            preparedStatement.setInt(8, id);
+            preparedStatement.executeUpdate();
 
-        } catch (Exception e) {
+            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private ObservableList<Lesion> addToObservableList(ObservableList<Lesion> lesions, ResultSet resultSet) {
+        try {
+            while(resultSet.next())
+                lesions.add(this.addToLesion(new Lesion(), resultSet));
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -144,14 +175,16 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
     }
 
     private Lesion addToLesion(Lesion lesion, ResultSet resultSet) throws SQLException {
-        lesion.setId(resultSet.getInt("ID"));
-        lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
-        lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
-        lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
-        lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
-        lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
-        lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
-        lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
+        while(resultSet.next()) {
+            lesion.setId(resultSet.getInt("ID"));
+            lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
+            lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
+            lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
+            lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
+            lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
+            lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
+            lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
+        }
 
         return lesion;
     }
@@ -160,47 +193,17 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         this.delete(connection, "lesion", id);
     }
 
-    @Override
-    public void update(Lesion lesion, int id) {
-        PreparedStatement preparedStatement = null;
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
+        if(indexDebut == 1)
+            preparedStatement.setInt(indexDebut, ((Lesion) object).getId());
 
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID = ?, ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
-            preparedStatement.setInt(9, id);
-
-            preparedStatement.executeUpdate();
-            System.out.println("UPDATE inclusion SET ID = ?, ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
-        preparedStatement.setInt(1, ((Lesion) object).getId());
-        preparedStatement.setInt(2, ((Lesion) object).getIdInclusion());
-        preparedStatement.setBlob(3, ((Lesion) object).getPhotoSur());
-        preparedStatement.setBlob(4, ((Lesion) object).getPhotoHors());
-        preparedStatement.setBlob(5, ((Lesion) object).getPhotoFixe());
-        preparedStatement.setString(6, ((Lesion) object).getSiteAnatomique());
-        preparedStatement.setString(7, ((Lesion) object).getDiag().toString());
-        preparedStatement.setString(8, ((Lesion) object).getAutreDiag());
+        preparedStatement.setInt(indexDebut + 1, ((Lesion) object).getIdInclusion());
+        preparedStatement.setBlob(indexDebut + 2, ((Lesion) object).getPhotoSur());
+        preparedStatement.setBlob(indexDebut + 3, ((Lesion) object).getPhotoHors());
+        preparedStatement.setBlob(indexDebut + 4, ((Lesion) object).getPhotoFixe());
+        preparedStatement.setString(indexDebut + 5, ((Lesion) object).getSiteAnatomique());
+        preparedStatement.setString(indexDebut + 6, ((Lesion) object).getDiag().toString());
+        preparedStatement.setString(indexDebut + 7, ((Lesion) object).getAutreDiag());
 
         return preparedStatement;
     }

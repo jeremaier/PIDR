@@ -11,9 +11,11 @@ public interface InclusionDao {
 
     Inclusion selectById(int id);
 
-    List<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initials, Diag diag);
+    List<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initiales, Diag diag);
 
     List<Inclusion> selectAll();
+
+    void update(int patientId, int id);
 
     void update(Inclusion inclusion, int id);
 }

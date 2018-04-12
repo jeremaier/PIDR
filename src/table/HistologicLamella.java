@@ -1,69 +1,106 @@
 package src.table;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class HistologicLamella {
-    private int id;
-    private int idLesion;
-    private char cuttingSite;
-    private int blackOrientation;
-    private int greenOrientation;
-    private String coloration;
+    private IntegerProperty id;
+    private IntegerProperty idLesion;
+    private StringProperty siteCoupe;
+    private IntegerProperty orientationNoir;
+    private IntegerProperty orientationVert;
+    private StringProperty coloration;
 
-    public HistologicLamella() {}
+    public HistologicLamella() {
+        this.id = new SimpleIntegerProperty();
+        this.idLesion = new SimpleIntegerProperty();
+        this.siteCoupe = new SimpleStringProperty();
+        this.orientationNoir = new SimpleIntegerProperty();
+        this.orientationVert = new SimpleIntegerProperty();
+        this.coloration = new SimpleStringProperty();
+    }
 
-    public HistologicLamella(int id, int idLesion, char cuttingSite, int blackOrientation, int greenOrientation, String coloration) {
-        this.id = id;
-        this.idLesion = idLesion;
-        this.cuttingSite = cuttingSite;
-        this.blackOrientation = blackOrientation;
-        this.greenOrientation = greenOrientation;
-        this.coloration = coloration;
+    public HistologicLamella(int id, int idLesion, String siteCoupe, int orientationNoir, int orientationVert, String coloration) {
+        this();
+        this.setId(id);
+        this.setIdLesion(idLesion);
+        this.setSiteCoupe(siteCoupe);
+        this.setOrientationNoir(orientationNoir);
+        this.setOrientationVert(orientationVert);
+        this.setColoration(coloration);
     }
 
     public int getId() {
-        return id;
-    }
-
-    public int getIdLesion() {
-        return idLesion;
-    }
-
-    public char getCuttingSite() {
-        return cuttingSite;
-    }
-
-    public int getBlackOrientation() {
-        return blackOrientation;
-    }
-
-    public int getGreenOrientation() {
-        return greenOrientation;
-    }
-
-    public String getColoration() {
-        return coloration;
+        return this.id.get();
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id.set(id);
+    }
+
+    public int getIdLesion() {
+        return this.idLesion.get();
     }
 
     public void setIdLesion(int idLesion) {
-        this.idLesion = idLesion;
+        this.idLesion.set(idLesion);
     }
 
-    public void setCuttingSite(char cuttingSite) {
-        this.cuttingSite = cuttingSite;
+    public String getSiteCoupe() {
+        return this.siteCoupe.get();
     }
 
-    public void setBlackOrientation(int blackOrientation) {
-        this.blackOrientation = blackOrientation;
+    public void setSiteCoupe(String siteCoupe) {
+        this.siteCoupe.set(siteCoupe);
     }
 
-    public void setGreenOrientation(int greenOrientation) {
-        this.greenOrientation = greenOrientation;
+    public int getOrientationNoir() {
+        return this.orientationNoir.get();
+    }
+
+    public void setOrientationNoir(int orientationNoir) {
+        this.orientationNoir.set(orientationNoir);
+    }
+
+    public int getOrientationVert() {
+        return this.orientationVert.get();
+    }
+
+    public void setOrientationVert(int orientationVert) {
+        this.orientationVert.set(orientationVert);
+    }
+
+    public String getColoration() {
+        return this.coloration.get();
     }
 
     public void setColoration(String coloration) {
-        this.coloration = coloration;
+        this.coloration.set(coloration);
+    }
+
+    public IntegerProperty idProperty() {
+        return this.id;
+    }
+
+    public IntegerProperty idLesionProperty() {
+        return this.idLesion;
+    }
+
+    public StringProperty siteCoupeProperty() {
+        return this.siteCoupe;
+    }
+
+    public IntegerProperty orientationNoirProperty() {
+        return this.orientationNoir;
+    }
+
+    public IntegerProperty orientationVertProperty() {
+        return this.orientationVert;
+    }
+
+    public StringProperty colorationProperty() {
+        return this.coloration;
     }
 }

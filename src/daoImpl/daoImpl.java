@@ -35,5 +35,5 @@ public abstract class daoImpl {
         }
     }
 
-    protected abstract PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException;
+    protected abstract PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException;
 }

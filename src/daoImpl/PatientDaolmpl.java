@@ -1,12 +1,11 @@
 package src.daoImpl;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import src.dao.PatientDao;
-import src.table.Inclusion;
 import src.table.Patient;
-import src.utils.Gender;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class PatientDaolmpl extends daoImpl implements PatientDao {
     private Connection connection;
@@ -20,24 +19,24 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO patient (INITIALS, GENDER, BIRTHDATE) " + "VALUES (?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, patient);
+            preparedStatement = connection.prepareStatement("INSERT INTO patient (INITIALES, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?)");
+            preparedStatement = this.setPreparedStatement(preparedStatement, patient, 1);
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO patient (initials, gender, birthDate)");
-        } catch (Exception e) {
+            System.out.println("INSERT INTO patient (INITIALES, GENRE, DATENAISSANCE)");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -56,33 +55,33 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next())
+            while(resultSet.next())
                 patient = this.addToPatient(patient, resultSet);
 
             System.out.println("SELECT * FROM patient WHERE ID = ?");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -92,55 +91,51 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     }
 
     @Override
-    public ArrayList<Patient> selectByFilters(int id, Gender gender, Date birthDate) {
-        ArrayList<Patient> patients = new ArrayList<>();
+    public ObservableList<Patient> selectByFilters(int id, String initiales) {
+        ObservableList<Patient> patients = FXCollections.observableArrayList();
+        ObservableList<Patient> patients2;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
 
         try {
             if(id != 0) {
-                if(gender != null) {
-                    if (birthDate != null) {
-                        preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? AND GENDER = ? AND BIRTHDATE = ?");
-                        preparedStatement.setDate(3, birthDate);
-                    } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? AND GENDER = ?");
-
-                    preparedStatement.setString(2, gender.toString());
-                } else preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
-
+                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
                 preparedStatement.setInt(1, id);
-            } else if(gender != null) {
-                if (birthDate != null) {
-                    preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE GENDER = ? AND BIRTHDATE = ?");
-                    preparedStatement.setDate(2, birthDate);
-                } else  preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE GENDER = ?");
+                resultSet = preparedStatement.executeQuery();
+                patients = this.addToObservableList(patients, resultSet);
+            }
 
-                preparedStatement.setString(1, gender.toString());
-            } else if (birthDate != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE BIRTHDATE = ?");
-                preparedStatement.setDate(1, birthDate);
-            } else selectAll();
+            if(initiales != null) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE INITIALES = ?");
+                preparedStatement.setString(1, initiales);
+                resultSet = preparedStatement.executeQuery();
 
-            resultSet = preparedStatement.executeQuery();
+                if(patients != null) {
+                    patients2 = this.addToObservableList(patients, resultSet);
+                    patients2.retainAll(this.addToObservableList(patients, resultSet));
+                    patients = patients2;
+                } else patients = this.addToObservableList(patients, resultSet);
+            }
 
-            patients = this.addToList(resultSet);
+            if(resultSet == null)
+                return this.selectAll();
 
-            System.out.println("SELECT * FROM patient WHERE ID ^ GENDER ^ BIRTHDATE");
-        } catch (Exception e) {
+            System.out.println("SELECT * FROM patient WHERE ID ^ INITIALES");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (preparedStatement != null) {
+            if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -150,8 +145,8 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     }
 
     @Override
-    public ArrayList<Patient> selectAll() {
-        ArrayList<Patient> patients = new ArrayList<>();
+    public ObservableList<Patient> selectAll() {
+        ObservableList<Patient> patients = FXCollections.observableArrayList();
         Statement statement = null;
         ResultSet resultSet;
 
@@ -159,24 +154,24 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM patient");
 
-            patients = this.addToList(resultSet);
+            patients = this.addToObservableList(patients, resultSet);
 
             System.out.println("SELECT * FROM patient");
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
+            if(statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (connection != null) {
+            if(connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -185,20 +180,49 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         return patients;
     }
 
-    private ArrayList<Patient> addToList(ResultSet resultSet) {
-        ArrayList<Patient> patients = new ArrayList<>();
+    @Override
+    public void update(Patient patient, int id) {
+        PreparedStatement preparedStatement = null;
 
         try {
-            while (resultSet.next())
-                patients.add(this.addToPatient(new Patient(), resultSet));
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALES = ?, GENRE = ?, DATENAISSANCE = ? WHERE ID = ?");
+            preparedStatement = this.setPreparedStatement(preparedStatement, patient, 0);
+            preparedStatement.setInt(4, id);
+            preparedStatement.executeUpdate();
 
-        } catch (Exception e) {
+            System.out.println("UPDATE patient SET INITIALES = ?, GENRE = ?, DATENAISSANCE = ? WHERE ID = ?");
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if (resultSet != null) {
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(connection != null) {
+                try {
+                    connection.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private ObservableList<Patient> addToObservableList(ObservableList<Patient> patients, ResultSet resultSet) {
+        try {
+            while(resultSet.next())
+                patients.add(this.addToPatient(new Patient(), resultSet));
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(resultSet != null) {
                 try {
                     resultSet.close();
-                } catch (SQLException e) {
+                } catch(SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -208,10 +232,12 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     }
 
     private Patient addToPatient(Patient patient, ResultSet resultSet) throws SQLException {
-        patient.setId(resultSet.getInt("ID"));
-        patient.setInitials(resultSet.getString("INITIALS"));
-        patient.setGender(resultSet.getString("GENDER"));
-        patient.setBirthDate(resultSet.getDate("BIRTHDATE"));
+        while(resultSet.next()) {
+            patient.setId(resultSet.getInt("ID"));
+            patient.setInitiales(resultSet.getString("INITIALES"));
+            patient.setGenre(resultSet.getString("GENRE"));
+            patient.setDateNaissance(resultSet.getInt("DATENAISSANCE"));
+        }
 
         return patient;
     }
@@ -220,43 +246,13 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         this.delete(connection, "patient", id);
     }
 
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
+        if(indexDebut == 1)
+            preparedStatement.setInt(indexDebut, ((Patient) object).getId());
 
-    @Override
-    public void update(Patient patient, int id) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALS = ?, GENDER = ?, BIRTHDATE = ? WHERE ID = ?");
-            preparedStatement = this.setPreparedStatement(preparedStatement, patient);
-            preparedStatement.setInt(4, id);
-            preparedStatement.executeUpdate();
-
-            System.out.println("UPDATE patient SET " + "initials = ?, gender = ?, birthDate = ? WHERE id = ?");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
-        preparedStatement.setString(1, ((Patient) object).getInitials());
-        preparedStatement.setString(2, ((Patient) object).getGender());
-        preparedStatement.setDate(3, ((Patient) object).getBirthDate());
+        preparedStatement.setString(indexDebut + 1, ((Patient) object).getInitiales());
+        preparedStatement.setString(indexDebut + 2, ((Patient) object).getGenre());
+        preparedStatement.setInt(indexDebut + 3, ((Patient) object).getAnneeNaissance());
 
         return preparedStatement;
     }
