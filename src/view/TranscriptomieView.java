@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import src.controller.TranscriptomieController;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class TranscriptomieView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Analyse transcriptomique");
-        viewLoader.setLocation(getClass().getResource("../ressource/Transcriptomique.fxml"));
-        viewLoader.setControllerFactory(iC -> new TrancriptomieController());
+        viewLoader.setLocation(getClass().getResource("../../ressource/Transcriptomique.fxml"));
+        viewLoader.setControllerFactory(iC -> new TranscriptomieController());
 
         try {
             rootLog = viewLoader.load();

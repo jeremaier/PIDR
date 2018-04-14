@@ -9,15 +9,16 @@ import javafx.stage.WindowEvent;
 import src.controller.InclusionsController;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class InclusionsView {
-    public InclusionsView(Stage stage) {
+    public InclusionsView(Stage stage, Connection connection) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Inclusions");
-        viewLoader.setLocation(getClass().getResource("../ressource/Inclusions.fxml"));
-        viewLoader.setControllerFactory(iC -> new InclusionsController());
+        viewLoader.setLocation(getClass().getResource("../../ressource/Inclusions.fxml"));
+        viewLoader.setControllerFactory(iC -> new InclusionsController(connection));
 
         try {
             rootLog = viewLoader.load();
