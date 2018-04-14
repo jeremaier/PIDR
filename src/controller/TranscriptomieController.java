@@ -1,9 +1,11 @@
 package src.controller;
 
+import javafx.fxml.Initializable;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TranscriptomieController {
+public class TranscriptomieController implements Initializable {
 
 
     @Override

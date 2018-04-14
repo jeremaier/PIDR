@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="590.0" maxWidth="530.0" minHeight="590.0" prefHeight="590.0"
             prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121"
-            fx:controller="ressource.AddLesions">
+            fx:controller="src.controller.AddSiteController">
     <children>
         <GridPane prefHeight="590.0" prefWidth="530.0">
             <columnConstraints>
@@ -25,29 +25,29 @@
                 <RowConstraints maxHeight="289.0" minHeight="10.0" prefHeight="86.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Ajouter +"
+                <Button fx:id="ajouter" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Ajouter +"
                         GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="8">
                     <font>
                         <Font size="20.0"/>
                     </font>
                 </Button>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Annuler"
+                <Button fx:id="annuler" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Annuler"
                         GridPane.halignment="CENTER" GridPane.rowIndex="8">
                     <font>
                         <Font size="20.0"/>
                     </font>
                 </Button>
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <TextField fx:id="numMesure" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <GridPane.margin>
                         <Insets left="10.0" right="20.0"/>
                     </GridPane.margin>
                 </TextField>
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <TextField fx:id="orientation" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <GridPane.margin>
                         <Insets left="10.0" right="20.0"/>
                     </GridPane.margin>
                 </TextField>
-                <TextField GridPane.columnIndex="1">
+                <TextField fx:id="siteAnatomique" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets left="10.0" right="20.0"/>
                     </GridPane.margin>
@@ -77,12 +77,12 @@
                         <Insets left="20.0"/>
                     </GridPane.margin>
                 </Label>
-                <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <ChoiceBox fx:id="diag" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <GridPane.margin>
                         <Insets left="10.0"/>
                     </GridPane.margin>
                 </ChoiceBox>
-                <CheckBox mnemonicParsing="false" text="Oui" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <CheckBox fx:id="sain" mnemonicParsing="false" text="Oui" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <GridPane.margin>
                         <Insets left="10.0"/>
                     </GridPane.margin>
@@ -92,7 +92,7 @@
                         <Insets left="20.0"/>
                     </GridPane.margin>
                 </Label>
-                <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
+                <Button fx:id="addFicherDiag" mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
                         GridPane.columnIndex="1" GridPane.rowIndex="5">
                     <opaqueInsets>
                         <Insets/>
@@ -101,12 +101,12 @@
                         <Insets left="10.0"/>
                     </GridPane.margin>
                 </Button>
-                <Label text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <Label fx:id="checkFichierDiag" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="5">
                     <GridPane.margin>
                         <Insets left="130.0"/>
                     </GridPane.margin>
                 </Label>
-                <Button mnemonicParsing="false" text="Autre" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <Button fx:id="aurteDiag" mnemonicParsing="false" text="Autre" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <GridPane.margin>
                         <Insets left="170.0"/>
                     </GridPane.margin>
@@ -116,7 +116,7 @@
                         <Insets left="20.0"/>
                     </GridPane.margin>
                 </Label>
-                <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
+                <Button fx:id="addFichierSpectre" mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
                         GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <opaqueInsets>
                         <Insets/>
@@ -125,7 +125,7 @@
                         <Insets left="10.0"/>
                     </GridPane.margin>
                 </Button>
-                <Label text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <Label fx:id="checkFichierSpectre" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <GridPane.margin>
                         <Insets left="130.0"/>
                     </GridPane.margin>
@@ -135,7 +135,7 @@
                         <Insets left="20.0"/>
                     </GridPane.margin>
                 </Label>
-                <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
+                <Button fx:id="addFichierMoy" mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Ajouter"
                         GridPane.columnIndex="1" GridPane.rowIndex="7">
                     <opaqueInsets>
                         <Insets/>
@@ -144,7 +144,7 @@
                         <Insets left="10.0"/>
                     </GridPane.margin>
                 </Button>
-                <Label text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                <Label fx:id="checkFichierMoy" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="7">
                     <GridPane.margin>
                         <Insets left="130.0"/>
                     </GridPane.margin>

@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-public class LameController {
+public class LameController implements Initializable {
 
     @FXML
     Button retour;
