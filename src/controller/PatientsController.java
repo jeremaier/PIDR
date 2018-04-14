@@ -25,7 +25,7 @@ public class PatientsController implements Initializable {
     @FXML
     TextField dateField;
     @FXML
-    ComboBox genderComboBox;
+    ComboBox genreComboBox;
     @FXML
     Button addPatientButton;
     @FXML
@@ -49,6 +49,7 @@ public class PatientsController implements Initializable {
     private Connection connection;
     private PatientDaolmpl patientDaolmpl;
     private ObservableList<Patient> patientsList;
+    private Patient selectedPatient;
     private int inclusionId;
 
     public PatientsController(Connection connection, int inclusionId) {
@@ -62,7 +63,7 @@ public class PatientsController implements Initializable {
         patInitialesCol.setCellValueFactory(cellData -> cellData.getValue().initialesProperty());
         patGenreCol.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
         patDateCol.setCellValueFactory(cellData -> cellData.getValue().dateNaissanceProperty().asObject());
-        this.genderComboBox.getItems().addAll(Genre.M, Genre.F);
+        this.genreComboBox.getItems().addAll(Genre.M, Genre.F);
 
         patientDaolmpl = new PatientDaolmpl(connection);
         ObservableList<Patient> patients = patientDaolmpl.selectAll();
@@ -99,6 +100,25 @@ public class PatientsController implements Initializable {
                     idField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        this.patientsTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+                selectedPatient = (Patient)patientsTable.getSelectionModel().getSelectedItem();
+
+                if(selectedPatient != null) {
+                    idField.setText(Integer.toString(selectedPatient.getId()));
+                    initialesField.setText(selectedPatient.getInitiales());
+                    dateField.setText(Integer.toString(selectedPatient.getAnneeNaissance()));
+                    genreComboBox.setValue(selectedPatient.getGenre());
+                } else {
+                    idField.setText("");
+                    initialesField.setText("");
+                    dateField.setText("");
+                    genreComboBox.getSelectionModel().clearSelection();
+                }
+            }
+        });
     }
 
     private void populatePatients(ObservableList<Patient> patients) {
@@ -112,7 +132,7 @@ public class PatientsController implements Initializable {
 
     @FXML
     private void addPatientAction(ActionEvent actionEvent) {
-        Patient patient = new Patient(Integer.getInteger(this.idField.getText()), this.initialesField.getText(), this.genderComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
+        Patient patient = new Patient(Integer.getInteger(this.idField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
         patientDaolmpl.insert(patient);
         this.populatePatient(patient);
     }
@@ -132,11 +152,13 @@ public class PatientsController implements Initializable {
     @FXML
     private void removeAction(ActionEvent actionEvent) {
         patientDaolmpl.delete(Integer.getInteger(idField.getText()));
+        patientsList.remove(selectedPatient);
+        this.populatePatients(this.patientsList);
     }
 
     @FXML
     private void updatePatientInformations(ActionEvent actionEvent) {
-        Patient patient = new Patient(Integer.getInteger(this.idField.getText()), this.initialesField.getText(), this.genderComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
+        Patient patient = new Patient(Integer.getInteger(this.idField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
         patientDaolmpl.update(patient, patient.getId());
     }
 
@@ -152,10 +174,5 @@ public class PatientsController implements Initializable {
         inclusionDao.update(Integer.getInteger(this.idField.getText()), inclusionId);
         this.patientsStage = (Stage) chooseButton.getScene().getWindow();
         this.patientsStage.close();
-    }
-
-    @FXML
-    private void selectPatient(ActionEvent actionEvent) {
-
     }
 }
