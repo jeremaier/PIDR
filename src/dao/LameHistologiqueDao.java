@@ -6,7 +6,7 @@ import src.table.HistologicLamella;
 import java.util.List;
 
 public interface LameHistologiqueDao {
-    void insert(HistologicLamella site);
+    void insert(HistologicLamella lame);
 
     HistologicLamella selectById(int id);
 

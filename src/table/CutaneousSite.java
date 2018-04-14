@@ -7,23 +7,24 @@ public class CutaneousSite {
     private IntegerProperty id;
     private IntegerProperty idLesion;
     private BooleanProperty healthy;
-    private IntegerProperty measurementNumber;
+    private StringProperty measurementNumber;
     private StringProperty site;
     private IntegerProperty orientation;
     private Diag diag;
     private StringProperty autreDiag;
+    private StringProperty spectre;
 
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
         this.healthy = new SimpleBooleanProperty();
-        this.measurementNumber = new SimpleIntegerProperty();
+        this.measurementNumber = new SimpleStringProperty();
         this.site = new SimpleStringProperty();
         this.orientation = new SimpleIntegerProperty();
         this.autreDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite(int id, int idLesion, boolean healthy, int measurementNumber, String site, int orientation, String diag, String autreDiag) {
+    public CutaneousSite(int id, int idLesion, boolean healthy, String measurementNumber, String site, int orientation, String diag, String autreDiag, String spectre) {
         this();
         this.setId(id);
         this.setIdLesion(idLesion);
@@ -33,6 +34,7 @@ public class CutaneousSite {
         this.setOrientation(orientation);
         this.setDiag(diag);
         this.setAutreDiag(autreDiag);
+        this.setSpectre(spectre);
     }
 
     public int getId() {
@@ -59,11 +61,11 @@ public class CutaneousSite {
         this.healthy.set(healthy);
     }
 
-    public int getMeasurementNumber() {
+    public String getMeasurementNumber() {
         return this.measurementNumber.get();
     }
 
-    public void setMeasurementNumber(int measurementNumber) {
+    public void setMeasurementNumber(String measurementNumber) {
         this.measurementNumber.set(measurementNumber);
     }
 
@@ -99,6 +101,10 @@ public class CutaneousSite {
         this.autreDiag.set(autreDiag);
     }
 
+    public String getSpectre() { return this.spectre.get();}
+
+    public void setSpectre(String spectre) { this.spectre.set(spectre);}
+
     public IntegerProperty idProperty() {
         return this.id;
     }
@@ -111,7 +117,7 @@ public class CutaneousSite {
         return this.healthy;
     }
 
-    public IntegerProperty measurementNumberProperty() {
+    public StringProperty measurementNumberProperty() {
         return this.measurementNumber;
     }
 
@@ -130,4 +136,6 @@ public class CutaneousSite {
     public StringProperty autreDiagProperty() {
         return this.autreDiag;
     }
+
+    public StringProperty spectreProperty(){return this.spectre; }
 }

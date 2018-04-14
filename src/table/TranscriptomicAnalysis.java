@@ -1,120 +1,225 @@
 package src.table;
 
+import javafx.beans.property.*;
+
 public class TranscriptomicAnalysis {
-    private int id;
-    private int idCutaneousSite;
-    private int RIN;
-    private double concentration;
-    private double ARNc;
-    private double cyanine;
-    private double yield;
-    private String specificActivity;
-    private String exclusionCriteria;
-    private int serialNumber;
-    private int lamellaLocation;
+    private IntegerProperty id;
+    private IntegerProperty idCutaneousSite;
+    private StringProperty fichierBrut;
+    private StringProperty fichierCut;
+    private IntegerProperty RIN;
+    private DoubleProperty concentration;
+    private DoubleProperty ARNC;
+    private DoubleProperty cyanine;
+    private DoubleProperty yield;
+    private StringProperty specificActivity;
+    private StringProperty exclusionCriteria;
+    private IntegerProperty serialNumber;
+    private IntegerProperty lamellaLocation;
+    private StringProperty qualityReport;
 
     public TranscriptomicAnalysis() {
+        this.id = new SimpleIntegerProperty();
+        this.idCutaneousSite = new SimpleIntegerProperty();
+        this.fichierBrut = new SimpleStringProperty();
+        this.fichierCut = new SimpleStringProperty();
+        this.RIN = new SimpleIntegerProperty();
+        this.concentration = new SimpleDoubleProperty();
+        this.ARNC = new SimpleDoubleProperty();
+        this.cyanine = new SimpleDoubleProperty();
+        this.yield = new SimpleDoubleProperty();
+        this.specificActivity = new SimpleStringProperty();
+        this.exclusionCriteria = new SimpleStringProperty();
+        this.serialNumber = new SimpleIntegerProperty();
+        this.lamellaLocation = new SimpleIntegerProperty();
+        this.qualityReport = new SimpleStringProperty();
     }
 
-    public TranscriptomicAnalysis(int id, int idCutaneousSite, int RIN, double concentration, double ARNc, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation) {
-        this.id = id;
-        this.idCutaneousSite = idCutaneousSite;
-        this.RIN = RIN;
-        this.concentration = concentration;
-        this.ARNc = ARNc;
-        this.cyanine = cyanine;
-        this.yield = yield;
-        this.specificActivity = specificActivity;
-        this.exclusionCriteria = exclusionCriteria;
-        this.serialNumber = serialNumber;
-        this.lamellaLocation = lamellaLocation;
+    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, String fichierCut, int RIN, double concentration, double ARNC, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+        this();
+        this.setId(id);
+        this.setIdCutaneousSite(idCutaneousSite);
+        this.setFichierBrut(fichierBrut);
+        this.setFichierBrut(fichierCut);
+        this.setRIN(RIN);
+        this.setConcentration(concentration);
+        this.setARNC(ARNC);
+        this.setCyanine(cyanine);
+        this.setYield(yield);
+        this.setSpecificActivity(specificActivity);
+        this.setExclusionCriteria(exclusionCriteria);
+        this.setSerialNumber(serialNumber);
+        this.setLamellaLocation(lamellaLocation);
+        this.setQualityReport(qualityReport);
     }
 
     public int getId() {
-        return this.id;
+        return this.id.get();
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id.set(id);
     }
 
+
+
+
     public int getIdCutaneousSite() {
-        return this.idCutaneousSite;
+        return this.idCutaneousSite.get();
     }
 
     public void setIdCutaneousSite(int idCutaneousSite) {
-        this.idCutaneousSite = idCutaneousSite;
+        this.idCutaneousSite.set(idCutaneousSite);
+    }
+
+    public String getFichierBrut() {
+        return fichierBrut.get();
+    }
+
+    public void setFichierBrut(String fichierBrut) {
+        this.fichierBrut.set(fichierBrut);
+    }
+
+    public String getFichierCut() {
+        return fichierCut.get();
+    }
+
+    public void setFichierCut(String fichierCut) {
+        this.fichierCut.set(fichierCut);
     }
 
     public int getRIN() {
-        return this.RIN;
+        return this.RIN.get();
     }
 
     public void setRIN(int RIN) {
-        this.RIN = RIN;
+        this.RIN.set(RIN);
     }
 
     public double getConcentration() {
-        return this.concentration;
+        return this.concentration.get();
     }
 
     public void setConcentration(double concentration) {
-        this.concentration = concentration;
+        this.concentration.set(concentration);
     }
 
-    public double getARNc() {
-        return this.ARNc;
+    public double getARNC() {
+        return this.ARNC.get();
     }
 
-    public void setARNc(double ARNc) {
-        this.ARNc = ARNc;
+    public void setARNC(double ARNC) {
+        this.ARNC.set(ARNC);
     }
 
     public double getCyanine() {
-        return this.cyanine;
+        return this.cyanine.get();
     }
 
     public void setCyanine(double cyanine) {
-        this.cyanine = cyanine;
+        this.cyanine.set(cyanine);
     }
 
     public double getYield() {
-        return this.yield;
+        return this.yield.get();
     }
 
     public void setYield(double yield) {
-        this.yield = yield;
+        this.yield.set(yield);
     }
 
     public String getSpecificActivity() {
-        return this.specificActivity;
+        return this.specificActivity.get();
     }
 
     public void setSpecificActivity(String specificActivity) {
-        this.specificActivity = specificActivity;
+        this.specificActivity.set(specificActivity);
     }
 
     public String getExclusionCriteria() {
-        return this.exclusionCriteria;
+        return this.exclusionCriteria.get();
     }
 
     public void setExclusionCriteria(String exclusionCriteria) {
-        this.exclusionCriteria = exclusionCriteria;
+        this.exclusionCriteria.set(exclusionCriteria);
     }
 
     public int getSerialNumber() {
-        return this.serialNumber;
+        return this.serialNumber.get();
     }
 
     public void setSerialNumber(int serialNumber) {
-        this.serialNumber = serialNumber;
+        this.serialNumber.set(serialNumber);
     }
 
     public int getLamellaLocation() {
-        return this.lamellaLocation;
+        return this.lamellaLocation.get();
     }
 
     public void setLamellaLocation(int lamellaLocation) {
-        this.lamellaLocation = lamellaLocation;
+        this.lamellaLocation.set(lamellaLocation);
+    }
+
+    public void setQualityReport(String qualityReport){
+        this.qualityReport.set(qualityReport);
+    }
+
+    public String getQualityReport(){
+       return this.qualityReport.get();
+    }
+
+
+    public IntegerProperty idProperty() { return this.id;}
+
+    public IntegerProperty idCutaneousSiteProperty() {
+        return idCutaneousSite;
+    }
+
+    public StringProperty fichierBrutProperty() {
+        return fichierBrut;
+    }
+
+    public StringProperty fichierCutProperty() {
+        return fichierCut;
+    }
+
+    public IntegerProperty RINProperty() {
+        return RIN;
+    }
+
+    public DoubleProperty concentrationProperty() {
+        return concentration;
+    }
+
+    public DoubleProperty ARNCProperty() {
+        return ARNC;
+    }
+
+    public DoubleProperty cyanineProperty() {
+        return cyanine;
+    }
+
+    public DoubleProperty yieldProperty() {
+        return yield;
+    }
+
+    public StringProperty exclusionCriteriaProperty() {
+        return exclusionCriteria;
+    }
+
+    public StringProperty specificActivityProperty() {
+        return specificActivity;
+    }
+
+    public IntegerProperty serialNumberProperty() {
+        return serialNumber;
+    }
+
+    public IntegerProperty lamellaLocationProperty() {
+        return lamellaLocation;
+    }
+
+    public StringProperty qualityReportProperty() {
+        return qualityReport;
     }
 }

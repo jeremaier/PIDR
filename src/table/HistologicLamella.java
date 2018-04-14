@@ -12,6 +12,7 @@ public class HistologicLamella {
     private IntegerProperty orientationNoir;
     private IntegerProperty orientationVert;
     private StringProperty coloration;
+    private StringProperty photo;
 
     public HistologicLamella() {
         this.id = new SimpleIntegerProperty();
@@ -20,9 +21,10 @@ public class HistologicLamella {
         this.orientationNoir = new SimpleIntegerProperty();
         this.orientationVert = new SimpleIntegerProperty();
         this.coloration = new SimpleStringProperty();
+        this.photo = new SimpleStringProperty();
     }
 
-    public HistologicLamella(int id, int idLesion, String siteCoupe, int orientationNoir, int orientationVert, String coloration) {
+    public HistologicLamella(int id, int idLesion, String siteCoupe, int orientationNoir, int orientationVert, String coloration, String photo) {
         this();
         this.setId(id);
         this.setIdLesion(idLesion);
@@ -30,6 +32,7 @@ public class HistologicLamella {
         this.setOrientationNoir(orientationNoir);
         this.setOrientationVert(orientationVert);
         this.setColoration(coloration);
+        this.setPhoto(photo);
     }
 
     public int getId() {
@@ -80,6 +83,12 @@ public class HistologicLamella {
         this.coloration.set(coloration);
     }
 
+    public String getPhoto() {
+        return this.coloration.get();
+    }
+
+    public void setPhoto(String photo) {this.photo.set(photo);}
+
     public IntegerProperty idProperty() {
         return this.id;
     }
@@ -103,4 +112,6 @@ public class HistologicLamella {
     public StringProperty colorationProperty() {
         return this.coloration;
     }
+
+    public StringProperty photoPrpoerty() { return this.photo; }
 }
