@@ -185,12 +185,12 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALES = ?, GENRE = ?, DATENAISSANCE = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 0);
             preparedStatement.setInt(4, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE patient SET INITIALES = ?, GENRE = ?, DATENAISSANCE = ? WHERE ID = ?");
+            System.out.println("UPDATE patient SET INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -232,12 +232,10 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     }
 
     private Patient addToPatient(Patient patient, ResultSet resultSet) throws SQLException {
-        while(resultSet.next()) {
-            patient.setId(resultSet.getInt("ID"));
-            patient.setInitiales(resultSet.getString("INITIALES"));
-            patient.setGenre(resultSet.getString("GENRE"));
-            patient.setDateNaissance(resultSet.getInt("DATENAISSANCE"));
-        }
+        patient.setId(resultSet.getInt("ID"));
+        patient.setInitiales(resultSet.getString("INITIALES"));
+        patient.setGenre(resultSet.getString("GENRE"));
+        patient.setDateNaissance(resultSet.getInt("DATENAISSANCE"));
 
         return patient;
     }

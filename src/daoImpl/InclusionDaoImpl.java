@@ -127,7 +127,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             }
 
             if(initiales != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE INITIALES = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN patient ON inclusion.ID_PATIENT = patient.ID WHERE INITIALES = ?");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
 
@@ -139,7 +139,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             }
 
             if(diag.toString() != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DIAG = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ?");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
 
@@ -297,14 +297,12 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     }
 
     private Inclusion addToInclusion(Inclusion inclusion, ResultSet resultSet) throws SQLException {
-        while(resultSet.next()) {
-            inclusion.setId(resultSet.getInt("ID"));
-            inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-            inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-            inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
-            inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-            inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-        }
+        inclusion.setId(resultSet.getInt("ID"));
+        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
+        inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
+        inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
+        inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
+        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
 
         return inclusion;
     }

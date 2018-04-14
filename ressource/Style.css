@@ -59,7 +59,6 @@
 .button:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-border-style: solid, segments(1, 2);
     -fx-border-radius: 0, 0;
 
     -fx-border-width: 1, 1;
@@ -105,7 +104,6 @@
 .toggle-button:focused {
     -fx-border-color: transparent, black;
     -fx-border-width: 1, 1;
-    -fx-border-style: solid, segments(1, 2);
     -fx-border-radius: 0, 0;
     -fx-border-insets: 1 1 1 1, 0;
 }
@@ -168,7 +166,6 @@
     -fx-background-radius: 0;
     -fx-border-color: black, #bababa;
     -fx-border-width: 1, 2;
-    -fx-border-style: segments(1, 2), solid;
 }
 
 .check-box:focused:hover > .box {
@@ -261,7 +258,6 @@
     -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
     -fx-background-insets: 0;
 
-    -fx-border-style: solid, segments(1, 2);
     -fx-border-radius: 1.0em, 0;
     -fx-border-color: #bababa, black;
     -fx-border-insets: 0px, -2px;

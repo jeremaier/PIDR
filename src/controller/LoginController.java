@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.utils.ConnectionConfiguration;
 import src.utils.FileManager;
+import src.view.InclusionsView;
 
 import java.io.*;
 import java.net.URL;
@@ -41,6 +42,9 @@ public class LoginController implements Initializable {
         this.pi.setProgress(-1);
         this.pi.setVisible(false);
         this.load.setVisible(false);
+
+        if(this.user.getText() != null)
+            this.password.requestFocus();
         //pi.setStyle("-fx-progress-color: #676768;");
     }
 
@@ -57,10 +61,9 @@ public class LoginController implements Initializable {
                     else this.deleteLoginFile();
 
                     Stage stage = (Stage) connectButton.getScene().getWindow();
+                    new InclusionsView(stage, this.connection.getConnection());
                     stage.close();
                     System.out.println("Connection established");
-
-                    new InclusionsController();
                 }
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -102,7 +105,6 @@ public class LoginController implements Initializable {
                 oIn = new ObjectInputStream(fIn);
 
                 this.user.setText((String) oIn.readObject());
-                this.password.setText((String) oIn.readObject());
 
                 oIn.close();
                 fIn.close();
@@ -113,7 +115,7 @@ public class LoginController implements Initializable {
     }
 
     private void saveLoginInFile() {
-        if (this.user != null && this.password != null) {
+        if (this.user != null) {
             FileOutputStream fOut;
             ObjectOutputStream oOut;
 
@@ -122,7 +124,6 @@ public class LoginController implements Initializable {
                 oOut = new ObjectOutputStream(fOut);
 
                 oOut.writeObject(user.getText());
-                oOut.writeObject(password.getText());
 
                 oOut.close();
                 fOut.close();

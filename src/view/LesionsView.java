@@ -16,7 +16,7 @@ public class LesionsView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Lesions");
-        viewLoader.setLocation(getClass().getResource("../ressource/Lesions.fxml"));
+        viewLoader.setLocation(getClass().getResource("../../ressource/Lesions.fxml"));
         viewLoader.setControllerFactory(iC -> new LesionsController());
 
         try {

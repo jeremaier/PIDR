@@ -16,7 +16,7 @@ public class AddLameView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'une lame");
-        viewLoader.setLocation(getClass().getResource("../ressource/AddLame.fxml"));
+        viewLoader.setLocation(getClass().getResource("../../ressource/AddLame.fxml"));
         viewLoader.setControllerFactory(iC -> new AddLameController());
 
         try {

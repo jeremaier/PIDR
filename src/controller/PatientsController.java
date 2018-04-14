@@ -1,7 +1,6 @@
 package src.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,15 +24,27 @@ public class PatientsController implements Initializable {
     @FXML
     TextField dateField;
     @FXML
+    TextField idSearchField;
+    @FXML
+    TextField initialesSearchField;
+    @FXML
+    TextField dateSearchField;
+    @FXML
     ComboBox genreComboBox;
     @FXML
     Button addPatientButton;
+    @FXML
+    Button modifyButton;
     @FXML
     Button chooseButton;
     @FXML
     Button removeButton;
     @FXML
     Button cancelButton;
+    @FXML
+    Button searchButton;
+    @FXML
+    Button searchAllButton;
     @FXML
     TableView patientsTable;
     @FXML
@@ -45,6 +56,7 @@ public class PatientsController implements Initializable {
     @FXML
     TableColumn<Patient, Integer> patDateCol;
 
+    private ObservableList<Genre> comboBoxValeurs = FXCollections.observableArrayList(Genre.M, Genre.F);
     private Stage patientsStage;
     private Connection connection;
     private PatientDaolmpl patientDaolmpl;
@@ -59,64 +71,61 @@ public class PatientsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        patIdCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-        patInitialesCol.setCellValueFactory(cellData -> cellData.getValue().initialesProperty());
-        patGenreCol.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
-        patDateCol.setCellValueFactory(cellData -> cellData.getValue().dateNaissanceProperty().asObject());
-        this.genreComboBox.getItems().addAll(Genre.M, Genre.F);
+        this.patIdCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+        this.patInitialesCol.setCellValueFactory(cellData -> cellData.getValue().initialesProperty());
+        this.patGenreCol.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
+        this.patDateCol.setCellValueFactory(cellData -> cellData.getValue().dateNaissanceProperty().asObject());
+        this.genreComboBox.getItems().addAll(comboBoxValeurs);
 
-        patientDaolmpl = new PatientDaolmpl(connection);
+        this.patientDaolmpl = new PatientDaolmpl(connection);
         ObservableList<Patient> patients = patientDaolmpl.selectAll();
         this.populatePatients(patients);
 
-        this.initialesField.lengthProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue())
-                    if(initialesField.getText().length() >= 2)
-                        initialesField.setText(initialesField.getText().substring(0, 2));
+        this.initialesField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+                if(initialesField.getText().length() >= 2)
+                    initialesField.setText(initialesField.getText().substring(0, 2));
+
+            if(!patientsTable.getItems().contains(initialesField) && initialesField != null) {
+                removeButton.setDisable(false);
+            } else {
+                modifyButton.setDisable(true);
             }
         });
 
-        this.idField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(!newValue.matches("\\d*"))
-                    idField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
+        this.idField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*"))
+                idField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        this.dateField.lengthProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue.intValue() > oldValue.intValue())
-                    if(initialesField.getText().length() >= 4)
-                        initialesField.setText(initialesField.getText().substring(0, 4));
-            }
+        this.dateField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() > oldValue.intValue())
+                if(initialesField.getText().length() >= 4)
+                    initialesField.setText(initialesField.getText().substring(0, 4));
         });
 
-        this.dateField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(!newValue.matches("\\d*"))
-                    idField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
+        this.dateField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.matches("\\d*"))
+                idField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        this.patientsTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
-                selectedPatient = (Patient)patientsTable.getSelectionModel().getSelectedItem();
+        this.patientsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            selectedPatient = (Patient) patientsTable.getSelectionModel().getSelectedItem();
 
-                if(selectedPatient != null) {
-                    idField.setText(Integer.toString(selectedPatient.getId()));
-                    initialesField.setText(selectedPatient.getInitiales());
-                    dateField.setText(Integer.toString(selectedPatient.getAnneeNaissance()));
-                    genreComboBox.setValue(selectedPatient.getGenre());
-                } else {
-                    idField.setText("");
-                    initialesField.setText("");
-                    dateField.setText("");
-                    genreComboBox.getSelectionModel().clearSelection();
-                }
+            if(selectedPatient != null) {
+                idField.setText(Integer.toString(selectedPatient.getId()));
+                initialesField.setText(selectedPatient.getInitiales());
+                dateField.setText(Integer.toString(selectedPatient.getAnneeNaissance()));
+                genreComboBox.setValue(selectedPatient.getGenre());
+                removeButton.setDisable(false);
+                chooseButton.setDisable(false);
+            } else {
+                idField.setText("ID");
+                initialesField.setText("Initiales");
+                dateField.setText("Année de naissance");
+                genreComboBox.setPromptText("Genre");
+                removeButton.setDisable(true);
+                chooseButton.setDisable(true);
             }
         });
     }
@@ -138,13 +147,13 @@ public class PatientsController implements Initializable {
     }
 
     @FXML
-    private void searchPatient(ActionEvent actionEvent) {
+    private void searchAction(ActionEvent actionEvent) {
         patientsList = patientDaolmpl.selectByFilters(Integer.getInteger(this.idField.getText()), this.initialesField.getText());
         this.populatePatients(patientsList);
     }
 
     @FXML
-    private void searchAll(ActionEvent actionEvent) {
+    private void searchAllAction(ActionEvent actionEvent) {
         patientsList = patientDaolmpl.selectAll();
         this.populatePatients(patientsList);
     }

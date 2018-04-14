@@ -16,7 +16,7 @@ public class AddInclusionsView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'une inclusion");
-        viewLoader.setLocation(getClass().getResource("../ressource/AddInclusions.fxml"));
+        viewLoader.setLocation(getClass().getResource("../../ressource/AddInclusions.fxml"));
         viewLoader.setControllerFactory(iC -> new AddInclusionController());
 
         try {

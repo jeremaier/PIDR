@@ -127,7 +127,7 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
@@ -175,16 +175,14 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
     }
 
     private Lesion addToLesion(Lesion lesion, ResultSet resultSet) throws SQLException {
-        while(resultSet.next()) {
-            lesion.setId(resultSet.getInt("ID"));
-            lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
-            lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
-            lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
-            lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
-            lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
-            lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
-            lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
-        }
+        lesion.setId(resultSet.getInt("ID"));
+        lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
+        lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
+        lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
+        lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
+        lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
+        lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
+        lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
 
         return lesion;
     }
