@@ -34,14 +34,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -70,14 +62,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(connection != null) {
-                try {
-                    connection.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -164,14 +148,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return inclusions;
@@ -195,14 +171,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             if(statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(connection != null) {
-                try {
-                    connection.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -233,14 +201,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -261,14 +221,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(connection != null) {
-                try {
-                    connection.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -299,8 +251,8 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     private Inclusion addToInclusion(Inclusion inclusion, ResultSet resultSet) throws SQLException {
         inclusion.setId(resultSet.getInt("ID"));
         inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-        inclusion.setReference1(resultSet.getBlob("REFERENCE1"));
-        inclusion.setReference2(resultSet.getBlob("REFERENCE2"));
+        inclusion.setReference1(resultSet.getString("REFERENCE1"));
+        inclusion.setReference2(resultSet.getString("REFERENCE2"));
         inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
         inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
 
@@ -317,8 +269,8 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
         preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
         preparedStatement.setDate(indexDebut + 2, ((Inclusion) object).getDateInclusion());
-        preparedStatement.setBlob(indexDebut + 3, ((Inclusion) object).getReference1());
-        preparedStatement.setBlob(indexDebut + 4, ((Inclusion) object).getReference2());
+        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference1());
+        preparedStatement.setString(indexDebut + 4, ((Inclusion) object).getReference2());
         preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
 
         return preparedStatement;

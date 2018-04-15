@@ -13,8 +13,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Label?>
 <AnchorPane prefHeight="500.0" prefWidth="600.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.PatientsController">
     <TableView fx:id="patientsTable" layoutX="179.0" layoutY="100.0" prefHeight="325.0" prefWidth="407.0" AnchorPane.leftAnchor="179.0" AnchorPane.rightAnchor="14.0">
+        <placeholder>
+            <Label text="La table est vide"/>
+        </placeholder>
         <columns>
         <TableColumn fx:id="patIdCol" maxWidth="115.0" minWidth="56.0" prefWidth="98.0" resizable="false" text="Identifiant" />
             <TableColumn fx:id="patInitialesCol" maxWidth="121.0" minWidth="56.0" prefWidth="73.0" resizable="false" text="Initiales" />

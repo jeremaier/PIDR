@@ -7,17 +7,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.AddInclusionController;
+import src.table.Inclusion;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class AddInclusionsView {
-    public AddInclusionsView(Stage stage) {
+    public AddInclusionsView(Stage stage, Inclusion inclusion, Connection connection) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'une inclusion");
         viewLoader.setLocation(getClass().getResource("../../ressource/AddInclusions.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddInclusionController());
+        viewLoader.setControllerFactory(iC -> new AddInclusionController(inclusion, connection));
 
         try {
             rootLog = viewLoader.load();

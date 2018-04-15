@@ -8,6 +8,7 @@ public enum Diag {
     SPINO("Spinocellulaire"),
     KERATOSE("Keratose actinique"),
     AUTRE("Autre..."),
+    FICHIER("Fichier"),
     RIEN("Pas de malignité");
 
     private StringProperty name;

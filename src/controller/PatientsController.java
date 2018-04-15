@@ -131,7 +131,9 @@ public class PatientsController implements Initializable {
     }
 
     private void populatePatients(ObservableList<Patient> patients) {
-        patientsTable.setItems(patients);
+        if(!patients.isEmpty())
+            patientsTable.setItems(patients);
+        else patientsTable.refresh();
     }
 
     private void populatePatient(Patient patient) {

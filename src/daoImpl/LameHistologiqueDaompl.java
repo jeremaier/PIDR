@@ -10,7 +10,7 @@ import java.sql.*;
 
 import java.util.List;
 
-public class LameHistologiqueDaompl implements LameHistologiqueDao {
+public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueDao {
     private Connection connection;
 
     public LameHistologiqueDaompl(Connection connection) {
@@ -39,15 +39,6 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
                     e.printStackTrace();
                 }
             }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
@@ -81,14 +72,6 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
                     e.printStackTrace();
                 }
             }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return lame;
@@ -102,7 +85,7 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM lame");
+            resultSet = statement.executeQuery("SELECT * FROM lame_histologique");
             lame = this.addToObservableList(lame, resultSet);
 
             System.out.println("SELECT * FROM lame");
@@ -112,14 +95,6 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -134,7 +109,7 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE lame SET " + "ID_LESION = ?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lame_histologique SET " + "ID_LESION = ?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lame, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
@@ -146,14 +121,6 @@ public class LameHistologiqueDaompl implements LameHistologiqueDao {
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

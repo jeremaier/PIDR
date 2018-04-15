@@ -1,37 +1,37 @@
 package src.table;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 
-import java.io.File;
-import java.sql.Blob;
 import java.sql.Date;
 
 public class Inclusion {
     private IntegerProperty id;
     private IntegerProperty idPatient;
+    private StringProperty initialesPatient;
     private String reference1;
     private String reference2;
     private ObjectProperty<Date> dateInclusion;
     private IntegerProperty numAnaPath;
+    private StringProperty diag;
 
     public Inclusion() {
         this.id = new SimpleIntegerProperty();
         this.idPatient = new SimpleIntegerProperty();
         this.dateInclusion = new SimpleObjectProperty<>();
         this.numAnaPath = new SimpleIntegerProperty();
+        this.diag = new SimpleStringProperty();
     }
 
-    public Inclusion(int id, int idPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath) {
+    public Inclusion(int id, int idPatient, String initialesPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath, String diag) {
         this();
         this.setId(id);
         this.setIdPatient(idPatient);
+        this.setInitialesPatient(initialesPatient);
         this.reference1 = reference1;
         this.reference2 = reference2;
         this.setDateInclusion(dateInclusion);
         this.setNumAnaPath(numAnaPath);
+        this.setDiag(diag);
     }
 
     public int getId() {
@@ -96,5 +96,29 @@ public class Inclusion {
 
     public void setNumAnaPath(int numAnaPath) {
         this.numAnaPath.set(numAnaPath);
+    }
+
+    public String getDiag() {
+        return diag.get();
+    }
+
+    public StringProperty diagProperty() {
+        return diag;
+    }
+
+    public void setDiag(String diag) {
+        this.diag.set(diag);
+    }
+
+    public String getInitialesPatient() {
+        return initialesPatient.get();
+    }
+
+    public StringProperty initialesPatientProperty() {
+        return initialesPatient;
+    }
+
+    public void setInitialesPatient(String initialesPatient) {
+        this.initialesPatient.set(initialesPatient);
     }
 }

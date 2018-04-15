@@ -8,7 +8,7 @@ import src.table.TranscriptomicAnalysis;
 import java.sql.*;
 import java.util.List;
 
-public class TranscriptomieDaompl implements TranscriptomieDao {
+public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
     private Connection connection;
 
     public TranscriptomieDaompl (Connection connection) { this.connection = connection;}
@@ -19,7 +19,7 @@ public class TranscriptomieDaompl implements TranscriptomieDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
             preparedStatement.executeUpdate();
             System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)\" + \"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -33,15 +33,6 @@ public class TranscriptomieDaompl implements TranscriptomieDao {
                     e.printStackTrace();
                 }
             }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
@@ -139,14 +130,6 @@ public class TranscriptomieDaompl implements TranscriptomieDao {
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

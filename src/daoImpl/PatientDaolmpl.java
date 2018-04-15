@@ -77,14 +77,6 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return patient;
@@ -131,14 +123,6 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return patients;
@@ -167,14 +151,6 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return patients;
@@ -197,14 +173,6 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             if(preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(connection != null) {
-                try {
-                    connection.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }

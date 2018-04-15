@@ -3,6 +3,8 @@ package src.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import src.utils.ConnectionConfiguration;
 import src.utils.FileManager;
@@ -15,9 +17,9 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
     @FXML
-    TextField password;
-    @FXML
     TextField user;
+    @FXML
+    TextField password;
     @FXML
     Button connectButton;
     @FXML
@@ -26,10 +28,11 @@ public class LoginController implements Initializable {
     Label load;
     @FXML
     CheckBox saveLogin;
+    @FXML
+    GridPane grid;
 
     private String loginFileName = "Log";
     private ConnectionConfiguration connection = null;
-    private boolean saveSelected = false;
 
     public void NewConnection() {
         this.checkLog();
@@ -39,13 +42,17 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.loadTokenFromFile();
-        this.saveLogin.setSelected(this.saveSelected);
         this.pi.setProgress(-1);
         this.pi.setVisible(false);
         this.load.setVisible(false);
 
         if(!this.user.getText().equals(""))
-            this.password.requestFocus();
+            this.saveLogin.setSelected(true);
+
+        this.password.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER)
+                this.NewConnection();
+        });
         //pi.setStyle("-fx-progress-color: #676768;");
     }
 
@@ -105,7 +112,6 @@ public class LoginController implements Initializable {
                 oIn = new ObjectInputStream(fIn);
 
                 this.user.setText((String) oIn.readObject());
-                this.saveSelected = (boolean) oIn.readObject();
 
                 oIn.close();
                 fIn.close();
@@ -125,7 +131,6 @@ public class LoginController implements Initializable {
                 oOut = new ObjectOutputStream(fOut);
 
                 oOut.writeObject(this.user.getText());
-                oOut.writeObject(this.saveSelected);
 
                 oOut.close();
                 fOut.close();

@@ -34,14 +34,6 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -74,14 +66,6 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return lesion;
@@ -105,14 +89,6 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             if(statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(connection != null) {
-                try {
-                    connection.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -143,14 +119,6 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -177,9 +145,9 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
     private Lesion addToLesion(Lesion lesion, ResultSet resultSet) throws SQLException {
         lesion.setId(resultSet.getInt("ID"));
         lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
-        lesion.setPhotoSur(resultSet.getBlob("PHOTO_SUR"));
-        lesion.setPhotoHors(resultSet.getBlob("PHOTO_HORS"));
-        lesion.setPhotoFixe(resultSet.getBlob("PHOTO_FIXE"));
+        lesion.setPhotoSur(resultSet.getString("PHOTO_SUR"));
+        lesion.setPhotoHors(resultSet.getString("PHOTO_HORS"));
+        lesion.setPhotoFixe(resultSet.getString("PHOTO_FIXE"));
         lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
         lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
         lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
@@ -196,9 +164,9 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement.setInt(indexDebut, ((Lesion) object).getId());
 
         preparedStatement.setInt(indexDebut + 1, ((Lesion) object).getIdInclusion());
-        preparedStatement.setBlob(indexDebut + 2, ((Lesion) object).getPhotoSur());
-        preparedStatement.setBlob(indexDebut + 3, ((Lesion) object).getPhotoHors());
-        preparedStatement.setBlob(indexDebut + 4, ((Lesion) object).getPhotoFixe());
+        preparedStatement.setString(indexDebut + 2, ((Lesion) object).getPhotoSur());
+        preparedStatement.setString(indexDebut + 3, ((Lesion) object).getPhotoHors());
+        preparedStatement.setString(indexDebut + 4, ((Lesion) object).getPhotoFixe());
         preparedStatement.setString(indexDebut + 5, ((Lesion) object).getSiteAnatomique());
         preparedStatement.setString(indexDebut + 6, ((Lesion) object).getDiag().toString());
         preparedStatement.setString(indexDebut + 7, ((Lesion) object).getAutreDiag());

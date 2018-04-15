@@ -8,7 +8,7 @@ import src.table.CutaneousSite;
 import java.sql.*;
 import java.util.List;
 
-public class SiteCutaneDaompl implements SiteCutaneDao {
+public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
     private Connection connection;
 
     public SiteCutaneDaompl(Connection connection) {
@@ -20,7 +20,7 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO site_cutane (ID, ID_LESION, SAIN, NUM_MESURE, SITE, ORIENTATION, DIAGNOSTIQUE, AUTRE_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO site_cutane (ID, ID_LESION, SAIN, NUM_MESURE, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 1);
             preparedStatement.executeUpdate();
 
@@ -35,15 +35,6 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
                     e.printStackTrace();
                 }
             }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
@@ -76,14 +67,6 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return site;
@@ -111,14 +94,6 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return site;
@@ -129,7 +104,7 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SAIN = ?, NUM_MESURE = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SAIN = ?, NUM_MESURE = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
@@ -141,14 +116,6 @@ public class SiteCutaneDaompl implements SiteCutaneDao {
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

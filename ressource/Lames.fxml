@@ -6,35 +6,36 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="600.0" minWidth="800.0" prefHeight="600.0"
             prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121"
             fx:controller="src.controller.LameController">
-
-    <children>
-        <TableView fx:id="tab" layoutX="12.0" layoutY="56.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0"
-                   AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
-            <columns>
-                <TableColumn minWidth="135.0" prefWidth="135.0" resizable="false" text="Numéro de lame"/>
-                <TableColumn minWidth="125.0" prefWidth="125.0" resizable="false" text="Site de coupe"/>
-                <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur verte"/>
-                <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur noire"/>
-                <TableColumn minWidth="180.0" prefWidth="160.0" resizable="false" text="Coloration"/>
-            </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </TableView>
-        <Button fx:id="photo" disable="true" layoutX="25.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0"
-                prefWidth="130.0" text="Photo"/>
-        <Button fx:id="retour" layoutX="14.0" layoutY="11.0" minHeight="30.0" mnemonicParsing="false" prefHeight="30.0"
-                prefWidth="80.0" text="Retour" textAlignment="CENTER" AnchorPane.leftAnchor="20.0"
-                AnchorPane.topAnchor="15.0">
-            <font>
-                <Font size="14.0"/>
-            </font>
-        </Button>
-        <Button fx:id="ajouter" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
-                text="Ajouter +"/>
-        <Button fx:id="supprimer" layoutX="656.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
-                text="Supprimer -"/>
-        <Button fx:id="modifier" layoutX="335.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
-                text="Modifier"/>
-    </children>
+    <TableView fx:id="tab" layoutX="12.0" layoutY="56.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0"
+               AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
+        <placeholder>
+            <Label text="La table est vide"/>
+        </placeholder>
+        <columns>
+            <TableColumn minWidth="135.0" prefWidth="135.0" resizable="false" text="Numéro de lame"/>
+            <TableColumn minWidth="125.0" prefWidth="125.0" resizable="false" text="Site de coupe"/>
+            <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur verte"/>
+            <TableColumn minWidth="160.0" prefWidth="160.0" resizable="false" text="Couleur noire"/>
+            <TableColumn minWidth="180.0" prefWidth="160.0" resizable="false" text="Coloration"/>
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+    </TableView>
+    <Button fx:id="photo" disable="true" layoutX="25.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0"
+            prefWidth="130.0" text="Photo"/>
+    <Button fx:id="retour" layoutX="14.0" layoutY="11.0" minHeight="30.0" mnemonicParsing="false" prefHeight="30.0"
+            prefWidth="80.0" text="Retour" textAlignment="CENTER" AnchorPane.leftAnchor="20.0"
+            AnchorPane.topAnchor="15.0">
+        <font>
+            <Font size="14.0"/>
+        </font>
+    </Button>
+    <Button fx:id="ajouter" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
+            text="Ajouter +"/>
+    <Button fx:id="supprimer" layoutX="656.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0"
+            prefWidth="130.0"
+            text="Supprimer -"/>
+    <Button fx:id="modifier" layoutX="335.0" layoutY="540.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="130.0"
+            text="Modifier"/>
 </AnchorPane>
