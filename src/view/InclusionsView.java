@@ -10,26 +10,38 @@ import src.controller.InclusionsController;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class InclusionsView {
-    public InclusionsView(Stage stage, Connection connection) {
+    public InclusionsView(Connection connection) {
+        Stage inclusionsWindow = new Stage();
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
 
-        stage.setTitle("Inclusions");
-        viewLoader.setLocation(getClass().getResource("../../ressource/Inclusions.fxml"));
+        inclusionsWindow.setTitle("Inclusions");
+        viewLoader.setLocation(getClass().getResource("/ressource/Inclusions.fxml"));
         viewLoader.setControllerFactory(iC -> new InclusionsController(connection));
 
         try {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+            inclusionsWindow.close();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        inclusionsWindow.setOnCloseRequest((WindowEvent event) -> {
+            Platform.exit();
+
+            try {
+                connection.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        });
 
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        inclusionsWindow.setResizable(false);
+        inclusionsWindow.setScene(new Scene(rootLog));
+        inclusionsWindow.show();
     }
 }

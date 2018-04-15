@@ -16,7 +16,7 @@ public class LameView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Lame histologique");
-        viewLoader.setLocation(getClass().getResource("../../ressource/AddSite.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
         viewLoader.setControllerFactory(iC -> new LameController());
 
         try {

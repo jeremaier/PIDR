@@ -28,7 +28,7 @@ public class InclusionsController implements Initializable {
     @FXML
     DatePicker inclusionDatePicker;
     @FXML
-    ChoiceBox diagnosticChoiceBox;
+    ComboBox diagnosticChoiceBox;
     @FXML
     Button searchButton;
     @FXML
@@ -68,6 +68,7 @@ public class InclusionsController implements Initializable {
     private Stage inclusionsStage;
     private InclusionDaoImpl inclusionDaolmpl;
     private ObservableList<Inclusion> inclusionsList;
+    private Inclusion selectedInclusion;
 
     public InclusionsController(Connection connection) {
         this.connection = connection;
@@ -78,58 +79,84 @@ public class InclusionsController implements Initializable {
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList("Baso-cellulaire", "Spino-cellulaire", "Kératose-actinique", "Pas de malignité", "Autre", "Fichier"));
     }
 
-    /*private void populatePatients(ObservableList<Inclusion> patients) {
+    private void populateInclusions(ObservableList<Inclusion> patients) {
         patientsTable.setItems(patients);
     }
 
-    private void populatePatient(Inclusion patient) {
+    private void populateInclusion(Inclusion patient) {
         this.inclusionsList.add(patient);
-        this.populatePatients(this.inclusionsList);
-    }
-
-    @FXML
-    private void addPatientAction(ActionEvent actionEvent) {
-        Inclusion patient = new Inclusion(Integer.getInteger(this.idInclusionField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
-        inclusionDaolmpl.insert(patient);
-        this.populatePatient(patient);
+        this.populateInclusions(this.inclusionsList);
     }
 
     @FXML
     private void searchAction(ActionEvent actionEvent) {
         inclusionsList = inclusionDaolmpl.selectByFilters(Integer.getInteger(this.idInclusionField.getText()), this.initialesField.getText());
-        this.populatePatients(inclusionsList);
+        this.populateInclusions(inclusionsList);
     }
 
     @FXML
-    private void searchAllAction(ActionEvent actionEvent) {
+    private void displayAllAction(ActionEvent actionEvent) {
         inclusionsList = inclusionDaolmpl.selectAll();
-        this.populatePatients(inclusionsList);
+        this.populateInclusions(inclusionsList);
     }
 
     @FXML
     private void removeAction(ActionEvent actionEvent) {
         inclusionDaolmpl.delete(Integer.getInteger(idInclusionField.getText()));
-        inclusionsList.remove(selectedPatient);
-        this.populatePatients(this.inclusionsList);
+        inclusionsList.remove(selectedInclusion);
+        this.populateInclusions(this.inclusionsList);
     }
 
     @FXML
-    private void updatePatientInformations(ActionEvent actionEvent) {
-        Inclusion patient = new Inclusion(Integer.getInteger(this.idInclusionField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
-        inclusionDaolmpl.update(patient, patient.getId());
-    }
-
-    @FXML
-    private void cancelAction(ActionEvent actionEvent) {
-        this.inclusionsStage = (Stage) cancelButton.getScene().getWindow();
-        this.inclusionsStage.close();
-    }
-
-    @FXML
-    private void choosePatientAction(ActionEvent actionEvent) {
+    private void chooseInclusionAction(ActionEvent actionEvent) {
         InclusionDaoImpl inclusionDao = new InclusionDaoImpl(connection);
         inclusionDao.update(Integer.getInteger(this.idInclusionField.getText()), inclusionId);
         this.inclusionsStage = (Stage) chooseButton.getScene().getWindow();
         this.inclusionsStage.close();
-    }*/
+    }
+
+    @FXML
+    private void importProcAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void importResultAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void downloadDocAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void removeDocAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void searchDocAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void editAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void refDownloadAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void displayAction(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void addAction(ActionEvent actionEvent) {
+
+    }
 }

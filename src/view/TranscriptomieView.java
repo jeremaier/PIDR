@@ -16,7 +16,7 @@ public class TranscriptomieView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Analyse transcriptomique");
-        viewLoader.setLocation(getClass().getResource("../../ressource/Transcriptomique.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Transcriptomique.fxml"));
         viewLoader.setControllerFactory(iC -> new TranscriptomieController());
 
         try {

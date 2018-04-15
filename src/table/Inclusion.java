@@ -4,7 +4,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import src.utils.FileToBlob;
 
 import java.io.File;
 import java.sql.Blob;
@@ -13,8 +12,8 @@ import java.sql.Date;
 public class Inclusion {
     private IntegerProperty id;
     private IntegerProperty idPatient;
-    private Blob reference1;
-    private Blob reference2;
+    private String reference1;
+    private String reference2;
     private ObjectProperty<Date> dateInclusion;
     private IntegerProperty numAnaPath;
 
@@ -25,12 +24,12 @@ public class Inclusion {
         this.numAnaPath = new SimpleIntegerProperty();
     }
 
-    public Inclusion(int id, int idPatient, File reference1, File reference2, Date dateInclusion, int numAnaPath) {
+    public Inclusion(int id, int idPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath) {
         this();
         this.setId(id);
         this.setIdPatient(idPatient);
-        this.reference1 = new FileToBlob(reference1).getBlob();
-        this.reference2 = new FileToBlob(reference2).getBlob();
+        this.reference1 = reference1;
+        this.reference2 = reference2;
         this.setDateInclusion(dateInclusion);
         this.setNumAnaPath(numAnaPath);
     }
@@ -51,19 +50,19 @@ public class Inclusion {
         this.idPatient.set(idPatient);
     }
 
-    public Blob getReference1() {
+    public String getReference1() {
         return reference1;
     }
 
-    public void setReference1(Blob reference) {
+    public void setReference1(String reference) {
         this.reference1 = reference;
     }
 
-    public Blob getReference2() {
+    public String getReference2() {
         return reference2;
     }
 
-    public void setReference2(Blob reference) {
+    public void setReference2(String reference) {
         this.reference2 = reference;
     }
 

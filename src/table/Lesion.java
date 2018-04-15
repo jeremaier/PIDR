@@ -5,17 +5,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import src.utils.Diag;
-import src.utils.FileToBlob;
-
-import java.io.File;
-import java.sql.Blob;
 
 public class Lesion {
     private IntegerProperty id;
     private IntegerProperty idInclusion;
-    private Blob photoSur;
-    private Blob photoHors;
-    private Blob photoFixe;
+    private String photoSur;
+    private String photoHors;
+    private String photoFixe;
     private StringProperty siteAnatomique;
     private Diag diag;
     private StringProperty autreDiag;
@@ -27,13 +23,13 @@ public class Lesion {
         this.autreDiag = new SimpleStringProperty();
     }
 
-    public Lesion(int id, int idInclusion, File photoSur, File photoHors, File photoFixe, String siteAnatomique, String diag, String autreDiag) {
+    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag) {
         this();
         this.setId(id);
         this.setIdInclusion(idInclusion);
-        this.photoSur = new FileToBlob(photoSur).getBlob();
-        this.photoHors = new FileToBlob(photoHors).getBlob();
-        this.photoFixe = new FileToBlob(photoFixe).getBlob();
+        this.photoSur = photoSur;
+        this.photoHors = photoHors;
+        this.photoFixe = photoFixe;
         this.setSiteAnatomique(siteAnatomique);
         this.diag = Diag.valueOf(diag);
         this.setAutreDiag(autreDiag);
@@ -55,27 +51,27 @@ public class Lesion {
         this.idInclusion.set(idInclusion);
     }
 
-    public Blob getPhotoSur() {
+    public String getPhotoSur() {
         return photoSur;
     }
 
-    public void setPhotoSur(Blob photoSur) {
+    public void setPhotoSur(String photoSur) {
         this.photoSur = photoSur;
     }
 
-    public Blob getPhotoHors() {
+    public String getPhotoHors() {
         return photoHors;
     }
 
-    public void setPhotoHors(Blob photoHors) {
+    public void setPhotoHors(String photoHors) {
         this.photoHors = photoHors;
     }
 
-    public Blob getPhotoFixe() {
+    public String getPhotoFixe() {
         return photoFixe;
     }
 
-    public void setPhotoFixe(Blob photoFixe) {
+    public void setPhotoFixe(String photoFixe) {
         this.photoFixe = photoFixe;
     }
 

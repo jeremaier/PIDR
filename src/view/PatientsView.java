@@ -20,7 +20,7 @@ public class PatientsView {
         patientStage.setTitle("Patients");
         patientStage.setResizable(false);
 
-        viewLoader.setLocation(getClass().getResource("../../ressource/Patients.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Patients.fxml"));
         viewLoader.setControllerFactory(iC -> new PatientsController(connection, inclusionId));
 
         try {

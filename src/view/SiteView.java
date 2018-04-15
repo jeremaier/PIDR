@@ -16,7 +16,7 @@ public class SiteView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Vision d'un site");
-        viewLoader.setLocation(getClass().getResource("../../ressource/Site.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));
         viewLoader.setControllerFactory(iC -> new SiteController());
 
         try {

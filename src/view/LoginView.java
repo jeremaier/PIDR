@@ -16,7 +16,7 @@ public class LoginView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         primaryStage.setTitle("SpectroLive");
-        viewLoader.setLocation(getClass().getResource("../../ressource/Login.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Login.fxml"));
 
         try {
             rootLog = viewLoader.load();

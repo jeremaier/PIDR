@@ -1,27 +1,27 @@
 package src.utils;
 
-import javafx.concurrent.Task;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionConfiguration extends Task<Connection> {
+public class ConnectionConfiguration {
     private String user;
     private String password;
-    private Connection connection = null;
+    private static Connection connection = null;
 
     public ConnectionConfiguration(String user, String password) {
         this.user = user;
         this.password = password;
     }
 
-    @Override
-    protected Connection call() {
+    public Connection createConnnection() {
         try {
-            Thread.sleep(500);
-            Class.forName("com.mysql.jdbc.Driver");
-            this.connection = DriverManager.getConnection("jdbc:mysql://spectrolive.cran.univ-lorraine.fr:3306/spectrolive", user, password);
+            Thread.sleep(100);
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            this.connection = DriverManager.getConnection("jdbc:mysql://spectrolive-sql.cran.univ-lorraine.fr:3306/spectrolive?user=" + user + "&password=" + password + "&useSSL=false");
+        } catch (SQLException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

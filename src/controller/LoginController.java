@@ -29,57 +29,57 @@ public class LoginController implements Initializable {
 
     private String loginFileName = "Log";
     private ConnectionConfiguration connection = null;
+    private boolean saveSelected = false;
 
     public void NewConnection() {
         this.checkLog();
-        new Thread(this.connection).start();
+        //new Thread(this.connection).start();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.loadTokenFromFile();
-        this.saveLogin.setSelected(true);
+        this.saveLogin.setSelected(this.saveSelected);
         this.pi.setProgress(-1);
         this.pi.setVisible(false);
         this.load.setVisible(false);
 
-        if(this.user.getText() != null)
+        if(!this.user.getText().equals(""))
             this.password.requestFocus();
         //pi.setStyle("-fx-progress-color: #676768;");
     }
 
     private void checkLog() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+
         if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
-            try {
-                this.connection = new ConnectionConfiguration(user.getText(), password.getText());
+            this.connection = new ConnectionConfiguration(user.getText(), password.getText());
+            this.connection.createConnnection();
 
-                if (this.connection.getConnection() != null) {
-                    if (this.saveLogin.isSelected())
-                        this.saveLoginInFile();
-                    else this.deleteLoginFile();
+            if (this.connection.getConnection() != null) {
+                if (this.saveLogin.isSelected())
+                    this.saveLoginInFile();
+                else this.deleteLoginFile();
 
-                    Stage stage = (Stage) connectButton.getScene().getWindow();
-                    new InclusionsView(stage, this.connection.getConnection());
-                    stage.close();
-                    System.out.println("Connection established");
-                }
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
+                System.out.println("Connection established");
 
-                e.printStackTrace();
+                Stage stage = (Stage) connectButton.getScene().getWindow();
+                stage.close();
+                new InclusionsView(this.connection.getConnection());
+            } else {
                 alert.setTitle("Erreur d'identification");
                 alert.setHeaderText(null);
                 alert.setContentText("Identifiant et/ou mot de passe incorrect(s)");
                 alert.showAndWait();
-                this.user.clear();
+                this.password.clear();
                 this.connectButton.setDisable(false);
-            } finally {
-                if (this.connection.getConnection() != null) {
+
+                if(this.connection.getConnection() != null) {
                     try {
                         this.connection.closeConnection();
-                    } catch (SQLException e) {
+                    } catch(SQLException e) {
                         e.printStackTrace();
                     }
                 }
@@ -105,6 +105,7 @@ public class LoginController implements Initializable {
                 oIn = new ObjectInputStream(fIn);
 
                 this.user.setText((String) oIn.readObject());
+                this.saveSelected = (boolean) oIn.readObject();
 
                 oIn.close();
                 fIn.close();
@@ -115,7 +116,7 @@ public class LoginController implements Initializable {
     }
 
     private void saveLoginInFile() {
-        if (this.user != null) {
+        if(!this.user.getText().equals("")) {
             FileOutputStream fOut;
             ObjectOutputStream oOut;
 
@@ -123,7 +124,8 @@ public class LoginController implements Initializable {
                 fOut = new FileOutputStream(FileManager.getFilePath(loginFileName));
                 oOut = new ObjectOutputStream(fOut);
 
-                oOut.writeObject(user.getText());
+                oOut.writeObject(this.user.getText());
+                oOut.writeObject(this.saveSelected);
 
                 oOut.close();
                 fOut.close();
