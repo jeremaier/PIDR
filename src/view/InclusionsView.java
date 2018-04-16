@@ -7,20 +7,21 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.InclusionsController;
+import src.utils.FileManager;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class InclusionsView {
-    public InclusionsView(Connection connection) {
+    public InclusionsView(Connection connection, FileManager fileManager) {
         Stage inclusionsWindow = new Stage();
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
 
         inclusionsWindow.setTitle("Inclusions");
         viewLoader.setLocation(getClass().getResource("/ressource/Inclusions.fxml"));
-        viewLoader.setControllerFactory(iC -> new InclusionsController(connection));
+        viewLoader.setControllerFactory(iC -> new InclusionsController(connection, fileManager));
 
         try {
             rootLog = viewLoader.load();

@@ -11,15 +11,19 @@ import java.io.*;
 import java.net.URL;
 
 public class FileManager {
-    public FileManager() {
-        this.openFTPConnection();
+    public FileManager(String user, String password) {
+        this.openFTPConnection(user, password);
     }
 
-    public void openFTPConnection() {
+    private void openFTPConnection(String user, String password) {
 
     }
 
-    public final String getFilePath(String name) {
+    public String getConnection() {
+        return "";
+    }
+
+    public static String getFilePath(String name) {
         String directoryPath = System.getProperty("user.dir") + File.separator + "saves";
         File folder = new File(directoryPath);
 

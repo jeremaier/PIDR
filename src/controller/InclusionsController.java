@@ -1,7 +1,6 @@
 package src.controller;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -73,14 +72,16 @@ public class InclusionsController implements Initializable {
     TableColumn<Inclusion, String> inclDiagnostic;
 
     private Connection connection;
+    private FileManager fileManager;
     private Stage inclusionsStage;
     private InclusionDaoImpl inclusionDaolmpl;
     private ObservableList<Inclusion> inclusionsList;
     private Inclusion selectedInclusion;
     private String selectedDoc;
 
-    public InclusionsController(Connection connection) {
+    public InclusionsController(Connection connection, FileManager fileManager) {
         this.connection = connection;
+        this.fileManager = fileManager;
     }
 
     @Override
@@ -133,34 +134,34 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void importProcAction(ActionEvent actionEvent) {
-        FileManager.uploadToURL(inclusionsStage, "procedures");
+        this.fileManager.uploadToURL(inclusionsStage, "procedures");
     }
 
     @FXML
     private void importResultAction(ActionEvent actionEvent) {
-        FileManager.uploadToURL(inclusionsStage, "resultats");
+        this.fileManager.uploadToURL(inclusionsStage, "resultats");
     }
 
     @FXML
     private void downloadDocAction(ActionEvent actionEvent) {
         this.inclusionsStage = (Stage) downloadDocButton.getScene().getWindow();
-        FileManager.downloadFromUrl(this.inclusionsStage, this.selectedDoc);
+        this.fileManager.downloadFromUrl(this.inclusionsStage, this.selectedDoc);
     }
 
     @FXML
     private void removeDocAction(ActionEvent actionEvent) {
-        FileManager.removeFile(this.selectedDoc);
+        this.fileManager.removeFile(this.selectedDoc);
     }
 
     @FXML
     private void searchDocAction(ActionEvent actionEvent) {
-        FileManager.searchFile();
+        this.fileManager.searchFile();
     }
 
     @FXML
     private void editAction(ActionEvent actionEvent) {
         this.inclusionsStage = (Stage) editButton.getScene().getWindow();
-        new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection);
+        new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection, this.fileManager);
     }
 
     @FXML
@@ -171,6 +172,6 @@ public class InclusionsController implements Initializable {
     @FXML
     private void addAction(ActionEvent actionEvent) {
         this.inclusionsStage = (Stage) editButton.getScene().getWindow();
-        new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection);
+        new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection, this.fileManager);
     }
 }

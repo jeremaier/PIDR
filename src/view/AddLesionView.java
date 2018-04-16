@@ -16,7 +16,7 @@ public class AddLesionView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'une lésion cutané");
-        viewLoader.setLocation(getClass().getResource("../../ressource/AddLesion.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/AddLesion.fxml"));
         viewLoader.setControllerFactory(iC -> new AddLesionController());
 
         try {

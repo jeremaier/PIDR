@@ -49,15 +49,15 @@ public class AddInclusionController implements Initializable {
     private String initiales;
     private FileManager fileManager;
 
-    public AddInclusionController(Inclusion inclusion, Connection connection) {
+    public AddInclusionController(Inclusion inclusion, Connection connection, FileManager fileManager) {
         this.inclusion = inclusion;
         this.connection = connection;
+        this.fileManager = fileManager;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.inclusionDaoImpl = new InclusionDaoImpl(connection);
-        this.fileManager = new FileManager();
 
         if(this.inclusion != null)
             this.setInclusionInformations();

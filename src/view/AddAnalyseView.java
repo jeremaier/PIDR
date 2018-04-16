@@ -16,7 +16,7 @@ public class AddAnalyseView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'une analyse transcriptomique");
-        viewLoader.setLocation(getClass().getResource("../../ressource/AddAnalyse.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/AddAnalyse.fxml"));
         viewLoader.setControllerFactory(iC -> new AddAnalyseController());
 
         try {

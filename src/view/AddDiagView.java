@@ -16,7 +16,7 @@ public class AddDiagView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'un diagnostic");
-        viewLoader.setLocation(getClass().getResource("../../ressource/AddDiag.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/AddDiag.fxml"));
         viewLoader.setControllerFactory(iC -> new AddDiagController());
 
         try {

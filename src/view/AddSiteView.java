@@ -16,7 +16,7 @@ public class AddSiteView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         stage.setTitle("Ajout d'un site cutané");
-        viewLoader.setLocation(getClass().getResource("../../ressource/AddSite.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
         viewLoader.setControllerFactory(iC -> new SiteController());
 
         try {

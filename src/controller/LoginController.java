@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import src.utils.ConnectionConfiguration;
+import src.utils.SQLConnection;
 import src.utils.FileManager;
 import src.view.InclusionsView;
 
@@ -32,7 +32,6 @@ public class LoginController implements Initializable {
     GridPane grid;
 
     private String loginFileName = "Log";
-    private ConnectionConfiguration connection = null;
 
     public void NewConnection() {
         this.checkLog();
@@ -62,19 +61,19 @@ public class LoginController implements Initializable {
         if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
-            this.connection = new ConnectionConfiguration(user.getText(), password.getText());
-            this.connection.createConnnection();
+            SQLConnection connection = new SQLConnection(user.getText(), password.getText());
+            FileManager fileManager = new FileManager(user.getText(), password.getText());
 
-            if (this.connection.getConnection() != null) {
+            if (connection.getConnection() != null && fileManager.getConnection() != null) {
                 if (this.saveLogin.isSelected())
                     this.saveLoginInFile();
                 else this.deleteLoginFile();
 
-                System.out.println("Connection established");
+                System.out.println("Connection etablie");
 
                 Stage stage = (Stage) connectButton.getScene().getWindow();
                 stage.close();
-                new InclusionsView(this.connection.getConnection());
+                new InclusionsView(connection.getConnection(), fileManager);
             } else {
                 alert.setTitle("Erreur d'identification");
                 alert.setHeaderText(null);
@@ -83,9 +82,9 @@ public class LoginController implements Initializable {
                 this.password.clear();
                 this.connectButton.setDisable(false);
 
-                if(this.connection.getConnection() != null) {
+                if(connection.getConnection() != null) {
                     try {
-                        this.connection.closeConnection();
+                        connection.closeConnection();
                     } catch(SQLException e) {
                         e.printStackTrace();
                     }

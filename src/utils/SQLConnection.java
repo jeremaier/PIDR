@@ -5,14 +5,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionConfiguration {
+public class SQLConnection {
     private String user;
     private String password;
     private static Connection connection = null;
 
-    public ConnectionConfiguration(String user, String password) {
+    public SQLConnection(String user, String password) {
         this.user = user;
         this.password = password;
+        this.createConnnection();
     }
 
     public Connection createConnnection() {
