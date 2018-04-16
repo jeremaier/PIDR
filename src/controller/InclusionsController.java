@@ -1,5 +1,7 @@
 package src.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -54,6 +56,10 @@ public class InclusionsController implements Initializable {
     @FXML
     Button importResultButton;
     @FXML
+    ListView procList;
+    @FXML
+    ListView resList;
+    @FXML
     TableView inclusionsTable;
     @FXML
     TableColumn<Inclusion, Integer> inclID;
@@ -71,7 +77,7 @@ public class InclusionsController implements Initializable {
     private InclusionDaoImpl inclusionDaolmpl;
     private ObservableList<Inclusion> inclusionsList;
     private Inclusion selectedInclusion;
-    private String urlDocSelected;
+    private String selectedDoc;
 
     public InclusionsController(Connection connection) {
         this.connection = connection;
@@ -85,6 +91,9 @@ public class InclusionsController implements Initializable {
         this.inclInitials.setCellValueFactory(cellData -> cellData.getValue().initialesPatientProperty());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
+
+        procList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> selectedDoc = newValue);
+        resList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> selectedDoc = newValue);
 
         this.inclusionDaolmpl = new InclusionDaoImpl(connection);
         inclusionsList = inclusionDaolmpl.selectAll();
@@ -124,28 +133,28 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void importProcAction(ActionEvent actionEvent) {
-
+        FileManager.uploadToURL(inclusionsStage, "procedures");
     }
 
     @FXML
     private void importResultAction(ActionEvent actionEvent) {
-
+        FileManager.uploadToURL(inclusionsStage, "resultats");
     }
 
     @FXML
     private void downloadDocAction(ActionEvent actionEvent) {
         this.inclusionsStage = (Stage) downloadDocButton.getScene().getWindow();
-        FileManager.downloadFromUrl(this.inclusionsStage, this.urlDocSelected);
+        FileManager.downloadFromUrl(this.inclusionsStage, this.selectedDoc);
     }
 
     @FXML
     private void removeDocAction(ActionEvent actionEvent) {
-
+        FileManager.removeFile(this.selectedDoc);
     }
 
     @FXML
     private void searchDocAction(ActionEvent actionEvent) {
-
+        FileManager.searchFile();
     }
 
     @FXML

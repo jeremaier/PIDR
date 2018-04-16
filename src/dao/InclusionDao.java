@@ -15,7 +15,7 @@ public interface InclusionDao {
 
     List<Inclusion> selectAll();
 
-    void update(int patientId, int id);
+    //void update(int patientId, int id);
 
     void update(Inclusion inclusion, int id);
 }

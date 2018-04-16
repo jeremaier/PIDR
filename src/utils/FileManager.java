@@ -1,21 +1,25 @@
 package src.utils;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
-import sun.net.www.protocol.http.HttpURLConnection;
 
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class FileManager {
-    public static String getFilePath(String name) {
+    public FileManager() {
+        this.openFTPConnection();
+    }
+
+    public void openFTPConnection() {
+
+    }
+
+    public final String getFilePath(String name) {
         String directoryPath = System.getProperty("user.dir") + File.separator + "saves";
         File folder = new File(directoryPath);
 
@@ -25,7 +29,7 @@ public class FileManager {
         return folder.getAbsoluteFile() + File.separator + name;
     }
 
-    public static final String getFileName(String url) {
+    public static String getFileName(String url) {
         String[] urlSplit = url.split(File.separator);
 
         return urlSplit[urlSplit.length - 1];
@@ -36,14 +40,35 @@ public class FileManager {
         Date date = Date.valueOf(locald);
         r.setDateOfBirth(date);
 
-        return localDate;
+        return locald;
     }*/
 
-    public static void downloadFromUrl(Stage stage, String url) {
+    private static void openAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Erreur d'URL");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMessage);
+        alert.showAndWait();
+    }
+
+    private static File openDirectoryChooser(Stage stage) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choisissez un dossier");
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        File selectedDirectory = directoryChooser.showDialog(stage);
+        return directoryChooser.showDialog(stage);
+    }
+
+    public final ObservableList<String> searchFile() {
+        ObservableList<String> fileList = FXCollections.observableArrayList();
+        return fileList;
+    }
+
+    public final void removeFile(String url) {
+
+    }
+
+    public final void downloadFromUrl(Stage stage, String url) {
+        File selectedDirectory = FileManager.openDirectoryChooser(stage);
 
         if(selectedDirectory != null) {
             try {
@@ -51,17 +76,20 @@ public class FileManager {
             } catch(IOException e) {
                 e.printStackTrace();
 
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Erreur d'URL");
-                alert.setHeaderText(null);
-                alert.setContentText("URL de téléchargement invalide");
-                alert.showAndWait();
+                FileManager.openAlert("Téléchargement impossible / Erreur de connexion");
             }
         }
     }
 
-    public static void uploadToURL() {
-        String url = "http://example.com/upload";
+    public final void uploadToURL(Stage stage, String dossier) {
+        File selectedDirectory = FileManager.openDirectoryChooser(stage);
+
+        if(selectedDirectory != null) {
+
+
+            FileManager.openAlert("URL de destination invalide");
+        }
+        /*String url = "http://example.com/upload";
         String charset = "UTF-8";
         String param = "value";
         File textFile = new File("/path/to/file.txt");
@@ -113,7 +141,7 @@ public class FileManager {
             System.out.println(responseCode);
         } catch(IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /*public static void uploadToURL2() {

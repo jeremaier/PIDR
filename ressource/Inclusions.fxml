@@ -70,7 +70,7 @@
                 </GridPane>
                 <TableView fx:id="inclusionsTable" fixedCellSize="50.0" layoutX="25.0" layoutY="160.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="150.0">
                     <placeholder>
-                        <Label text="La table est vide"/>
+                        <Label text="La table est vide" />
                     </placeholder>
                     <columns>
                         <TableColumn fx:id="inclID" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" resizable="false" text="N° inclusion" />
@@ -173,12 +173,12 @@
                             <Font size="18.0" />
                         </font>
                     </Label>
-                    <ListView prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                    <ListView fx:id="procList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                         <GridPane.margin>
                             <Insets right="10.0" />
                         </GridPane.margin>
                     </ListView>
-                    <ListView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <ListView fx:id="resList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <GridPane.margin>
                             <Insets left="10.0" />
                         </GridPane.margin>

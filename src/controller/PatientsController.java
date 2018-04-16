@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.PatientDaolmpl;
 import src.table.Patient;
 import src.utils.Genre;
@@ -62,11 +61,11 @@ public class PatientsController implements Initializable {
     private PatientDaolmpl patientDaolmpl;
     private ObservableList<Patient> patientsList;
     private Patient selectedPatient;
-    private int inclusionId;
+    private AddInclusionController addInclusionController;
 
-    public PatientsController(Connection connection, int inclusionId) {
+    public PatientsController(Connection connection, AddInclusionController addInclusionController) {
         this.connection = connection;
-        this.inclusionId = inclusionId;
+        this.addInclusionController = addInclusionController;
     }
 
     @Override
@@ -181,8 +180,7 @@ public class PatientsController implements Initializable {
 
     @FXML
     private void choosePatientAction(ActionEvent actionEvent) {
-        InclusionDaoImpl inclusionDao = new InclusionDaoImpl(connection);
-        inclusionDao.update(Integer.getInteger(this.idField.getText()), inclusionId);
+        addInclusionController.setPatientInformations(Integer.getInteger(this.idField.getText()), this.initialesField.getText());
         this.patientsStage = (Stage) chooseButton.getScene().getWindow();
         this.patientsStage.close();
     }

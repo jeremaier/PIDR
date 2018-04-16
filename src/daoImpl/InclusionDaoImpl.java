@@ -180,7 +180,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         return inclusions;
     }
 
-    @Override
+    /*@Override
     public void update(int patientId, int id) {
         PreparedStatement preparedStatement = null;
 
@@ -202,7 +202,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public void update(Inclusion inclusion, int id) {

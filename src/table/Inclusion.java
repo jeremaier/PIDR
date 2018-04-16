@@ -8,8 +8,8 @@ public class Inclusion {
     private IntegerProperty id;
     private IntegerProperty idPatient;
     private StringProperty initialesPatient;
-    private String reference1;
-    private String reference2;
+    private String reference1 = "Aucun";
+    private String reference2 = "Aucun";
     private ObjectProperty<Date> dateInclusion;
     private IntegerProperty numAnaPath;
     private StringProperty diag;
