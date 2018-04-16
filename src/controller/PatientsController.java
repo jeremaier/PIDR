@@ -116,15 +116,15 @@ public class PatientsController implements Initializable {
                 initialesField.setText(selectedPatient.getInitiales());
                 dateField.setText(Integer.toString(selectedPatient.getAnneeNaissance()));
                 genreComboBox.setValue(selectedPatient.getGenre());
-                removeButton.setDisable(false);
-                chooseButton.setDisable(false);
+                removeButton.setDisable(true);
+                chooseButton.setDisable(true);
             } else {
                 idField.setText("ID");
                 initialesField.setText("Initiales");
                 dateField.setText("Année de naissance");
                 genreComboBox.setPromptText("Genre");
-                removeButton.setDisable(true);
-                chooseButton.setDisable(true);
+                removeButton.setDisable(false);
+                chooseButton.setDisable(false);
             }
         });
     }

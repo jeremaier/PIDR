@@ -47,7 +47,7 @@ public class InclusionsController implements Initializable {
     @FXML
     Button searchDocButton;
     @FXML
-    Button downloadDocButton;
+    Button docDownloadButton;
     @FXML
     Button removeDocButton;
     @FXML
@@ -71,11 +71,15 @@ public class InclusionsController implements Initializable {
     @FXML
     TableColumn<Inclusion, String> inclDiagnostic;
 
+    private final String procDirectoryName = "procedures";
+    private final String resDirectoryName = "resultats";
     private Connection connection;
     private FileManager fileManager;
     private Stage inclusionsStage;
     private InclusionDaoImpl inclusionDaolmpl;
     private ObservableList<Inclusion> inclusionsList;
+    private ObservableList<String> procObservableList;
+    private ObservableList<String> resObservableList;
     private Inclusion selectedInclusion;
     private String selectedDoc;
 
@@ -92,6 +96,10 @@ public class InclusionsController implements Initializable {
         this.inclInitials.setCellValueFactory(cellData -> cellData.getValue().initialesPatientProperty());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
+        this.procObservableList = this.fileManager.listFiles(procDirectoryName);
+        this.resObservableList = this.fileManager.listFiles(resDirectoryName);
+        procList.setItems(this.procObservableList);
+        resList.setItems(this.resObservableList);
 
         procList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> selectedDoc = newValue);
         resList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> selectedDoc = newValue);
@@ -100,11 +108,26 @@ public class InclusionsController implements Initializable {
         inclusionsList = inclusionDaolmpl.selectAll();
 
         this.populateInclusions(inclusionsList);
+
+        this.inclusionsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            selectedInclusion = (Inclusion) inclusionsTable.getSelectionModel().getSelectedItem();
+
+            if(selectedInclusion == null) {
+                removeButton.setDisable(false);
+                editButton.setDisable(false);
+                refDownloadButton.setDisable(false);
+            } else {
+                removeButton.setDisable(true);
+                editButton.setDisable(true);
+                refDownloadButton.setDisable(true);
+            }
+        });
     }
 
     private void populateInclusions(ObservableList<Inclusion> inclusions) {
         if(!inclusions.isEmpty())
             inclusionsTable.setItems(inclusions);
+
         else inclusionsTable.refresh();
     }
 
@@ -133,45 +156,69 @@ public class InclusionsController implements Initializable {
     }
 
     @FXML
+    private void refDownloadAction(ActionEvent actionEvent) {
+        String ref1Url = this.selectedInclusion.getReference1();
+        String ref2Url = this.selectedInclusion.getReference2();
+
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) refDownloadButton.getScene().getWindow();
+
+        if(ref1Url != null)
+            this.fileManager.downloadFromUrl(this.inclusionsStage, this.selectedInclusion.getReference1());
+
+        if(ref2Url != null)
+            this.fileManager.downloadFromUrl(this.inclusionsStage, this.selectedInclusion.getReference2());
+    }
+
+    @FXML
     private void importProcAction(ActionEvent actionEvent) {
-        this.fileManager.uploadToURL(inclusionsStage, "procedures");
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) importProcButton.getScene().getWindow();
+
+        this.fileManager.uploadToURL(inclusionsStage, procDirectoryName);
     }
 
     @FXML
     private void importResultAction(ActionEvent actionEvent) {
-        this.fileManager.uploadToURL(inclusionsStage, "resultats");
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) importResultButton.getScene().getWindow();
+
+        this.fileManager.uploadToURL(inclusionsStage, resDirectoryName);
     }
 
     @FXML
-    private void downloadDocAction(ActionEvent actionEvent) {
-        this.inclusionsStage = (Stage) downloadDocButton.getScene().getWindow();
+    private void docDownloadAction(ActionEvent actionEvent) {
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) docDownloadButton.getScene().getWindow();
+
         this.fileManager.downloadFromUrl(this.inclusionsStage, this.selectedDoc);
     }
 
     @FXML
     private void removeDocAction(ActionEvent actionEvent) {
-        this.fileManager.removeFile(this.selectedDoc);
+        if(this.selectedDoc != null)
+            this.fileManager.removeFile(this.selectedDoc);
     }
 
     @FXML
     private void searchDocAction(ActionEvent actionEvent) {
-        this.fileManager.searchFile();
+        if(this.searchDocField.getText() != null)
+            this.fileManager.getFileFromFtp(this.searchDocField.getText());
     }
 
     @FXML
     private void editAction(ActionEvent actionEvent) {
-        this.inclusionsStage = (Stage) editButton.getScene().getWindow();
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) editButton.getScene().getWindow();
+
         new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection, this.fileManager);
     }
 
     @FXML
-    private void refDownloadAction(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
     private void addAction(ActionEvent actionEvent) {
-        this.inclusionsStage = (Stage) editButton.getScene().getWindow();
+        if(this.inclusionsStage == null)
+            this.inclusionsStage = (Stage) addButton.getScene().getWindow();
+
         new AddInclusionsView(this.inclusionsStage, this.selectedInclusion, this.connection, this.fileManager);
     }
 }
