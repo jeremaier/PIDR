@@ -6,20 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.commons.net.ftp.FTPClient;
 import src.controller.LesionsController;
 import src.utils.FileManager;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class LesionsView {
-    public LesionsView(Stage stage, Connection connection, FileManager fileManager) {
+    public LesionsView(Connection connection, FileManager fileManager) {
         Parent rootLog = null;
+        Stage LesionsStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        stage.setTitle("Lesions");
+        LesionsStage.setTitle("Lesions");
         viewLoader.setLocation(getClass().getResource("/ressource/Lesions.fxml"));
         viewLoader.setControllerFactory(iC -> new LesionsController());
 
@@ -29,26 +28,10 @@ public class LesionsView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> {
-            Platform.exit();
-
-            try {
-                FTPClient ftpConnection = fileManager.getConnection();
-                ftpConnection.logout();
-                ftpConnection.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                connection.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        LesionsStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        LesionsStage.setScene(new Scene(rootLog));
+        LesionsStage.show();
     }
 }

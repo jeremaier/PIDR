@@ -1,6 +1,5 @@
 package src.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -15,6 +14,7 @@ import src.view.PatientsView;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.Date;
 import java.util.ResourceBundle;
 
 public class AddInclusionController implements Initializable {
@@ -42,14 +42,16 @@ public class AddInclusionController implements Initializable {
     Label reference2FileLabel;
 
     private Inclusion inclusion;
+    private InclusionsController inclusionsController;
     private InclusionDaoImpl inclusionDaoImpl;
     private Connection connection;
     private Stage addInclusionStage;
+    private FileManager fileManager;
     private int patientId;
     private String initiales;
-    private FileManager fileManager;
 
-    public AddInclusionController(Inclusion inclusion, Connection connection, FileManager fileManager) {
+    public AddInclusionController(InclusionsController inclusionsController, Inclusion inclusion, Connection connection, FileManager fileManager) {
+        this.inclusionsController = inclusionsController;
         this.inclusion = inclusion;
         this.connection = connection;
         this.fileManager = fileManager;
@@ -59,11 +61,10 @@ public class AddInclusionController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.inclusionDaoImpl = new InclusionDaoImpl(connection);
 
-        if(this.inclusion != null)
+        if (this.inclusion != null) {
             this.setInclusionInformations();
-
-        if(this.inclusion != null)
             this.addButton.setText("Modifier");
+        }
     }
 
     private void setInclusionInformations() {
@@ -71,74 +72,85 @@ public class AddInclusionController implements Initializable {
         this.inclusion = inclusionDaoImpl.selectById(inclusion.getId());*/
         this.inclusionIDField.setText(Integer.toString(this.inclusion.getId()));
         this.patientLabel.setText(this.inclusion.getInitialesPatient());
-        this.reference1FileLabel.setText(FileManager.getFileName(this.inclusion.getReference1()));
-        this.reference2FileLabel.setText(FileManager.getFileName(this.inclusion.getReference2()));
+        this.reference1FileLabel.setText(FileManager.getFileName(this.inclusion.getReference1(), false));
+        this.reference2FileLabel.setText(FileManager.getFileName(this.inclusion.getReference2(), false));
         this.inclusionDatePicker.setValue(this.inclusion.getDateInclusion().toLocalDate());
     }
 
     void setPatientInformations(int patientId, String initiales) {
         this.patientId = patientId;
         this.initiales = initiales;
+        this.patientLabel.setText(this.initiales);
     }
 
     @FXML
-    private void addAction(ActionEvent actionEvent) {
-        inclusion = new Inclusion();
-        inclusionDaoImpl.update(inclusion, Integer.getInteger(this.inclusionIDField.getText()));
-    }
+    private void addAction() {
+        if (this.inclusion == null) {
+            this.inclusion = new Inclusion(Integer.getInteger(this.inclusionIDField.getText()),
+                    this.patientId,
+                    this.initiales,
+                    FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference1FileLabel.getText(),
+                    FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference2FileLabel.getText(),
+                    Date.valueOf(this.inclusionDatePicker.getValue()),
+                    Integer.getInteger(this.idAnapathField.getText()),
+                    null);
+            this.inclusionDaoImpl.insert(inclusion);
+            this.inclusionsController.populateInclusion(this.inclusion);
+        } else {
+            this.inclusion.setIdPatient(this.patientId);
+            this.inclusion.setInitialesPatient(this.initiales);
+            this.inclusion.setReference1(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference1FileLabel.getText());
+            this.inclusion.setReference2(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference2FileLabel.getText());
+            this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
+            this.inclusion.setNumAnaPath(Integer.getInteger(this.idAnapathField.getText()));
+            this.inclusionDaoImpl.update(inclusion, Integer.getInteger(this.inclusionIDField.getText()));
+            this.inclusionsController.refreshInclusions();
+        }
 
-    @FXML
-    private void addPatientAction(ActionEvent actionEvent) {
-        new PatientsView(connection, this);
-    }
+        if (addInclusionStage == null)
+            this.addInclusionStage = (Stage) addButton.getScene().getWindow();
 
-    @FXML
-    private void cancelAction(ActionEvent actionEvent) {
-        if(this.addInclusionStage == null)
-            this.addInclusionStage = (Stage) cancelButton.getScene().getWindow();
-
-        fileManager.downloadFromUrl(addInclusionStage, this.inclusion.getReference1());
         this.addInclusionStage.close();
     }
 
     @FXML
-    private void reference1FileAction(ActionEvent actionEvent) {
+    private void addPatientAction() {
+        new PatientsView(connection, this);
+    }
+
+    @FXML
+    private void cancelAction() {
+        if(this.addInclusionStage == null)
+            this.addInclusionStage = (Stage) cancelButton.getScene().getWindow();
+
+        this.addInclusionStage.close();
+    }
+
+    @FXML
+    private void reference1FileAction() {
+        fileManager.openFTPConnection();
+
         if(this.reference1FileLabel.getText().equals("Aucun")) {
             if(this.addInclusionStage == null)
                 this.addInclusionStage = (Stage) reference1FileButton.getScene().getWindow();
 
+            fileManager.uploadToURL(this.addInclusionStage, FileManager.getRefDirectoryName(inclusionIDField.getText()), null);
         } else fileManager.removeFile(this.inclusion.getReference1());
+
+        fileManager.closeConnection();
     }
 
     @FXML
-    private void reference2FileAction(ActionEvent actionEvent) {
+    private void reference2FileAction() {
+        fileManager.openFTPConnection();
+
         if(this.reference2FileLabel.getText().equals("Aucun")) {
             if(this.addInclusionStage == null)
                 this.addInclusionStage = (Stage) reference2FileButton.getScene().getWindow();
 
-            fileManager.uploadToURL(this.addInclusionStage, "references");
+            fileManager.uploadToURL(this.addInclusionStage, "references", null);
         } else fileManager.removeFile(this.inclusion.getReference2());
+
+        fileManager.closeConnection();
     }
-
-    /*@FXML
-    private void addInclusionAction(ActionEvent actionEvent) {
-        int id, int idPatient, File reference1, File reference2, Date dateInclusion, int numAnaPath
-        Inclusion inclusion = new Inclusion(Integer.getInteger(this.idInclusionField.getText()),
-                Integer.getInteger(this..getText()),
-        this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
-        inclusionDaolmpl.insert(inclusion);
-        this.populatePatient(inclusion);
-    }
-
-    @FXML
-    private void updateInclusionInformations(ActionEvent actionEvent) {
-        Inclusion patient = new Inclusion(Integer.getInteger(this.idInclusionField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.getInteger(this.dateField.getText()));
-        inclusionDaolmpl.update(patient, patient.getId());
-    }
-
-    private void populateInclusion(Inclusion patient) {
-        this.inclusionsList.add(patient);
-        this.populateInclusions(this.inclusionsList);
-    }*/
-
 }

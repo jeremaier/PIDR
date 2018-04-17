@@ -6,14 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.commons.net.ftp.FTPClient;
 import src.controller.InclusionsController;
 import src.utils.FileManager;
-import sun.net.ftp.FtpClient;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class InclusionsView {
     public InclusionsView(Connection connection, FileManager fileManager) {
@@ -32,27 +29,11 @@ public class InclusionsView {
             inclusionsWindow.close();
         }
 
-        inclusionsWindow.setOnCloseRequest((WindowEvent event) -> {
-            Platform.exit();
-
-            try {
-                FTPClient ftpConnection = fileManager.getConnection();
-                ftpConnection.logout();
-                ftpConnection.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                connection.close();
-            } catch(SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        inclusionsWindow.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
         inclusionsWindow.setResizable(false);
-        inclusionsWindow.setScene(new Scene(rootLog));
+        inclusionsWindow.setScene(new Scene(rootLog, 788, 600));
         inclusionsWindow.show();
     }
 }

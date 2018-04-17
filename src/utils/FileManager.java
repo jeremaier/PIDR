@@ -6,8 +6,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -15,48 +13,70 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
-import java.net.URL;
 
 public class FileManager {
-    private FTPClient ftpClient;
+    private final static String procDirectoryName = ".//procedures";
+    private final static String resDirectoryName = ".//resultats";
+    private final static String refDirectoryName = "//ref";
+    private SSLSessionReuseFTPSClient ftpClient;
+    private String user;
+    private String password;
 
     public FileManager(String user, String password) {
-        this.openFTPConnection(user, password);
+        this.user = user;
+        this.password = password;
+        this.openFTPConnection();
     }
 
-    private void openFTPConnection(String user, String password) {
-        ftpClient = new FTPClient();
-        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+    public static String getFileName(String url, boolean upload) {
+        String[] urlSplit;
 
-        try {
-            ftpClient.connect("193.54.21.7");
-            int reply = ftpClient.getReplyCode();
+        if (upload)
+            urlSplit = url.split(File.separator);
+        else urlSplit = url.split("//");
 
-            if(!FTPReply.isPositiveCompletion(reply))
-                ftpClient.disconnect();
-
-            ftpClient.login(user, password);
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.enterLocalActiveMode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        for (String urla : urlSplit) {
+            System.out.println("1 " + urla);
         }
-    }
-
-    public FTPClient getConnection() {
-        return this.ftpClient;
-    }
-
-    public static String getFileName(String url) {
-        String[] urlSplit = url.split(File.separator);
 
         return urlSplit[urlSplit.length - 1];
+    }
+
+    private static File openDirectoryChooser(Stage stage) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choisissez un dossier");
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return directoryChooser.showDialog(stage);
+    }
+
+    public static String getFilePath(String name) {
+        String directoryPath = System.getProperty("user.dir") + "//saves";
+        File folder = new File(directoryPath);
+
+        if (!folder.exists())
+            folder.mkdirs();
+
+        return folder.getAbsoluteFile() + "//" + name;
+    }
+
+    public static String getRefDirectoryName(String inclusionId) {
+        return "//" + refDirectoryName + "//" + inclusionId;
+    }
+
+    public static String getProcDirectoryName() {
+        return procDirectoryName;
+    }
+
+    public static String getResDirectoryName() {
+        return resDirectoryName;
+    }
+
+    private static void openAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Erreur d'URL");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMessage);
+        alert.showAndWait();
     }
 
     public ObservableList<String> listFiles(String directory) {
@@ -70,19 +90,58 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de commnuniquer avec le serveur");
-        } finally {
-            try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         return fileList;
     }
 
-    public final ObservableList<String> getFileFromFtp(String name) {
-        String directory = FilenameUtils.getPath(name);
+    public FTPClient getConnection() {
+        return this.ftpClient;
+    }
+
+    public void openFTPConnection() {
+        System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
+        ftpClient = new SSLSessionReuseFTPSClient();
+        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+        ftpClient.setConnectTimeout(2000);
+        ftpClient.setDataTimeout(300);
+
+        try {
+            ftpClient.connect("193.54.21.7");
+            ftpClient.setKeepAlive(true);
+
+            ftpClient.execPROT("P");
+
+            int reply = ftpClient.getReplyCode();
+
+            if (!FTPReply.isPositiveCompletion(reply))
+                ftpClient.disconnect();
+
+            ftpClient.login(this.user, this.password);
+            ftpClient.setSoTimeout(5000);
+            ftpClient.setControlKeepAliveTimeout(120);
+            ftpClient.setControlKeepAliveReplyTimeout(120);
+            ftpClient.setBufferSize(1024 * 1024);
+            ftpClient.setAutodetectUTF8(true);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeConnection() {
+        if (this.getConnection() != null) {
+            try {
+                ftpClient.logout();
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public final ObservableList<String> getFileFromFtp(String name, String directory) {
         ObservableList<String> fileList = this.listFiles(directory);
         ObservableList<String> fileMatchList = FXCollections.observableArrayList();
 
@@ -94,92 +153,81 @@ public class FileManager {
         return fileMatchList;
     }
 
-    public final void removeFile(String url) {
+    public final boolean removeFile(String url) {
         try {
             ftpClient.deleteFile(url);
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de supprimer le fichier");
-        } finally {
-            try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return false;
         }
+
+        return true;
     }
 
-    public final void downloadFromUrl(Stage stage, String url) {
+    public final void downloadFromUrl(Stage stage, String url, String mesure) {
         File selectedDirectory = FileManager.openDirectoryChooser(stage);
 
         if(selectedDirectory != null) {
             try {
-                FileUtils.copyURLToFile(new URL(url), new File(selectedDirectory.getAbsolutePath() + File.separator + FileManager.getFileName(url)), 5000, 10000);
+                File file = new File(selectedDirectory + "//" + (mesure == null ? "" : mesure + "=") + FileManager.getFileName(url, false));
+                OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+                ftpClient.retrieveFile(url, outputStream);
+                outputStream.close();
             } catch(IOException e) {
                 e.printStackTrace();
-
                 FileManager.openAlert("Téléchargement impossible / Erreur de connexion");
-            } finally {
-                try {
-                    ftpClient.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
 
-    public final void uploadToURL(Stage stage, String dossier) {
+    public final String uploadToURL(Stage stage, String dossier, String mesure) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisissez un fichier");
-        fileChooser.setInitialDirectory(new File("user.dir"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         File selectedFile = fileChooser.showOpenDialog(stage);
-        InputStream input = null;
+        String fileName = null;
 
         if(selectedFile != null) {
+            InputStream input = null;
+
             try {
                 input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
             }
 
+            fileName = FileManager.getFileName(selectedFile.toString(), true);
+
             try {
-                this.ftpClient.storeFile(dossier + File.separator + FileManager.getFileName(selectedFile.toString()), input);
+                this.makeDirectories(dossier);
+
+                if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
+                    fileName = null;
             } catch(IOException e) {
                 e.printStackTrace();
                 FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
-            } finally {
+            }
+        }
+
+        return fileName;
+    }
+
+    private void makeDirectories(String directories) {
+        String[] directoriesPath = directories.split("//");
+
+        if (directoriesPath.length > 0) {
+            for (String dir : directoriesPath) {
                 try {
-                    ftpClient.disconnect();
+                    if (!this.ftpClient.changeWorkingDirectory(dir))
+                        if (this.ftpClient.makeDirectory(dir))
+                            this.ftpClient.changeWorkingDirectory(dir);
                 } catch (IOException e) {
+                    FileManager.openAlert("Problème de communication avec le serveur");
                     e.printStackTrace();
                 }
             }
         }
-    }
-
-    private static void openAlert(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Erreur d'URL");
-        alert.setHeaderText(null);
-        alert.setContentText(errorMessage);
-        alert.showAndWait();
-    }
-
-    private static File openDirectoryChooser(Stage stage) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choisissez un dossier");
-        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        return directoryChooser.showDialog(stage);
-    }
-
-    public static String getFilePath(String name) {
-        String directoryPath = System.getProperty("user.dir") + File.separator + "saves";
-        File folder = new File(directoryPath);
-
-        if (!folder.exists())
-            folder.mkdirs();
-
-        return folder.getAbsoluteFile() + File.separator + name;
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.AddInclusionController;
+import src.controller.InclusionsController;
 import src.table.Inclusion;
 import src.utils.FileManager;
 
@@ -14,13 +15,16 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddInclusionsView {
-    public AddInclusionsView(Stage stage, Inclusion inclusion, Connection connection, FileManager fileManager) {
+    public AddInclusionsView(Stage stage, InclusionsController inclusionsController, Inclusion inclusion, Connection connection, FileManager fileManager) {
         Parent rootLog = null;
+        Stage addInclusionStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        stage.setTitle("Ajout d'une inclusion");
-        viewLoader.setLocation(getClass().getResource("/ressource/AddInclusions.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddInclusionController(inclusion, connection, fileManager));
+        addInclusionStage.setTitle("Ajout d'une inclusion");
+        addInclusionStage.setX(stage.getX() + stage.getWidth() / 2);
+        addInclusionStage.setY(stage.getY() + stage.getHeight() / 2);
+        viewLoader.setLocation(getClass().getResource("/ressource/AddInclusion.fxml"));
+        viewLoader.setControllerFactory(iC -> new AddInclusionController(inclusionsController, inclusion, connection, fileManager));
 
         try {
             rootLog = viewLoader.load();
@@ -28,10 +32,10 @@ public class AddInclusionsView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        addInclusionStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        addInclusionStage.setScene(new Scene(rootLog));
+        addInclusionStage.show();
     }
 }
