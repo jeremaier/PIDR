@@ -73,7 +73,7 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
     }
 
     @Override
-    public List<CutaneousSite> selectAll() {
+    public ObservableList<CutaneousSite> selectAll() {
         ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
         Statement statement = null;
         ResultSet resultSet;
@@ -100,16 +100,77 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
     }
 
     @Override
+    public ObservableList<CutaneousSite> selectSain() {
+        ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
+        Statement statement = null;
+        ResultSet resultSet;
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM site_cutane WHERE SAIN = 1");
+            site = this.addToObservableList(site, resultSet);
+
+            System.out.println("SELECT * FROM site_cutane SAIN = 1");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return site;
+    }
+
+
+
+    /**TODO Prendre seulement les Site avec la bonne id Lésion
+    @Override
+    public ObservableList<CutaneousSite> selectNonSain(int id) {
+        ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
+        Statement statement = null;
+        ResultSet resultSet;
+
+        try {
+            statement = connection.createStatement();
+            //resultSet = statement.executeQuery("SELECT * FROM site_cutane WHERE SAIN = 0 AND ID_LESION = ?");
+
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
+            preparedStatement.setInt(6, id);
+            site = this.addToObservableList(site, resultSet);
+
+            System.out.println("SELECT * FROM site_cutane SAIN = 0");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return site;
+    }
+**/
+    /**TODO Prendre seulement les Site avec la bonne id Lésion
+    @Override
     public void update(CutaneousSite site, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SAIN = ?, NUM_MESURE = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SAIN = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SAIN = ?, NUM_MESURE = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
+            System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SAIN = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -123,7 +184,7 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
         }
 
     }
-
+**/
     private ObservableList<CutaneousSite> addToObservableList(ObservableList<CutaneousSite> site, ResultSet resultSet) {
         try {
             while (resultSet.next())
@@ -144,12 +205,15 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
         return site;
     }
 
+    public void delete(int id) {
+        this.delete(connection, "site_cutane", id);
+    }
+
     private CutaneousSite addToSite(CutaneousSite site, ResultSet resultSet) throws SQLException {
 
         site.setId(resultSet.getInt("ID"));
         site.setIdLesion(resultSet.getInt("ID_LESION"));
-        site.setHealthy(resultSet.getBoolean("SAIN"));
-        site.setMeasurementNumber(resultSet.getString("NUM_MESURE"));
+        site.setHealthy(resultSet.getInt("SAIN"));
         site.setSite(resultSet.getString("SITE"));
         site.setOrientation(resultSet.getInt("ORIENTATION"));
         site.setDiag(resultSet.getString("DIAGNOSTIC"));
@@ -164,13 +228,12 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
 
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getId());
         preparedStatement.setInt(indexDebut + 2, ((CutaneousSite) object).getIdLesion());
-        preparedStatement.setBoolean(indexDebut + 3, ((CutaneousSite) object).getHealthy());
-        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getMeasurementNumber());
-        preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getSite());
-        preparedStatement.setInt(indexDebut + 6, ((CutaneousSite) object).getOrientation());
-        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getDiag().toString());
-        preparedStatement.setString(indexDebut + 8, ((CutaneousSite) object).getAutreDiag());
-        preparedStatement.setString(indexDebut + 9, ((CutaneousSite) object).getSpectre());
+        preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getHealthy());
+        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getSite());
+        preparedStatement.setInt(indexDebut + 5, ((CutaneousSite) object).getOrientation());
+        preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getDiag().toString());
+        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getAutreDiag());
+        preparedStatement.setString(indexDebut + 8, ((CutaneousSite) object).getSpectre());
 
         return preparedStatement;
     }

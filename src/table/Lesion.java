@@ -15,6 +15,7 @@ public class Lesion {
     private StringProperty siteAnatomique;
     private Diag diag;
     private StringProperty autreDiag;
+    private String fichierMoy;
 
     public Lesion() {
         this.id = new SimpleIntegerProperty();
@@ -23,7 +24,7 @@ public class Lesion {
         this.autreDiag = new SimpleStringProperty();
     }
 
-    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag) {
+    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fichierMoy) {
         this();
         this.setId(id);
         this.setIdInclusion(idInclusion);
@@ -33,6 +34,7 @@ public class Lesion {
         this.setSiteAnatomique(siteAnatomique);
         this.diag = Diag.valueOf(diag);
         this.setAutreDiag(autreDiag);
+        this.fichierMoy=fichierMoy;
     }
 
     public int getId() {
@@ -98,6 +100,10 @@ public class Lesion {
     public void setAutreDiag(String autreDiag) {
         this.autreDiag.set(autreDiag);
     }
+
+    public String getFichierMoy(){ return this.fichierMoy;    }
+
+    public void setFichierMoy(String fichierMoy){ this.fichierMoy=fichierMoy; }
 
     public IntegerProperty idProperty() {
         return this.id;

@@ -6,8 +6,7 @@ import src.utils.Diag;
 public class CutaneousSite {
     private IntegerProperty id;
     private IntegerProperty idLesion;
-    private BooleanProperty healthy;
-    private StringProperty measurementNumber;
+    private IntegerProperty healthy;
     private StringProperty site;
     private IntegerProperty orientation;
     private Diag diag;
@@ -17,19 +16,18 @@ public class CutaneousSite {
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
-        this.healthy = new SimpleBooleanProperty();
-        this.measurementNumber = new SimpleStringProperty();
+        this.healthy = new SimpleIntegerProperty();
         this.site = new SimpleStringProperty();
         this.orientation = new SimpleIntegerProperty();
         this.autreDiag = new SimpleStringProperty();
+        this.spectre = new SimpleStringProperty();
     }
 
-    public CutaneousSite(int id, int idLesion, boolean healthy, String measurementNumber, String site, int orientation, String diag, String autreDiag, String spectre) {
+    public CutaneousSite(int id, int idLesion, int healthy, String measurementNumber, String site, int orientation, String diag, String autreDiag, String spectre) {
         this();
         this.setId(id);
         this.setIdLesion(idLesion);
         this.setHealthy(healthy);
-        this.setMeasurementNumber(measurementNumber);
         this.setSite(site);
         this.setOrientation(orientation);
         this.setDiag(diag);
@@ -53,20 +51,12 @@ public class CutaneousSite {
         this.idLesion.set(idLesion);
     }
 
-    public boolean getHealthy() {
+    public int getHealthy() {
         return this.healthy.get();
     }
 
-    public void setHealthy(boolean healthy) {
+    public void setHealthy(int healthy) {
         this.healthy.set(healthy);
-    }
-
-    public String getMeasurementNumber() {
-        return this.measurementNumber.get();
-    }
-
-    public void setMeasurementNumber(String measurementNumber) {
-        this.measurementNumber.set(measurementNumber);
     }
 
     public String getSite() {
@@ -113,13 +103,10 @@ public class CutaneousSite {
         return this.idLesion;
     }
 
-    public BooleanProperty healthyProperty() {
+    public IntegerProperty healthyProperty() {
         return this.healthy;
     }
 
-    public StringProperty measurementNumberProperty() {
-        return this.measurementNumber;
-    }
 
     public StringProperty siteProperty() {
         return this.site;

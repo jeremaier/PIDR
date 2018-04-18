@@ -16,9 +16,6 @@ public class AddSiteController implements Initializable {
     CheckBox sain;
 
     @FXML
-    TextField numMesure;
-
-    @FXML
     TextField orientation;
 
     @FXML
@@ -51,8 +48,11 @@ public class AddSiteController implements Initializable {
     @FXML
     Button ajouter;
 
-    @Override
+
+    public AddSiteController();
+
     public void initialize(URL location, ResourceBundle resources) {
+
     }
 
 }

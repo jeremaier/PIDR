@@ -19,11 +19,11 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 1);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?))");
+            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?))");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -103,12 +103,12 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ? WHERE ID = ?");
+            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -151,6 +151,7 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
         lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
         lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
+        lesion.setFichierMoy(resultSet.getString("FICHIER_MOY"));
 
         return lesion;
     }
@@ -170,6 +171,7 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         preparedStatement.setString(indexDebut + 5, ((Lesion) object).getSiteAnatomique());
         preparedStatement.setString(indexDebut + 6, ((Lesion) object).getDiag().toString());
         preparedStatement.setString(indexDebut + 7, ((Lesion) object).getAutreDiag());
+        preparedStatement.setString(indexDebut + 8, ((Lesion) object).getFichierMoy());
 
         return preparedStatement;
     }
