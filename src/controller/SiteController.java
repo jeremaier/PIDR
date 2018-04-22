@@ -101,8 +101,8 @@ public class SiteController implements Initializable {
         this.diagSain.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
 
         this.siteCutaneDaompl = new SiteCutaneDaompl(connection);
-        this.siteListeSain= siteCutaneDaompl.selectSain();
-        this.siteListeNonSain = siteCutaneDaompl.selectNonSain();
+        this.siteListeSain= siteCutaneDaompl.selectSain(this.lesion.getId());
+        this.siteListeNonSain = siteCutaneDaompl.selectNonSain(this.lesion.getId());
 
         this.populateSite(siteListeNonSain,siteListeSain);
 
@@ -210,7 +210,7 @@ public class SiteController implements Initializable {
             this.siteStage = (Stage) fichierMoy.getScene().getWindow();
         }
         //openFTPConnection();
-        this.fileManager.downloadFromUrl(siteStage,this.lesion.getFichierMoy());
+        //this.fileManager.downloadFromUrl(siteStage,this.lesion.getFichierMoy());
         //closeConnection();
     }
 
@@ -261,7 +261,7 @@ public class SiteController implements Initializable {
             String[] s = this.selectedSite.getSpectre().split("|");
 
             //openFTPConnection();
-            this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
+           // this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
             //closeConnection();
         }
     }

@@ -63,5 +63,5 @@
     <Button fx:id="fichierMoy" disable="true" layoutX="582.0" layoutY="440.0" mnemonicParsing="false"
             prefHeight="31.0" prefWidth="196.0" text="Fichier moyenné"/>
     <ListView layoutX="22.0" layoutY="454.0" prefHeight="133.0" prefWidth="112.0"/>
-    <Button disable="true" layoutX="148.0" layoutY="471.0" mnemonicParsing="false" text="Télécharger le spectre"/>
+    <Button fx:id="downloadSpectre" disable="true" layoutX="148.0" layoutY="471.0" mnemonicParsing="false" text="Télécharger le spectre"/>
 </AnchorPane>

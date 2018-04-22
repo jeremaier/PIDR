@@ -100,23 +100,32 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
     }
 
     @Override
-    public ObservableList<CutaneousSite> selectSain() {
+    public ObservableList<CutaneousSite> selectSain(int id) {
         ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
-        Statement statement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
 
         try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM site_cutane WHERE SAIN = 1");
+            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE SAIN = 1 AND ID_LESION = ?");
+            preparedStatement.setInt(2, id);
+            resultSet = preparedStatement.executeQuery();
             site = this.addToObservableList(site, resultSet);
 
             System.out.println("SELECT * FROM site_cutane SAIN = 1");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(statement != null) {
+            if(resultSet != null) {
                 try {
-                    statement.close();
+                    resultSet.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -128,28 +137,34 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
 
 
 
-    /**TODO Prendre seulement les Site avec la bonne id Lésion
+
     @Override
     public ObservableList<CutaneousSite> selectNonSain(int id) {
         ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
-        Statement statement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
 
         try {
-            statement = connection.createStatement();
-            //resultSet = statement.executeQuery("SELECT * FROM site_cutane WHERE SAIN = 0 AND ID_LESION = ?");
-
-            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
-            preparedStatement.setInt(6, id);
+            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE SAIN = 0 AND ID_LESION = ?");
+            preparedStatement.setInt(2, id);
+            resultSet = preparedStatement.executeQuery();
             site = this.addToObservableList(site, resultSet);
 
             System.out.println("SELECT * FROM site_cutane SAIN = 0");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(statement != null) {
+            if(resultSet != null) {
                 try {
-                    statement.close();
+                    resultSet.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
                 } catch(SQLException e) {
                     e.printStackTrace();
                 }
@@ -158,8 +173,8 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
 
         return site;
     }
-**/
-    /**TODO Prendre seulement les Site avec la bonne id Lésion
+
+
     @Override
     public void update(CutaneousSite site, int id) {
         PreparedStatement preparedStatement = null;
@@ -184,7 +199,7 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
         }
 
     }
-**/
+
     private ObservableList<CutaneousSite> addToObservableList(ObservableList<CutaneousSite> site, ResultSet resultSet) {
         try {
             while (resultSet.next())

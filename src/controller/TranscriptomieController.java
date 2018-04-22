@@ -102,7 +102,7 @@ public class TranscriptomieController implements Initializable {
             this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
         }
         //openFTPConnection();
-        this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut());
+        //this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut());
         //closeConnection();
     }
 
@@ -111,9 +111,11 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null){
             this.transcriptomieStage = (Stage) fichierCut.getScene().getWindow();
         }
+        /**TODO C KOI LE BORDEL AVEC FILEMANAGEUR
         //openFTPConnection();
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut());
+        //this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut());
         //closeConnection();
+         **/
     }
 
     @FXML
@@ -121,7 +123,7 @@ public class TranscriptomieController implements Initializable {
         if(this.transcriptomieStage == null){
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
         }
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport());
+        //this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport());
     }
 
 
