@@ -1,11 +1,9 @@
 package src.view;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import src.controller.AddInclusionController;
 import src.controller.InclusionsController;
 import src.table.Inclusion;
@@ -31,8 +29,6 @@ public class AddInclusionsView {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        addInclusionStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
         addInclusionStage.setScene(new Scene(rootLog));

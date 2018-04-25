@@ -1,13 +1,14 @@
 package src.daoImpl;
 
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.LameHistologiqueDao;
 import src.table.HistologicLamella;
+import src.utils.FileManager;
 
 import java.sql.*;
-
 import java.util.List;
 
 public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueDao {
@@ -29,6 +30,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lame_histoloqique (ID, ID_SITE_CUTANE, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -54,6 +58,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
             preparedStatement.setInt(1, lame.getId());
             resultSet = preparedStatement.executeQuery();
             lame = this.addToLame(lame, resultSet);
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -89,6 +96,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
             lame = this.addToObservableList(lame, resultSet);
 
             System.out.println("SELECT * FROM lame");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -115,6 +125,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE lame SET ID_LESION = ?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -132,7 +145,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
         try {
             while (resultSet.next())
                 lame.add(this.addToLame(new HistologicLamella(), resultSet));
-
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

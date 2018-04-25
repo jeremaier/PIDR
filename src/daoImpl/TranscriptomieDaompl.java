@@ -1,9 +1,11 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.TranscriptomieDao;
 import src.table.TranscriptomicAnalysis;
+import src.utils.FileManager;
 
 import java.sql.*;
 import java.util.List;
@@ -23,6 +25,9 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
             preparedStatement.executeUpdate();
             System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)\" + \"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -124,6 +129,9 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE analyse_transcriptomique SET" + "ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, FICHIER_CUT = ?, RNA = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -143,6 +151,9 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
             while (resultSet.next())
                 transcr.add(this.addToTranscriptomie(new TranscriptomicAnalysis(), resultSet));
 
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

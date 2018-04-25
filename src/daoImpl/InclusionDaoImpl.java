@@ -1,10 +1,12 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.InclusionDao;
 import src.table.Inclusion;
 import src.utils.Diag;
+import src.utils.FileManager;
 
 import java.sql.*;
 
@@ -24,6 +26,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 1);
             preparedStatement.executeUpdate();
             System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -48,6 +53,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement.setInt(1, inclusion.getId());
             resultSet = preparedStatement.executeQuery();
             inclusion = this.addToInclusion(inclusion, resultSet);
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -138,6 +146,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                 return this.selectAll();
 
             System.out.println("SELECT * FROM inclusion WHERE ID ^ DATE_INCLUSION ^ NUM_ANAPATH ^ INITIALES ^ DIAG");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -165,6 +176,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             inclusions = this.addToObservableList(inclusions, resultSet);
 
             System.out.println("SELECT * FROM inclusion");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -191,6 +205,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
             preparedStatement.executeUpdate();
             System.out.println("UPDATE inclusion SET ID_PATIENT = ? WHERE ID = ?");
+        } catch(MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -215,6 +232,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
             preparedStatement.executeUpdate();
             System.out.println("UPDATE inclusion SET ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -233,6 +253,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             while(resultSet.next())
                 inclusions.add(this.addToInclusion(new Inclusion(), resultSet));
 
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {

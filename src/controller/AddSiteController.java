@@ -49,7 +49,8 @@ public class AddSiteController implements Initializable {
     Button ajouter;
 
 
-    public AddSiteController();
+    public AddSiteController() {
+    }
 
     public void initialize(URL location, ResourceBundle resources) {
 

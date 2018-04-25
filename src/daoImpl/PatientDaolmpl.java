@@ -1,9 +1,11 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.PatientDao;
 import src.table.Patient;
+import src.utils.FileManager;
 
 import java.sql.*;
 
@@ -18,11 +20,17 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     public void insert(Patient patient) {
         PreparedStatement preparedStatement = null;
 
-        try {
-            preparedStatement = connection.prepareStatement("INSERT INTO patient (INITIALES, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?)");
+        /*TODO probleme avec les dates*/
+        if (patient.getAnneeNaissance() < 1000)
+            FileManager.openAlert("Annee invalide");
+        else try {
+            preparedStatement = connection.prepareStatement("INSERT INTO patient (ID, INITIALES, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 1);
             preparedStatement.executeUpdate();
-            System.out.println("INSERT INTO patient (INITIALES, GENRE, DATENAISSANCE)");
+            System.out.println("INSERT INTO patient (ID, INITIALES, GENRE, ANNEE_NAISSANCE)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -33,14 +41,6 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                     e.printStackTrace();
                 }
             }
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
@@ -59,6 +59,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                 patient = this.addToPatient(patient, resultSet);
 
             System.out.println("SELECT * FROM patient WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -113,6 +116,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
                 return this.selectAll();
 
             System.out.println("SELECT * FROM patient WHERE ID ^ INITIALES");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -141,6 +147,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             patients = this.addToObservableList(patients, resultSet);
 
             System.out.println("SELECT * FROM patient");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -167,6 +176,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE patient SET INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -184,6 +196,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         try {
             while(resultSet.next())
                 patients.add(this.addToPatient(new Patient(), resultSet));
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -203,7 +218,7 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         patient.setId(resultSet.getInt("ID"));
         patient.setInitiales(resultSet.getString("INITIALES"));
         patient.setGenre(resultSet.getString("GENRE"));
-        patient.setDateNaissance(resultSet.getInt("DATENAISSANCE"));
+        patient.setDateNaissance(resultSet.getInt("ANNEE_NAISSANCE"));
 
         return patient;
     }

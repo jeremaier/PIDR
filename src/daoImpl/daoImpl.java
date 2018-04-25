@@ -24,14 +24,6 @@ public abstract class daoImpl {
                     e.printStackTrace();
                 }
             }
-
-            if(connection != null) {
-                try {
-                    connection.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

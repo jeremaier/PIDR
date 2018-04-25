@@ -998,7 +998,7 @@
     -fx-opacity: .4;
 }
 
-.radio-menu-item:checked > .left-container > .radio {
+.radio-menu-item:selected > .left-container > .radio {
     -fx-shape: "M9.005,17.766l13.759,14.739h1.716L49.02,0l10.298,8.488L25.997,50.453h-3.629L0,26.897L9.005,17.766z";
     -fx-padding: 7px;
     -fx-scale-shape: true;
@@ -1067,4 +1067,20 @@
     -fx-fill: #F5F0EC;
     -fx-stroke: transparent;
     -fx-stroke-width: 0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * List Box                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+
+.vbox {
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 5.0;
+    -fx-border-style: solid inside;
+    -fx-border-width: 1;
+    -fx-border-insets: 5;
+    -fx-border-radius: 3;
+    -fx-border-color: grey;
 }

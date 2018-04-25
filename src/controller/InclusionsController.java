@@ -195,9 +195,9 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void searchAction() {
-        inclusionsList = inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.getInteger(this.idInclusionField.getText()),
+        inclusionsList = inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
                 this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
-                this.idAnapathField.getText().equals("") ? 0 : Integer.getInteger(this.idAnapathField.getText()),
+                this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
                 this.initialesField.getText(),
                 this.diagnosticChoiceBox.getValue());
 
@@ -212,7 +212,7 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void removeAction() {
-        inclusionDaoImpl.delete(Integer.getInteger(idInclusionField.getText()));
+        inclusionDaoImpl.delete(Integer.parseInt(idInclusionField.getText()));
         inclusionsList.remove(selectedInclusion);
         this.populateInclusions();
     }

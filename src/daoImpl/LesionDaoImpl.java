@@ -1,9 +1,11 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.LesionDao;
 import src.table.Lesion;
+import src.utils.FileManager;
 
 import java.sql.*;
 
@@ -24,7 +26,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?))");
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(preparedStatement != null) {
@@ -48,7 +53,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement.setInt(1, lesion.getId());
             resultSet = preparedStatement.executeQuery();
             lesion = this.addToLesion(lesion, resultSet);
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(resultSet != null) {
@@ -83,7 +91,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             lesions = this.addToObservableList(lesions, resultSet);
 
             System.out.println("SELECT * FROM lesion");
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(statement != null) {
@@ -103,13 +114,16 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(preparedStatement != null) {
@@ -127,7 +141,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             while(resultSet.next())
                 lesions.add(this.addToLesion(new Lesion(), resultSet));
 
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(resultSet != null) {
