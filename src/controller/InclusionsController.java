@@ -111,7 +111,7 @@ public class InclusionsController implements Initializable {
 
         resList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (resList.getSelectionModel().getSelectedItem() != null)
-                selectedDoc = FileManager.getProcDirectoryName() + "//" + newValue;
+                selectedDoc = FileManager.getResDirectoryName() + "//" + newValue;
         });
 
         this.idInclusionField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -125,16 +125,16 @@ public class InclusionsController implements Initializable {
                     initialesField.setText(initialesField.getText().substring(0, 4));
         });
 
-        resList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
-            if (resList.getSelectionModel().getSelectedItem() != null)
-                procList.getSelectionModel().clearSelection();
+        this.resList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
+            if (this.resList.getSelectionModel().getSelectedItem() != null)
+                this.procList.getSelectionModel().clearSelection();
 
             click.consume();
         });
 
-        procList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
-            if (procList.getSelectionModel().getSelectedItem() != null)
-                resList.getSelectionModel().clearSelection();
+        this.procList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
+            if (this.procList.getSelectionModel().getSelectedItem() != null)
+                this.resList.getSelectionModel().clearSelection();
 
             click.consume();
         });
@@ -349,9 +349,9 @@ public class InclusionsController implements Initializable {
     @FXML
     private void lesionsAction() {
         if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) addButton.getScene().getWindow();
+            this.inclusionsStage = (Stage) lesionsButton.getScene().getWindow();
 
-        new LesionsView(this.connection, this.fileManager);
+        new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
 
         this.inclusionsStage.close();
     }

@@ -2,8 +2,6 @@ package src.dao;
 
 import src.table.CutaneousSite;
 
-
-import javax.swing.text.html.ListView;
 import java.util.List;
 
 public interface SiteCutaneDao {
@@ -13,9 +11,7 @@ public interface SiteCutaneDao {
 
     List<CutaneousSite> selectAll();
 
-    List<CutaneousSite> selectSain(int id);
-
-    List<CutaneousSite> selectNonSain(int id);
+    List<CutaneousSite> selectBySain(int id, int sain);
 
     void update(CutaneousSite site, int id);
 }

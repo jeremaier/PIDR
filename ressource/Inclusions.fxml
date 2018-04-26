@@ -107,7 +107,7 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button fx:id="lesionsButton" layoutX="219.0" layoutY="99.0" mnemonicParsing="false"
+                <Button fx:id="lesionsButton" disable="true" layoutX="219.0" layoutY="99.0" mnemonicParsing="false"
                         onAction="#lesionsAction" prefHeight="40.0" prefWidth="175.0" text="Afficher les lésions"
                         AnchorPane.leftAnchor="20.0">
                     <font>

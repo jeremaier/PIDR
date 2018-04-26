@@ -325,7 +325,6 @@
     -fx-padding: 0.58333275em 1.333332em 0.58333275em 1.333332em; /*7 16 7 16 */
 }
 
-/* TODO: try to scope the menu-item style to the contextmenu */
 .menu-item {
     -fx-background-color: transparent;
     -fx-padding: 0.666666em 1.333332em 0.666666em 1.333332em; /*8 16 8 16 */
@@ -526,7 +525,7 @@
 }
 
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
-    -fx-background-color: #55c4fe; /* TODO: this probably is the "active" color" */
+    -fx-background-color: #55c4fe;
 }
 
 /*******************************************************************************
@@ -584,7 +583,7 @@
 
     -fx-prompt-text-fill: #9f9f9f;
 
-    -fx-highlight-fill: #008287; /* TODO: this probably is the "active" color" */
+    -fx-highlight-fill: #008287;
     -fx-highlight-text-fill: white;
 }
 
@@ -609,7 +608,7 @@
 
     -fx-prompt-text-fill: #9f9f9f;
 
-    -fx-highlight-fill: #008287; /* TODO: this probably is the "active" color" */
+    -fx-highlight-fill: #008287;
     -fx-highlight-text-fill: white;
 }
 

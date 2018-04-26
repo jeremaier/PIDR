@@ -20,13 +20,13 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     public void insert(Patient patient) {
         PreparedStatement preparedStatement = null;
 
-        /*TODO probleme avec les dates*/
-        if (patient.getAnneeNaissance() < 1000)
+        if (patient.getAnneeNaissance() < 1900)
             FileManager.openAlert("Annee invalide");
         else try {
             preparedStatement = connection.prepareStatement("INSERT INTO patient (ID, INITIALES, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 1);
             preparedStatement.executeUpdate();
+
             System.out.println("INSERT INTO patient (ID, INITIALES, GENRE, ANNEE_NAISSANCE)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
@@ -46,19 +46,17 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
 
     @Override
     public Patient selectById(int id) {
-        Patient patient = new Patient();
+        Patient patient = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
+            patient = this.addToPatient(resultSet);
 
-            while(resultSet.next())
-                patient = this.addToPatient(patient, resultSet);
-
-            System.out.println("SELECT * FROM patient WHERE ID = ?");
+            System.out.println("SELECT * FROM patient WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -86,46 +84,55 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     }
 
     @Override
-    public ObservableList<Patient> selectByFilters(int id, String initiales) {
+    public ObservableList<Patient> selectByFilters(int id, String initiales, String date) {
         ObservableList<Patient> patients = FXCollections.observableArrayList();
-        ObservableList<Patient> patients2;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             if(id != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
                 preparedStatement.setInt(1, id);
                 resultSet = preparedStatement.executeQuery();
-                patients = this.addToObservableList(patients, resultSet);
+                this.addToObservableList(patients, resultSet);
             }
 
-            if(initiales != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE INITIALES = ?");
+            if (!initiales.equals("")) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE INITIALES = ? ORDER BY ID");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
+                this.refreshList(patients, resultSet);
+            }
 
-                if(patients != null) {
-                    patients2 = this.addToObservableList(patients, resultSet);
-                    patients2.retainAll(this.addToObservableList(patients, resultSet));
-                    patients = patients2;
-                } else patients = this.addToObservableList(patients, resultSet);
+            if (!date.equals("")) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ANNEE_NAISSANCE = ? ORDER BY ID");
+                preparedStatement.setString(1, date);
+                resultSet = preparedStatement.executeQuery();
+                this.refreshList(patients, resultSet);
             }
 
             if(resultSet == null)
                 return this.selectAll();
 
-            System.out.println("SELECT * FROM patient WHERE ID ^ INITIALES");
+            System.out.println("SELECT * FROM patient WHERE ID ^ INITIALES ^ ANNEE_NAISSANCE ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(preparedStatement != null) {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -134,29 +141,62 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         return patients;
     }
 
+    private void refreshList(ObservableList<Patient> patients, ResultSet resultSet) {
+        ObservableList<Patient> patients1 = FXCollections.observableArrayList();
+
+        if (!patients.isEmpty()) {
+            this.addToObservableList(patients1, resultSet);
+            this.retainAllById(patients, patients1);
+        } else this.addToObservableList(patients, resultSet);
+    }
+
+    private void retainAllById(ObservableList<Patient> patients1, ObservableList<Patient> patients2) {
+        for (int i = patients1.size() - 1; i >= 0; i--) {
+            boolean found = false;
+
+            for (Patient patient2 : patients2) {
+                if (patient2.getId() == patients1.get(i).getId()) {
+                    found = true;
+                    patients2.remove(patient2);
+                    break;
+                }
+            }
+
+            if (!found)
+                patients1.remove(i);
+        }
+    }
+
     @Override
     public ObservableList<Patient> selectAll() {
         ObservableList<Patient> patients = FXCollections.observableArrayList();
         Statement statement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM patient");
+            resultSet = statement.executeQuery("SELECT * FROM patient ORDER BY ID");
+            this.addToObservableList(patients, resultSet);
 
-            patients = this.addToObservableList(patients, resultSet);
-
-            System.out.println("SELECT * FROM patient");
+            System.out.println("SELECT * FROM patient ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(statement != null) {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -169,7 +209,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
     public void update(Patient patient, int id) {
         PreparedStatement preparedStatement = null;
 
-        try {
+        if (patient.getAnneeNaissance() < 1900)
+            FileManager.openAlert("Annee invalide");
+        else try {
             preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 0);
             preparedStatement.setInt(4, id);
@@ -192,29 +234,21 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
         }
     }
 
-    private ObservableList<Patient> addToObservableList(ObservableList<Patient> patients, ResultSet resultSet) {
+    private void addToObservableList(ObservableList<Patient> patients, ResultSet resultSet) {
         try {
             while(resultSet.next())
-                patients.add(this.addToPatient(new Patient(), resultSet));
+                patients.add(this.addToPatient(resultSet));
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
-        } finally {
-            if(resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
-        return patients;
     }
 
-    private Patient addToPatient(Patient patient, ResultSet resultSet) throws SQLException {
+    private Patient addToPatient(ResultSet resultSet) throws SQLException {
+        Patient patient = new Patient();
+
         patient.setId(resultSet.getInt("ID"));
         patient.setInitiales(resultSet.getString("INITIALES"));
         patient.setGenre(resultSet.getString("GENRE"));
