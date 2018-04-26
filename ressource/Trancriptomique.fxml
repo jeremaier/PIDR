@@ -8,22 +8,22 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.TranscriptomieController">
    <children>
-       <Button fx:id="modifier" layoutX="687.0" layoutY="544.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="Modifer" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="30.0">
+       <Button fx:id="modifier" layoutX="620.0" layoutY="540.0" mnemonicParsing="false" onAction="#updateButtonAction" prefHeight="40.0" prefWidth="150.0" text="Modifer" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="30.0">
            <font>
                <Font size="20.0" />
            </font>
        </Button>
-       <Button fx:id="fichierCut" layoutX="167.0" layoutY="544.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="Ficher après cut" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0">
+       <Button fx:id="fichierCut" layoutX="167.0" layoutY="544.0" mnemonicParsing="false" onAction="#ficherCutAction" prefHeight="40.0" prefWidth="160.0" text="Ficher après cut" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0">
            <font>
                <Font size="18.0" />
            </font>
        </Button>
-       <Button fx:id="fichierBrut" layoutX="48.0" layoutY="544.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="Fichier brut" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="30.0">
+       <Button fx:id="fichierBrut" layoutX="48.0" layoutY="544.0" mnemonicParsing="false" onAction="#fichierBrutAction" prefHeight="40.0" prefWidth="160.0" text="Fichier brut" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="30.0">
            <font>
                <Font size="18.0" />
            </font>
        </Button>
-       <Button fx:id="qualityReport" layoutX="286.0" layoutY="544.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="Quality Report" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0">
+       <Button fx:id="qualityReport" layoutX="286.0" layoutY="544.0" mnemonicParsing="false" onAction="#qualityReportAction" prefHeight="40.0" prefWidth="160.0" text="Quality Report" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0">
            <font>
                <Font size="18.0" />
            </font>
@@ -141,6 +141,16 @@
             <Label GridPane.columnIndex="2" />
           </children>
        </GridPane>
-       <Button fx:id="retour" layoutX="45.0" layoutY="25.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="Retour" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0" />
+       <Button fx:id="retour" layoutX="45.0" layoutY="25.0" mnemonicParsing="false" onAction="#retour" prefHeight="30.0" prefWidth="80.0" text="Retour" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0" />
+      <Button fx:id="supprimer" layoutX="464.0" layoutY="540.0" mnemonicParsing="false" onAction="#dellButtonAction" prefHeight="44.0" prefWidth="150.0" text="Supprimer -">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <Button fx:id="ajouter" layoutX="620.0" layoutY="488.0" mnemonicParsing="false" onAction="#addButtonAction" prefHeight="40.0" prefWidth="150.0" text="Ajouter +">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

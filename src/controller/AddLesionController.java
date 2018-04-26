@@ -42,6 +42,9 @@ public class AddLesionController implements Initializable {
     @FXML
     Button ajouter;
 
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }

@@ -210,7 +210,7 @@ public class SiteController implements Initializable {
             this.siteStage = (Stage) fichierMoy.getScene().getWindow();
         }
         //openFTPConnection();
-        //this.fileManager.downloadFromUrl(siteStage,this.lesion.getFichierMoy());
+        this.fileManager.downloadFromUrl(siteStage,this.lesion.getFichierMoy(), null);
         //closeConnection();
     }
 
@@ -232,27 +232,27 @@ public class SiteController implements Initializable {
 
     @FXML
     private void delButtonAction(ActionEvent actionEvent){
-        if(this.selectedSite!=null){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmer la suppresion");
-            alert.setHeaderText("Vous allez supprimer un site cutané");
-            alert.setContentText("Confirmer?");
+            if(this.selectedSite!=null){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmer la suppresion");
+                alert.setHeaderText("Vous allez supprimer un site cutané");
+                alert.setContentText("Confirmer?");
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
 
-                siteCutaneDaompl.delete(this.selectedSite.getId());
-                if(this.selectedSite.getHealthy()==0){
-                    this.siteListeNonSain.remove(selectedSite);
-                }else{
-                    this.siteListeSain.remove(selectedSite);
+                    siteCutaneDaompl.delete(this.selectedSite.getId());
+                    if(this.selectedSite.getHealthy()==0){
+                        this.siteListeNonSain.remove(selectedSite);
+                    }else{
+                        this.siteListeSain.remove(selectedSite);
+                    }
+
+                    populateSite(siteListeNonSain,siteListeSain);
+                } else {
+                    alert.close();
                 }
-
-                populateSite(siteListeNonSain,siteListeSain);
-            } else {
-                alert.close();
             }
-        }
     }
 
     @FXML
@@ -261,7 +261,7 @@ public class SiteController implements Initializable {
             String[] s = this.selectedSite.getSpectre().split("|");
 
             //openFTPConnection();
-           // this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
+           //this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
             //closeConnection();
         }
     }

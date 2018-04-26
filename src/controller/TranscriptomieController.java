@@ -4,18 +4,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.daoImpl.TranscriptomieDaompl;
 import src.table.CutaneousSite;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.view.AddTranscriptomieView;
 
 import javax.management.relation.RoleInfoNotFoundException;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TranscriptomieController implements Initializable {
@@ -66,6 +66,12 @@ public class TranscriptomieController implements Initializable {
     @FXML
     Button modifier;
 
+    @FXML
+    Button ajouter;
+
+    @FXML
+    Button supprimer;
+
 
     private Connection connection;
     private Stage transcriptomieStage;
@@ -73,9 +79,9 @@ public class TranscriptomieController implements Initializable {
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private FileManager fileManager;
 
-    public TranscriptomieController(Connection connection, TranscriptomicAnalysis transcriptomicAnalysis){
-        this.connection=connection;
-        this.transcriptomicAnalysis=transcriptomicAnalysis;
+    public TranscriptomieController(Connection connection, TranscriptomicAnalysis transcriptomicAnalysis) {
+        this.connection = connection;
+        this.transcriptomicAnalysis = transcriptomicAnalysis;
 
     }
 
@@ -98,7 +104,7 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void fichierBrutAction(ActionEvent actionEvent) {
-        if ( this.transcriptomieStage== null) {
+        if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
         }
         //openFTPConnection();
@@ -107,31 +113,67 @@ public class TranscriptomieController implements Initializable {
     }
 
     @FXML
-    private void ficherCutAction(ActionEvent actionEvent){
-        if (this.transcriptomieStage == null){
+    private void ficherCutAction(ActionEvent actionEvent) {
+        if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) fichierCut.getScene().getWindow();
         }
-        /**TODO C KOI LE BORDEL AVEC FILEMANAGEUR
+
         //openFTPConnection();
-        //this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut());
+        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut(), null);
         //closeConnection();
-         **/
+
     }
 
     @FXML
-    private void qualityReportAction(ActionEvent actionEvent){
-        if(this.transcriptomieStage == null){
+    private void qualityReportAction(ActionEvent actionEvent) {
+        if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
         }
-        //this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport());
+        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport(), null);
     }
-
 
 
     @FXML
     private void retour(ActionEvent actionEvent) {
         this.transcriptomieStage = (Stage) transcriptomieStage.getScene().getWindow();
         this.transcriptomieStage.close();
+    }
+
+    @FXML
+    private void updateButtonAction(ActionEvent actionEvent) {
+        if (this.transcriptomieStage == null) {
+            this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
+        }
+        new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, this.transcriptomicAnalysis.getIdCutaneousSite());
+
+    }
+
+    @FXML
+    private void addButtonAction(ActionEvent actionEvent) {
+        if (this.transcriptomieStage == null) {
+            this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
+        }
+        new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, this.transcriptomicAnalysis.getIdCutaneousSite());
+    }
+
+    @FXML
+    private void dellButtonAction(ActionEvent actionEvent) {
+        if (this.transcriptomicAnalysis != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmer la suppresion");
+            alert.setHeaderText("Vous allez supprimer une analyse transcriptomique");
+            alert.setContentText("Confirmer?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+
+                transcriptomieDaompl.delete(this.transcriptomicAnalysis.getId());
+
+            } else {
+                alert.close();
+            }
+        }
+
     }
 
 

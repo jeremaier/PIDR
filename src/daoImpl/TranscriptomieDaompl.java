@@ -138,6 +138,10 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
 
     }
 
+    public void delete(int id){
+        this.delete(connection,"analyse_transcriptomique", id);
+    }
+
     private ObservableList<TranscriptomicAnalysis> addToObservableList(ObservableList<TranscriptomicAnalysis> transcr, ResultSet resultSet) {
         try {
             while (resultSet.next())
