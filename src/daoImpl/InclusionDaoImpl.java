@@ -1,10 +1,12 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.InclusionDao;
 import src.table.Inclusion;
 import src.utils.Diag;
+import src.utils.FileManager;
 
 import java.sql.*;
 
@@ -23,7 +25,11 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement = connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 1);
             preparedStatement.executeUpdate();
+
             System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -39,15 +45,20 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
     @Override
     public Inclusion selectById(int id) {
-        Inclusion inclusion = new Inclusion();
+        Inclusion inclusion = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, inclusion.getId());
+            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            inclusion = this.addToInclusion(inclusion, resultSet);
+            inclusion = this.addToInclusion(resultSet);
+
+            System.out.println("SELECT * FROM inclusion WHERE ID ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -74,104 +85,131 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
     @Override
     public ObservableList<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initiales, Diag diag) {
         ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
-        ObservableList<Inclusion> inclusions2;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             if(id != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
                 preparedStatement.setInt(1, id);
                 resultSet = preparedStatement.executeQuery();
-                inclusions = this.addToObservableList(inclusions, resultSet);
+                this.addToObservableList(inclusions, resultSet);
             }
 
             if(dateInclusion != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? ORDER BY ID");
                 preparedStatement.setDate(1, dateInclusion);
                 resultSet = preparedStatement.executeQuery();
-
-                if(inclusions != null) {
-                    inclusions2 = this.addToObservableList(inclusions, resultSet);
-                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
-                    inclusions = inclusions2;
-                } else inclusions = this.addToObservableList(inclusions, resultSet);
+                this.refreshList(inclusions, resultSet);
             }
 
             if(numAnaPat != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ?");
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? ORDER BY ID");
                 preparedStatement.setInt(1, numAnaPat);
                 resultSet = preparedStatement.executeQuery();
-
-                if(inclusions != null) {
-                    inclusions2 = this.addToObservableList(inclusions, resultSet);
-                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
-                    inclusions = inclusions2;
-                } else inclusions = this.addToObservableList(inclusions, resultSet);
+                this.refreshList(inclusions, resultSet);
             }
 
-            if(initiales != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN patient ON inclusion.ID_PATIENT = patient.ID WHERE INITIALES = ?");
+            if (!initiales.equals("")) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN patient ON inclusion.ID_PATIENT = patient.ID WHERE INITIALES = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
-
-                if(inclusions != null) {
-                    inclusions2 = this.addToObservableList(inclusions, resultSet);
-                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
-                    inclusions = inclusions2;
-                } else inclusions = this.addToObservableList(inclusions, resultSet);
+                this.refreshList(inclusions, resultSet);
             }
 
-            if(diag.toString() != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ?");
+            if (!diag.toString().equals("")) {
+                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
-
-                if(inclusions != null) {
-                    inclusions2 = this.addToObservableList(inclusions, resultSet);
-                    inclusions2.retainAll(this.addToObservableList(inclusions, resultSet));
-                    inclusions = inclusions2;
-                } else inclusions = this.addToObservableList(inclusions, resultSet);
+                this.refreshList(inclusions, resultSet);
             }
 
             if(resultSet == null)
                 return this.selectAll();
 
-            System.out.println("SELECT * FROM inclusion WHERE ID ^ DATE_INCLUSION ^ NUM_ANAPATH ^ INITIALES ^ DIAG");
+            System.out.println("SELECT * FROM inclusion WHERE ID ^ DATE_INCLUSION ^ NUM_ANAPATH ^ INITIALES ^ DIAG ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(preparedStatement != null) {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
 
         return inclusions;
+    }
+
+    private void refreshList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
+        ObservableList<Inclusion> inclusions1 = FXCollections.observableArrayList();
+
+        if (!inclusions.isEmpty()) {
+            this.addToObservableList(inclusions1, resultSet);
+            this.retainAllById(inclusions, inclusions1);
+        } else this.addToObservableList(inclusions, resultSet);
+    }
+
+    private void retainAllById(ObservableList<Inclusion> inclusions1, ObservableList<Inclusion> inclusions2) {
+        for (int i = inclusions1.size() - 1; i >= 0; i--) {
+            boolean found = false;
+
+            for (Inclusion patient2 : inclusions2) {
+                if (patient2.getId() == inclusions1.get(i).getId()) {
+                    found = true;
+                    inclusions2.remove(patient2);
+                    break;
+                }
+            }
+
+            if (!found)
+                inclusions1.remove(i);
+        }
     }
 
     @Override
     public ObservableList<Inclusion> selectAll() {
         ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
         Statement statement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM inclusion");
-            inclusions = this.addToObservableList(inclusions, resultSet);
+            resultSet = statement.executeQuery("SELECT * FROM inclusion ORDER BY ID");
+            this.addToObservableList(inclusions, resultSet);
 
-            System.out.println("SELECT * FROM inclusion");
+            System.out.println("SELECT * FROM inclusion ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            if(statement != null) {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -179,30 +217,6 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
         return inclusions;
     }
-
-    /*@Override
-    public void update(int patientId, int id) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ? WHERE ID = ?");
-            preparedStatement.setInt(1, patientId);
-            preparedStatement.setInt(2, id);
-
-            preparedStatement.executeUpdate();
-            System.out.println("UPDATE inclusion SET ID_PATIENT = ? WHERE ID = ?");
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }*/
 
     @Override
     public void update(Inclusion inclusion, int id) {
@@ -215,6 +229,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
             preparedStatement.executeUpdate();
             System.out.println("UPDATE inclusion SET ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -228,27 +245,22 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         }
     }
 
-    private ObservableList<Inclusion> addToObservableList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
+    private void addToObservableList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
         try {
             while(resultSet.next())
-                inclusions.add(this.addToInclusion(new Inclusion(), resultSet));
+                inclusions.add(this.addToInclusion(resultSet));
 
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
-        } finally {
-            if(resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-
-        return inclusions;
     }
 
-    private Inclusion addToInclusion(Inclusion inclusion, ResultSet resultSet) throws SQLException {
+    private Inclusion addToInclusion(ResultSet resultSet) throws SQLException {
+        Inclusion inclusion = new Inclusion();
+
         inclusion.setId(resultSet.getInt("ID"));
         inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
         inclusion.setReference1(resultSet.getString("REFERENCE1"));

@@ -86,13 +86,13 @@ public class AddInclusionController implements Initializable {
     @FXML
     private void addAction() {
         if (this.inclusion == null) {
-            this.inclusion = new Inclusion(Integer.getInteger(this.inclusionIDField.getText()),
+            this.inclusion = new Inclusion(Integer.parseInt(this.inclusionIDField.getText()),
                     this.patientId,
                     this.initiales,
                     FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference1FileLabel.getText(),
                     FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference2FileLabel.getText(),
                     Date.valueOf(this.inclusionDatePicker.getValue()),
-                    Integer.getInteger(this.idAnapathField.getText()),
+                    Integer.parseInt(this.idAnapathField.getText()),
                     null);
             this.inclusionDaoImpl.insert(inclusion);
             this.inclusionsController.populateInclusion(this.inclusion);
@@ -102,8 +102,8 @@ public class AddInclusionController implements Initializable {
             this.inclusion.setReference1(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference1FileLabel.getText());
             this.inclusion.setReference2(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference2FileLabel.getText());
             this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
-            this.inclusion.setNumAnaPath(Integer.getInteger(this.idAnapathField.getText()));
-            this.inclusionDaoImpl.update(inclusion, Integer.getInteger(this.inclusionIDField.getText()));
+            this.inclusion.setNumAnaPath(Integer.parseInt(this.idAnapathField.getText()));
+            this.inclusionDaoImpl.update(inclusion, Integer.parseInt(this.inclusionIDField.getText()));
             this.inclusionsController.refreshInclusions();
         }
 

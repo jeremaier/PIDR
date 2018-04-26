@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class SQLConnection {
     private String user;
     private String password;
-    private static Connection connection = null;
+    private Connection connection = null;
 
     public SQLConnection(String user, String password) {
         this.user = user;
@@ -16,18 +16,14 @@ public class SQLConnection {
         this.createConnnection();
     }
 
-    public Connection createConnnection() {
+    private void createConnnection() {
         try {
-            Thread.sleep(100);
+            //Thread.sleep(100);
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            this.connection = DriverManager.getConnection("jdbc:mysql://spectrolive-sql.cran.univ-lorraine.fr:3306/spectrolive?user=" + user + "&password=" + password + "&useSSL=false");
-        } catch (SQLException e) {
-            e.printStackTrace();
+            this.connection = DriverManager.getConnection("jdbc:mysql://spectrolive-sql.cran.univ-lorraine.fr:3306/spectrolive?user=" + this.user + "&password=" + this.password + "&useSSL=false&autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return this.connection;
     }
 
     public Connection getConnection() {

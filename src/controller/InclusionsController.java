@@ -111,7 +111,7 @@ public class InclusionsController implements Initializable {
 
         resList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (resList.getSelectionModel().getSelectedItem() != null)
-                selectedDoc = FileManager.getProcDirectoryName() + "//" + newValue;
+                selectedDoc = FileManager.getResDirectoryName() + "//" + newValue;
         });
 
         this.idInclusionField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -125,16 +125,16 @@ public class InclusionsController implements Initializable {
                     initialesField.setText(initialesField.getText().substring(0, 4));
         });
 
-        resList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
-            if (resList.getSelectionModel().getSelectedItem() != null)
-                procList.getSelectionModel().clearSelection();
+        this.resList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
+            if (this.resList.getSelectionModel().getSelectedItem() != null)
+                this.procList.getSelectionModel().clearSelection();
 
             click.consume();
         });
 
-        procList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
-            if (procList.getSelectionModel().getSelectedItem() != null)
-                resList.getSelectionModel().clearSelection();
+        this.procList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
+            if (this.procList.getSelectionModel().getSelectedItem() != null)
+                this.resList.getSelectionModel().clearSelection();
 
             click.consume();
         });
@@ -195,9 +195,9 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void searchAction() {
-        inclusionsList = inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.getInteger(this.idInclusionField.getText()),
+        inclusionsList = inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
                 this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
-                this.idAnapathField.getText().equals("") ? 0 : Integer.getInteger(this.idAnapathField.getText()),
+                this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
                 this.initialesField.getText(),
                 this.diagnosticChoiceBox.getValue());
 
@@ -212,7 +212,7 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void removeAction() {
-        inclusionDaoImpl.delete(Integer.getInteger(idInclusionField.getText()));
+        inclusionDaoImpl.delete(Integer.parseInt(idInclusionField.getText()));
         inclusionsList.remove(selectedInclusion);
         this.populateInclusions();
     }
@@ -349,9 +349,9 @@ public class InclusionsController implements Initializable {
     @FXML
     private void lesionsAction() {
         if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) addButton.getScene().getWindow();
+            this.inclusionsStage = (Stage) lesionsButton.getScene().getWindow();
 
-        new LesionsView(this.connection, this.fileManager);
+        new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
 
         this.inclusionsStage.close();
     }

@@ -1,9 +1,11 @@
 package src.daoImpl;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.LesionDao;
 import src.table.Lesion;
+import src.utils.FileManager;
 
 import java.sql.*;
 
@@ -24,7 +26,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?))");
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(preparedStatement != null) {
@@ -39,16 +44,21 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
 
     @Override
     public Lesion selectById(int id) {
-        Lesion lesion = new Lesion();
+        Lesion lesion = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM lesion WHERE ID = ?");
-            preparedStatement.setInt(1, lesion.getId());
+            preparedStatement = connection.prepareStatement("SELECT * FROM lesion WHERE ID = ? ORDER BY ID");
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            lesion = this.addToLesion(lesion, resultSet);
-        } catch(Exception e) {
+            lesion = this.addToLesion(resultSet);
+
+            System.out.println("SELECT * FROM lesion WHERE ID ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(resultSet != null) {
@@ -75,21 +85,34 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
     public ObservableList<Lesion> selectAll() {
         ObservableList<Lesion> lesions = FXCollections.observableArrayList();
         Statement statement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM lesion");
-            lesions = this.addToObservableList(lesions, resultSet);
+            resultSet = statement.executeQuery("SELECT * FROM lesion ORDER BY ID");
 
-            System.out.println("SELECT * FROM lesion");
-        } catch(Exception e) {
+            while (resultSet.next())
+                lesions.add(this.addToLesion(resultSet));
+
+            System.out.println("SELECT * FROM lesion ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(statement != null) {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -103,13 +126,16 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
-        } catch(Exception e) {
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(preparedStatement != null) {
@@ -122,27 +148,9 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         }
     }
 
-    private ObservableList<Lesion> addToObservableList(ObservableList<Lesion> lesions, ResultSet resultSet) {
-        try {
-            while(resultSet.next())
-                lesions.add(this.addToLesion(new Lesion(), resultSet));
+    private Lesion addToLesion(ResultSet resultSet) throws SQLException {
+        Lesion lesion = new Lesion();
 
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return lesions;
-    }
-
-    private Lesion addToLesion(Lesion lesion, ResultSet resultSet) throws SQLException {
         lesion.setId(resultSet.getInt("ID"));
         lesion.setIdInclusion(resultSet.getInt("ID_INCLUSION"));
         lesion.setPhotoSur(resultSet.getString("PHOTO_SUR"));

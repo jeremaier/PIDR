@@ -71,9 +71,9 @@ public class FileManager {
         return resDirectoryName;
     }
 
-    private static void openAlert(String errorMessage) {
+    public static void openAlert(String errorMessage) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Erreur d'URL");
+        alert.setTitle(errorMessage);
         alert.setHeaderText(null);
         alert.setContentText(errorMessage);
         alert.showAndWait();

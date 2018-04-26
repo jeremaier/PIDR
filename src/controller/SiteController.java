@@ -101,8 +101,8 @@ public class SiteController implements Initializable {
         this.diagSain.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
 
         this.siteCutaneDaompl = new SiteCutaneDaompl(connection);
-        this.siteListeSain= siteCutaneDaompl.selectSain(this.lesion.getId());
-        this.siteListeNonSain = siteCutaneDaompl.selectNonSain(this.lesion.getId());
+        this.siteListeSain = siteCutaneDaompl.selectBySain(this.lesion.getId(), 1);
+        this.siteListeNonSain = siteCutaneDaompl.selectBySain(this.lesion.getId(), 2);
 
         this.populateSite(siteListeNonSain,siteListeSain);
 

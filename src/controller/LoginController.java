@@ -6,8 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import src.utils.SQLConnection;
 import src.utils.FileManager;
+import src.utils.SQLConnection;
 import src.view.InclusionsView;
 
 import java.io.*;
@@ -64,6 +64,7 @@ public class LoginController implements Initializable {
             SQLConnection connection = new SQLConnection(user.getText(), password.getText());
             FileManager fileManager = new FileManager(user.getText(), password.getText());
 
+            /*TODO empecher co quand ftp marche pas*/
             if (connection.getConnection() != null && fileManager.getConnection() != null) {
                 if (this.saveLogin.isSelected())
                     this.saveLoginInFile();
