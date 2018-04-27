@@ -1,23 +1,26 @@
 package src.view;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import src.controller.AddLesionController;
+import src.controller.LesionsController;
+import src.daoImpl.LesionDaoImpl;
+import src.table.Lesion;
+import src.utils.FileManager;
 
 import java.io.IOException;
 
 public class AddLesionView {
-    public AddLesionView(Stage stage) {
+    public AddLesionView(LesionsController lesionsController, Lesion lesion, int inclusionId, LesionDaoImpl lesionDaoImpl, FileManager fileManager) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
+        Stage addLesionStage = new Stage();
 
-        stage.setTitle("Ajout d'une lésion cutané");
+        addLesionStage.setTitle(lesion == null ? "Ajout d'une lésion cutanée" : "Modification d'une lésion cutanée");
         viewLoader.setLocation(getClass().getResource("/ressource/AddLesion.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddLesionController());
+        viewLoader.setControllerFactory(iC -> new AddLesionController(lesionsController, lesion, inclusionId, lesionDaoImpl, fileManager));
 
         try {
             rootLog = viewLoader.load();
@@ -25,10 +28,8 @@ public class AddLesionView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
-
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        addLesionStage.setScene(new Scene(rootLog));
+        addLesionStage.show();
     }
 }

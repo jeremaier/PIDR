@@ -1,23 +1,24 @@
 package src.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import src.table.Lesion;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class AddDiagController implements Initializable {
-
+public class AddDiagController {
     @FXML
     Button ajoutButton;
-
     @FXML
     TextArea diag;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    private Lesion lesion;
+
+    public AddDiagController(Lesion lesion) {
+        this.lesion = lesion;
     }
 
+    public void ajoutAction() {
+        if (!this.diag.getText().equals(""))
+            this.lesion.setAutreDiag(this.diag.getText());
+    }
 }

@@ -9,19 +9,18 @@ import src.utils.Diag;
 public class Lesion {
     private IntegerProperty id;
     private IntegerProperty idInclusion;
-    private String photoSur;
-    private String photoHors;
-    private String photoFixe;
+    private String photoSur = "Aucun";
+    private String photoHors = "Aucun";
+    private String photoFixe = "Aucun";
     private StringProperty siteAnatomique;
     private Diag diag;
-    private StringProperty autreDiag;
-    private String fichierMoy;
+    private String autreDiag = "Aucun";
+    private String fichierMoy = "Aucun";
 
     public Lesion() {
         this.id = new SimpleIntegerProperty();
         this.idInclusion = new SimpleIntegerProperty();
         this.siteAnatomique = new SimpleStringProperty();
-        this.autreDiag = new SimpleStringProperty();
     }
 
     public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fichierMoy) {
@@ -94,16 +93,18 @@ public class Lesion {
     }
 
     public String getAutreDiag() {
-        return this.autreDiag.get();
+        return this.autreDiag;
     }
 
     public void setAutreDiag(String autreDiag) {
-        this.autreDiag.set(autreDiag);
+        this.autreDiag = autreDiag;
     }
 
     public String getFichierMoy(){ return this.fichierMoy;    }
 
-    public void setFichierMoy(String fichierMoy){ this.fichierMoy=fichierMoy; }
+    public void setFichierMoy(String fichierMoy) {
+        this.fichierMoy = fichierMoy;
+    }
 
     public IntegerProperty idProperty() {
         return this.id;
@@ -119,10 +120,6 @@ public class Lesion {
 
     public StringProperty diagProperty() {
         return this.diag.getName();
-    }
-
-    public StringProperty autreDiagProperty() {
-        return this.autreDiag;
     }
 }
 

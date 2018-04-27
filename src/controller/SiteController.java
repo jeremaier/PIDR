@@ -209,9 +209,8 @@ public class SiteController implements Initializable {
         if ( this.siteStage== null) {
             this.siteStage = (Stage) fichierMoy.getScene().getWindow();
         }
-        //openFTPConnection();
-        this.fileManager.downloadFromUrl(siteStage,this.lesion.getFichierMoy(), null);
-        //closeConnection();
+
+        this.fileManager.downloadFromUrl(siteStage, this.lesion.getFichierMoy(), null, true);
     }
 
     @FXML

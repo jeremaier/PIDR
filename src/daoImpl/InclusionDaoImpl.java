@@ -168,7 +168,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             boolean found = false;
 
             for (Inclusion patient2 : inclusions2) {
-                if (patient2.getId() == inclusions1.get(i).getId()) {
+                if (patient2.getId().equals(inclusions1.get(i).getId())) {
                     found = true;
                     inclusions2.remove(patient2);
                     break;
@@ -277,7 +277,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
         if(indexDebut == 1)
-            preparedStatement.setInt(indexDebut, ((Inclusion) object).getId());
+            preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
 
         preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
         preparedStatement.setDate(indexDebut + 2, ((Inclusion) object).getDateInclusion());

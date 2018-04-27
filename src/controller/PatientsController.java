@@ -163,7 +163,6 @@ public class PatientsController implements Initializable {
                 this.dateField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-
         this.dateSearchField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue()) {
                 if (this.dateSearchField.getText().length() >= 4)
@@ -276,7 +275,7 @@ public class PatientsController implements Initializable {
         this.patientDaolmpl.delete(Integer.parseInt(this.idField.getText()));
         this.patientsList.remove(this.patientsList.get(this.selectedId));
         this.idPatients.clear();
-        populateIdPatients();
+        this.populateIdPatients();
         this.cleanFields();
     }
 

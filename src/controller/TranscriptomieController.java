@@ -3,20 +3,21 @@ package src.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import src.daoImpl.TranscriptomieDaompl;
-import src.table.CutaneousSite;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
-import src.view.AddTranscriptomieView;
 
-import javax.management.relation.RoleInfoNotFoundException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+//import src.view.AddTranscriptomieView;
 
 public class TranscriptomieController implements Initializable {
 
@@ -82,12 +83,9 @@ public class TranscriptomieController implements Initializable {
     public TranscriptomieController(Connection connection, TranscriptomicAnalysis transcriptomicAnalysis) {
         this.connection = connection;
         this.transcriptomicAnalysis = transcriptomicAnalysis;
-
     }
 
-
     @Override
-
     public void initialize(URL location, ResourceBundle resources) {
         this.ID.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
         this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
@@ -107,9 +105,8 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
         }
-        //openFTPConnection();
-        //this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut());
-        //closeConnection();
+
+        //this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(), true);
     }
 
     @FXML
@@ -118,10 +115,7 @@ public class TranscriptomieController implements Initializable {
             this.transcriptomieStage = (Stage) fichierCut.getScene().getWindow();
         }
 
-        //openFTPConnection();
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut(), null);
-        //closeConnection();
-
+        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut(), null, true);
     }
 
     @FXML
@@ -129,7 +123,7 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
         }
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport(), null);
+        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport(), null, true);
     }
 
 
@@ -141,19 +135,18 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void updateButtonAction(ActionEvent actionEvent) {
-        if (this.transcriptomieStage == null) {
+        if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
-        }
-        new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, this.transcriptomicAnalysis.getIdCutaneousSite());
 
+        //new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, this.transcriptomicAnalysis.getIdCutaneousSite());
     }
 
     @FXML
     private void addButtonAction(ActionEvent actionEvent) {
-        if (this.transcriptomieStage == null) {
+        if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
-        }
-        new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, this.transcriptomicAnalysis.getIdCutaneousSite());
+
+        //new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, this.transcriptomicAnalysis.getIdCutaneousSite());
     }
 
     @FXML
@@ -173,8 +166,5 @@ public class TranscriptomieController implements Initializable {
                 alert.close();
             }
         }
-
     }
-
-
 }

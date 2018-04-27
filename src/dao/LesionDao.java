@@ -12,4 +12,6 @@ public interface LesionDao {
     List<Lesion> selectAll();
 
     void update(Lesion lesion, int id);
+
+    int getLastId();
 }

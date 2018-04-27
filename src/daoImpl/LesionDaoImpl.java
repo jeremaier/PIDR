@@ -81,6 +81,44 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         return lesion;
     }
 
+    public ObservableList<Lesion> selectAllByInclusion(int idInclusion) {
+        ObservableList<Lesion> lesions = FXCollections.observableArrayList();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM lesion WHERE ID_INCLUSION = ? ORDER BY ID");
+            preparedStatement.setInt(1, idInclusion);
+            resultSet = preparedStatement.executeQuery();
+            this.addToObservableList(lesions, resultSet);
+
+            System.out.println("SELECT * FROM lesion ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lesions;
+    }
+
     @Override
     public ObservableList<Lesion> selectAll() {
         ObservableList<Lesion> lesions = FXCollections.observableArrayList();
@@ -90,9 +128,7 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM lesion ORDER BY ID");
-
-            while (resultSet.next())
-                lesions.add(this.addToLesion(resultSet));
+            this.addToObservableList(lesions, resultSet);
 
             System.out.println("SELECT * FROM lesion ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
@@ -145,6 +181,56 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @Override
+    public int getLastId() {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        int lastId = 0;
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select last_insert_id() as lastId from lesion");
+            lastId = resultSet.getInt("lastId");
+
+            System.out.println("select last_insert_id() as lastId from lesion");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lastId;
+    }
+
+    private void addToObservableList(ObservableList<Lesion> lesions, ResultSet resultSet) {
+        try {
+            while (resultSet.next())
+                lesions.add(this.addToLesion(resultSet));
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
