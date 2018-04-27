@@ -1,5 +1,6 @@
 package src.controller;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -41,6 +42,7 @@ public class AddInclusionController implements Initializable {
     @FXML
     Label reference2FileLabel;
 
+    private ObservableList<Inclusion> inclusionsList;
     private Inclusion inclusion;
     private InclusionsController inclusionsController;
     private InclusionDaoImpl inclusionDaoImpl;
@@ -51,8 +53,9 @@ public class AddInclusionController implements Initializable {
     private String initiales;
     private boolean[] uploadedBeforeEdit = {true, true};
 
-    public AddInclusionController(InclusionsController inclusionsController, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
+    public AddInclusionController(InclusionsController inclusionsController, ObservableList<Inclusion> inclusionsList, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
         this.inclusionsController = inclusionsController;
+        this.inclusionsList = inclusionsList;
         this.inclusion = inclusion;
         this.inclusionDaoImpl = inclusionDaoImpl;
         this.connection = connection;
@@ -65,6 +68,33 @@ public class AddInclusionController implements Initializable {
             this.setInclusionInformations();
             this.addButton.setText("Modifier");
         } else this.inclusion = new Inclusion();
+
+        this.inclusionIDField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.inclusionIDField.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.inclusionIDField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.equals(oldValue)) {
+                if (this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText()))) {
+                    this.addButton.setDisable(false);
+                    this.reference1FileButton.setDisable(false);
+                    this.reference2FileButton.setDisable(false);
+                } else {
+                    this.addButton.setDisable(true);
+                    this.reference1FileButton.setDisable(true);
+                    this.reference2FileButton.setDisable(true);
+                }
+            }
+        });
+    }
+
+    private boolean idAlreadyExistant(int id) {
+        for (Inclusion anInclusionsList : this.inclusionsList)
+            if (Integer.parseInt(anInclusionsList.getId()) == id)
+                return true;
+
+        return false;
     }
 
     private void setInclusionInformations() {
@@ -81,36 +111,42 @@ public class AddInclusionController implements Initializable {
             this.reference2FileButton.setText("Modifier");
         }
 
-        this.inclusionDatePicker.setValue(this.inclusion.getDateInclusion().toLocalDate());
+        if (this.inclusion.getDateInclusion() != null)
+            this.inclusionDatePicker.setValue(this.inclusion.getDateInclusion().toLocalDate());
     }
 
     void setPatientInformations(int patientId, String initiales) {
         this.patientId = patientId;
         this.initiales = initiales;
-        this.patientLabel.setText(this.initiales);
+        this.patientLabel.setText("ID : " + Integer.toString(this.patientId));
     }
 
     @FXML
     private void addAction() {
         /*TODO Faire que les fichiers s'add et se suppr au moment de quitter la fenetre*/
+        String id = this.inclusionIDField.getText();
         boolean newInclusion = this.inclusion.getId() == null;
+        this.inclusion.setId(Integer.parseInt(id));
         this.inclusion.setIdPatient(this.patientId);
         this.inclusion.setInitialesPatient(this.initiales);
 
         if (!this.reference1FileLabel.getText().equals("Aucun"))
-            this.inclusion.setReference1(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference1FileLabel.getText());
+            this.inclusion.setReference1(FileManager.getRefDirectoryName(id) + "//" + this.reference1FileLabel.getText());
 
         if (!this.reference2FileLabel.getText().equals("Aucun"))
-            this.inclusion.setReference2(FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//" + this.reference2FileLabel.getText());
+            this.inclusion.setReference2(FileManager.getRefDirectoryName(id) + "//" + this.reference2FileLabel.getText());
 
-        this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
-        this.inclusion.setNumAnaPath(Integer.parseInt(this.idAnapathField.getText()));
+        if (this.inclusionDatePicker.getValue() != null)
+            this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
+
+        if (!this.idAnapathField.getText().equals(""))
+            this.inclusion.setNumAnaPath(Integer.parseInt(this.idAnapathField.getText()));
 
         if (newInclusion) {
             this.inclusionDaoImpl.insert(this.inclusion);
             this.inclusionsController.populateInclusion(this.inclusion);
         } else {
-            this.inclusionDaoImpl.update(this.inclusion, Integer.parseInt(this.inclusionIDField.getText()));
+            this.inclusionDaoImpl.update(this.inclusion, Integer.parseInt(id));
             this.inclusionsController.refreshInclusions();
         }
 
@@ -145,11 +181,13 @@ public class AddInclusionController implements Initializable {
             if(this.addInclusionStage == null)
                 this.addInclusionStage = (Stage) this.reference1FileButton.getScene().getWindow();
 
-            String addedFileName = this.fileManager.uploadToURL(this.addInclusionStage, FileManager.getRefDirectoryName(this.inclusionIDField.getText()), null);
+            String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText());
+            String addedFileName = this.fileManager.uploadToURL(this.addInclusionStage, directory, null);
 
             if (addedFileName != null) {
                 this.reference1FileButton.setText("Supprimer");
                 this.reference1FileLabel.setText(addedFileName);
+                this.inclusion.setReference1(directory + "//" + addedFileName);
 
                 if (this.addButton.getText().equals("Modifier"))
                     this.uploadedBeforeEdit[0] = false;
@@ -167,11 +205,13 @@ public class AddInclusionController implements Initializable {
             if(this.addInclusionStage == null)
                 this.addInclusionStage = (Stage) this.reference2FileButton.getScene().getWindow();
 
-            String addedFileName = this.fileManager.uploadToURL(this.addInclusionStage, FileManager.getRefDirectoryName(this.inclusionIDField.getText()), null);
+            String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText());
+            String addedFileName = this.fileManager.uploadToURL(this.addInclusionStage, directory, null);
 
             if (addedFileName != null) {
                 this.reference2FileButton.setText("Supprimer");
                 this.reference2FileLabel.setText(addedFileName);
+                this.inclusion.setReference2(directory + "//" + addedFileName);
 
                 if (this.addButton.getText().equals("Modifier"))
                     this.uploadedBeforeEdit[1] = false;

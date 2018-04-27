@@ -17,6 +17,7 @@ public class Inclusion {
     public Inclusion() {
         this.id = new SimpleStringProperty();
         this.idPatient = new SimpleIntegerProperty();
+        this.initialesPatient = new SimpleStringProperty();
         this.dateInclusion = new SimpleObjectProperty<>();
         this.numAnaPath = new SimpleIntegerProperty();
         this.diag = new SimpleStringProperty();

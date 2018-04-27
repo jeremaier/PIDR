@@ -15,8 +15,8 @@ import org.apache.commons.net.ftp.FTPReply;
 import java.io.*;
 
 public class FileManager {
-    private final static String procDirectoryName = "//procedures";
-    private final static String resDirectoryName = "//resultats";
+    private final static String procDirectoryName = ".//procedures";
+    private final static String resDirectoryName = ".//resultats";
     private final static String refDirectoryName = "//ref";
     private final static String lesionFilesDirectoryName = "//lesion";
     private SSLSessionReuseFTPSClient ftpClient;
@@ -32,11 +32,8 @@ public class FileManager {
         String[] urlSplit;
 
         if (upload)
-            urlSplit = url.split(File.separator);
+            urlSplit = url.split("\\\\");
         else urlSplit = url.split("//");
-
-        for (String urla : urlSplit)
-            System.out.println("1 " + urla);
 
         return urlSplit[urlSplit.length - 1];
     }
@@ -82,14 +79,14 @@ public class FileManager {
         alert.showAndWait();
     }
 
-    public ObservableList<String> listFiles(String directory, boolean close) {
+    public ObservableList<String> listFiles(String directory, boolean open, boolean close) {
         ObservableList<String> fileList = FXCollections.observableArrayList();
-        this.openFTPConnection();
+
+        if (open)
+            this.openFTPConnection();
 
         try {
-            FTPFile[] files = ftpClient.listFiles(directory);
-
-            for (FTPFile file : files)
+            for (FTPFile file : ftpClient.listFiles(directory))
                 fileList.add(file.getName());
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,12 +103,12 @@ public class FileManager {
         return this.ftpClient;
     }
 
-    private void openFTPConnection() {
+    public void openFTPConnection() {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
         ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-        ftpClient.setConnectTimeout(2000);
-        ftpClient.setDataTimeout(300);
+        ftpClient.setConnectTimeout(7200000);
+        ftpClient.setDataTimeout(10000);
 
         try {
             ftpClient.connect("193.54.21.7");
@@ -148,17 +145,13 @@ public class FileManager {
         }
     }
 
-    public final ObservableList<String> getFileFromFtp(String name, String directory, boolean close) {
-        ObservableList<String> fileList = this.listFiles(directory, close);
+    public final ObservableList<String> getFileFromFtp(String name, String directory, boolean open, boolean close) {
+        ObservableList<String> fileList = this.listFiles(directory, open, close);
         ObservableList<String> fileMatchList = FXCollections.observableArrayList();
-        this.openFTPConnection();
 
-        for(String file : fileList) {
+        for (String file : fileList)
             if(file.contains(name))
                 fileMatchList.add(file);
-        }
-
-        this.closeFTPConnection();
 
         return fileMatchList;
     }
@@ -179,16 +172,17 @@ public class FileManager {
         return true;
     }
 
-    public final File downloadFromUrl(Stage stage, String url, File choosenDirectory, boolean close) {
+    public final File downloadFromUrl(Stage stage, String url, File choosenDirectory, boolean open, boolean close) {
         File selectedDirectory;
 
         if (choosenDirectory == null)
             selectedDirectory = FileManager.openDirectoryChooser(stage);
         else selectedDirectory = choosenDirectory;
 
-        this.openFTPConnection();
-
         if(selectedDirectory != null) {
+            if (open)
+                this.openFTPConnection();
+
             try {
                 File file = new File(selectedDirectory + "//" + FileManager.getFileName(url, false));
                 OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
@@ -198,10 +192,10 @@ public class FileManager {
                 e.printStackTrace();
                 FileManager.openAlert("Téléchargement impossible / Erreur de connexion");
             }
-        }
 
-        if (close)
-            this.closeFTPConnection();
+            if (close)
+                this.closeFTPConnection();
+        }
 
         return selectedDirectory;
     }
@@ -212,10 +206,11 @@ public class FileManager {
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         File selectedFile = fileChooser.showOpenDialog(stage);
         String fileName = null;
-        this.openFTPConnection();
 
         if(selectedFile != null) {
             InputStream input = null;
+
+            this.openFTPConnection();
 
             try {
                 input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
@@ -235,9 +230,9 @@ public class FileManager {
                 e.printStackTrace();
                 FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
             }
-        }
 
-        this.closeFTPConnection();
+            this.closeFTPConnection();
+        }
 
         return fileName;
     }

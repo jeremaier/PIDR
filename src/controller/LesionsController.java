@@ -4,9 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -71,7 +69,7 @@ public class LesionsController implements Initializable {
         this.lesionsTable.setOnMouseClicked((MouseEvent event) -> {
             int id = this.lesionsTable.getSelectionModel().getSelectedIndex();
 
-            if (event.getButton().equals(MouseButton.PRIMARY) && id >= 0) {
+            if ((event.getButton().equals(MouseButton.PRIMARY) || event.getButton().equals(MouseButton.SECONDARY)) && id >= 0) {
                 this.selectedIdLesion = id;
                 this.selectedLesion = this.lesionsList.get(this.selectedIdLesion);
 
@@ -120,14 +118,16 @@ public class LesionsController implements Initializable {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.photosButton.getScene().getWindow();
 
+        this.fileManager.openFTPConnection();
+
         if (photoHors != null)
-            choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, null, false);
+            choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, null, false, false);
 
         if (photoSur != null)
-            this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, choosenDirectory, false);
+            choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, choosenDirectory, false, false);
 
         if (photoFixe != null)
-            this.fileManager.downloadFromUrl(this.lesionsStage, photoFixe, choosenDirectory, false);
+            this.fileManager.downloadFromUrl(this.lesionsStage, photoFixe, choosenDirectory, false, false);
 
         this.fileManager.closeFTPConnection();
     }
@@ -147,9 +147,17 @@ public class LesionsController implements Initializable {
     }
 
     public void removeAction() {
-        this.lesionDaoImpl.delete(this.selectedLesion.getId());
-        this.lesionsList.remove(this.selectedIdLesion);
-        this.lesionsTable.getSelectionModel().clearSelection();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer la suppression");
+        alert.setHeaderText("Vous allez supprimer la lesion");
+        alert.setContentText("Confirmer?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            /*TODO Supprimer les docs qui vont avec*/
+            this.lesionDaoImpl.delete(this.selectedLesion.getId());
+            this.lesionsList.remove(this.selectedIdLesion);
+            this.lesionsTable.getSelectionModel().clearSelection();
+        } else alert.close();
     }
 
     public void siteCutaneAction() {

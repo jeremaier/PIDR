@@ -172,7 +172,7 @@ public class AddLesionController implements Initializable {
         if (this.addLesionStage == null)
             this.addLesionStage = (Stage) this.otherDiagButton.getScene().getWindow();
 
-        new AddDiagView(this.lesion);
+        new AddDiagView(this, this.lesion);
     }
 
     public void addPhotoSurAction() {
@@ -240,10 +240,15 @@ public class AddLesionController implements Initializable {
                 this.addDiagFileButton.setText("Supprimer");
                 this.diagFileLabel.setText(addedFileName);
             }
+
+            this.diagBox.setValue(Diag.FICHIER);
+            this.diagBox.setDisable(true);
         } else {
             this.fileManager.removeFile(this.lesion.getAutreDiag());
             this.addDiagFileButton.setText("Ajouter");
             this.diagFileLabel.setText("Aucun");
+            this.diagBox.setValue(null);
+            this.diagBox.setDisable(false);
         }
     }
 

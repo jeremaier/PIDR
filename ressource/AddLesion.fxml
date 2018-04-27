@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="465.0" maxWidth="530.0" minHeight="465.0" prefHeight="465.0"
-            prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8"
+            prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121"
             fx:controller="src.controller.AddLesionController">
     <GridPane prefHeight="465.0" prefWidth="530.0">
         <columnConstraints>
@@ -27,8 +27,7 @@
                 <Insets left="10.0" right="20.0"/>
             </GridPane.margin>
         </TextField>
-        <ChoiceBox fx:id="diagBox" prefHeight="31.0" prefWidth="109.0" GridPane.columnIndex="1"
-                   GridPane.rowIndex="1">
+        <ChoiceBox fx:id="diagBox" prefHeight="31.0" prefWidth="109.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
@@ -44,8 +43,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoSurButton" mnemonicParsing="false" onAction="#addPhotoSurAction"
-                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoSurButton" mnemonicParsing="false" onAction="#addPhotoSurAction" prefHeight="35.0"
+                    prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoSurLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -57,8 +56,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoHorsButton" mnemonicParsing="false" onAction="#addPhotoHorsAction"
-                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoHorsButton" mnemonicParsing="false" onAction="#addPhotoHorsAction" prefHeight="35.0"
+                    prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoHorsLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -70,8 +69,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoFixeButton" mnemonicParsing="false" onAction="#addPhotoFixeAction"
-                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoFixeButton" mnemonicParsing="false" onAction="#addPhotoFixeAction" prefHeight="35.0"
+                    prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoFixeLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -83,8 +82,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addDiagFileButton" mnemonicParsing="false" onAction="#addDiagFileAction"
-                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addDiagFileButton" mnemonicParsing="false" onAction="#addDiagFileAction" prefHeight="35.0"
+                    prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="diagFileLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -96,16 +95,17 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addMoyFileButton" mnemonicParsing="false" onAction="#addMoyFileAction"
-                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addMoyFileButton" mnemonicParsing="false" onAction="#addMoyFileAction" prefHeight="35.0"
+                    prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="addMoyFileLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
                 </HBox.margin>
             </Label>
         </HBox>
-        <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAction" prefHeight="50.0" prefWidth="150.0"
-                text="Ajouter +" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7">
+        <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addAction" prefHeight="50.0"
+                prefWidth="150.0" text="Ajouter +" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                GridPane.rowIndex="7">
             <font>
                 <Font size="20.0"/>
             </font>

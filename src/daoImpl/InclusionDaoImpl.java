@@ -280,9 +280,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
 
         preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
-        preparedStatement.setDate(indexDebut + 2, ((Inclusion) object).getDateInclusion());
-        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference1());
-        preparedStatement.setString(indexDebut + 4, ((Inclusion) object).getReference2());
+        preparedStatement.setString(indexDebut + 2, ((Inclusion) object).getReference1());
+        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference2());
+        preparedStatement.setDate(indexDebut + 4, ((Inclusion) object).getDateInclusion());
         preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
 
         return preparedStatement;

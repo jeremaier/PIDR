@@ -210,7 +210,7 @@ public class SiteController implements Initializable {
             this.siteStage = (Stage) fichierMoy.getScene().getWindow();
         }
 
-        this.fileManager.downloadFromUrl(siteStage, this.lesion.getFichierMoy(), null, true);
+        this.fileManager.downloadFromUrl(siteStage, this.lesion.getFichierMoy(), null, true, true);
     }
 
     @FXML

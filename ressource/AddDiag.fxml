@@ -8,18 +8,22 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300.0" prefWidth="400.0" stylesheets="@Style.css"
             xmlns="http://javafx.com/javafx/8.0.121" fx:controller="src.controller.AddDiagController">
     <Label alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="28.0" prefHeight="27.0" prefWidth="261.0"
-           text="Ajouter un diagnostic" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+           text="Ajouter un diagnostic" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+           AnchorPane.topAnchor="30.0">
         <font>
             <Font size="18.0"/>
         </font>
     </Label>
-    <Button fx:id="ajoutButton" alignment="CENTER" contentDisplay="CENTER" layoutX="135.0" layoutY="245.0"
+    <Button fx:id="addButton" alignment="CENTER" contentDisplay="RIGHT" layoutX="135.0" layoutY="245.0"
             mnemonicParsing="false" onAction="#ajoutAction" prefHeight="35.0" prefWidth="130.0" text="Ajouter"
-            textAlignment="CENTER" AnchorPane.bottomAnchor="20.0">
+            textAlignment="CENTER" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="60.0">
         <font>
             <Font size="14.0"/>
         </font>
     </Button>
     <TextArea fx:id="diag" layoutX="49.0" layoutY="68.0" prefHeight="159.0" prefWidth="300.0"
-              AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"/>
+              AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="65.0"/>
+    <Button fx:id="removeButton" layoutX="70.0" layoutY="247.0" mnemonicParsing="false" onAction="#removeAction"
+            prefHeight="35.0" prefWidth="130.0" text="Supprimer" AnchorPane.bottomAnchor="30.0"
+            AnchorPane.leftAnchor="60.0"/>
 </AnchorPane>

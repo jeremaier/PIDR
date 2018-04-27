@@ -16,10 +16,10 @@ import java.sql.Connection;
 public class LesionsView {
     public LesionsView(Connection connection, FileManager fileManager, Inclusion inclusion) {
         Parent rootLog = null;
-        Stage LesionsStage = new Stage();
+        Stage lesionsStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        LesionsStage.setTitle("Lesions");
+        lesionsStage.setTitle("Lesions");
         viewLoader.setLocation(getClass().getResource("/ressource/Lesions.fxml"));
         viewLoader.setControllerFactory(iC -> new LesionsController(connection, fileManager, inclusion));
 
@@ -27,12 +27,14 @@ public class LesionsView {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+            lesionsStage.close();
         }
 
-        LesionsStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        lesionsStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        LesionsStage.setScene(new Scene(rootLog));
-        LesionsStage.show();
+        lesionsStage.setResizable(false);
+        lesionsStage.setScene(new Scene(rootLog));
+        lesionsStage.show();
     }
 }
