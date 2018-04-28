@@ -259,10 +259,10 @@ public class SiteController implements Initializable {
     private void downloadSpectreButtonAction(ActionEvent actionEvent){
         if(this.selectedSpectre!=null && this.selectedSpectreId!=null){
             String[] s = this.selectedSite.getSpectre().split("|");
-
+            /**TODO mesure utile?
             //openFTPConnection();
            //this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
-            //closeConnection();
+            //closeConnection(); **/
         }
     }
 

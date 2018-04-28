@@ -98,7 +98,7 @@ public class TranscriptomieController implements Initializable {
         this.critExclusion.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         this.activitesSpec.setText(this.transcriptomicAnalysis.getSpecificActivity());
         this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
-        this.RIN.setText(Double.toString(this.transcriptomicAnalysis.getRIN()));
+        this.RIN.setText(Integer.toString(this.transcriptomicAnalysis.getRIN()));
         this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
     }
 
@@ -107,9 +107,9 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null) {
             this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
         }
-        //openFTPConnection();
-        //this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut());
-        //closeConnection();
+        fileManager.openFTPConnection();
+        this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(),null);
+        fileManager.closeConnection();
     }
 
     @FXML
@@ -118,9 +118,9 @@ public class TranscriptomieController implements Initializable {
             this.transcriptomieStage = (Stage) fichierCut.getScene().getWindow();
         }
 
-        //openFTPConnection();
+        fileManager.openFTPConnection();
         this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut(), null);
-        //closeConnection();
+        fileManager.closeConnection();
 
     }
 
