@@ -13,13 +13,11 @@ import src.utils.Diag;
 import src.utils.FileManager;
 import src.view.AddInclusionsView;
 import src.view.LesionsView;
-import src.view.LoginView;
 
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class InclusionsController implements Initializable {
@@ -101,10 +99,12 @@ public class InclusionsController implements Initializable {
         this.inclInitials.setCellValueFactory(cellData -> cellData.getValue().initialesPatientProperty());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
-        this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
-        this.verifyFTPConnection(this.procObservableList);
-        this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
-        this.verifyFTPConnection(this.resObservableList);
+        this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, false);
+
+        if (this.procObservableList != null)
+            this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
+        else this.fileManager.closeFTPConnection();
+
         this.procList.setItems(this.procObservableList);
         this.resList.setItems(this.resObservableList);
         this.inclusionDaoImpl = new InclusionDaoImpl(this.connection);
@@ -159,30 +159,13 @@ public class InclusionsController implements Initializable {
                 this.editButton.setDisable(false);
                 this.lesionsButton.setDisable(false);
 
-                if (!this.selectedInclusion.getReference1().equals("Aucun") && !this.selectedInclusion.getReference2().equals("Aucun"))
+                if (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun"))
                     this.refDownloadButton.setDisable(false);
             }
         });
 
         this.procList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());
         this.resList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());
-    }
-
-    private void verifyFTPConnection(ObservableList<String> list) {
-        if (list == null) {
-            if (this.inclusionsStage == null)
-                this.inclusionsStage = (Stage) this.idInclusionField.getScene().getWindow();
-
-            try {
-                this.connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            new LoginView(new Stage());
-
-            this.inclusionsStage.close();
-        }
     }
 
     private void displayRemoveDownloadButtons() {
@@ -240,7 +223,7 @@ public class InclusionsController implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             /*TODO Supprimer les docs qui vont avec*/
-            this.inclusionDaoImpl.delete(Integer.parseInt(this.idInclusionField.getText()));
+            this.inclusionDaoImpl.delete(Integer.parseInt(this.selectedInclusion.getId()));
             this.inclusionsList.remove(this.selectedInclusion);
             this.inclusionsTable.getSelectionModel().clearSelection();
         } else alert.close();
@@ -252,11 +235,13 @@ public class InclusionsController implements Initializable {
         String ref2Url = this.selectedInclusion.getReference2();
         File choosenDirectory = null;
 
+        this.fileManager.openFTPConnection();
+
         if(this.inclusionsStage == null)
             this.inclusionsStage = (Stage) this.refDownloadButton.getScene().getWindow();
 
         if (!ref1Url.equals("Aucun"))
-            choosenDirectory = this.fileManager.downloadFromUrl(this.inclusionsStage, ref1Url, null, true, false);
+            choosenDirectory = this.fileManager.downloadFromUrl(this.inclusionsStage, ref1Url, null, false, false);
 
         if (!ref2Url.equals("Aucun"))
             this.fileManager.downloadFromUrl(this.inclusionsStage, ref2Url, choosenDirectory, false, false);

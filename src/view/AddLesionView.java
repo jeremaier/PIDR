@@ -29,6 +29,7 @@ public class AddLesionView {
         }
 
         assert rootLog != null;
+        addLesionStage.setResizable(false);
         addLesionStage.setScene(new Scene(rootLog));
         addLesionStage.show();
     }

@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import src.controller.LoginController;
 
 import java.io.IOException;
 
@@ -27,6 +26,7 @@ public class LoginView {
         primaryStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
+        primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(rootLog, 600, 400));
         primaryStage.show();
     }

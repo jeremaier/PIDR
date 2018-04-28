@@ -90,29 +90,38 @@ public class AddInclusionController implements Initializable {
     }
 
     private boolean idAlreadyExistant(int id) {
-        for (Inclusion anInclusionsList : this.inclusionsList)
-            if (Integer.parseInt(anInclusionsList.getId()) == id)
-                return true;
+        if (!this.addButton.getText().equals("Modifier"))
+            for (Inclusion anInclusionsList : this.inclusionsList)
+                if (Integer.parseInt(anInclusionsList.getId()) == id)
+                    return true;
 
         return false;
     }
 
     private void setInclusionInformations() {
         this.inclusionIDField.setText(this.inclusion.getId());
-        this.patientLabel.setText(this.inclusion.getInitialesPatient());
+        Date dateInclusion = this.inclusion.getDateInclusion();
+        String initialesPatient = this.inclusion.getInitialesPatient();
 
-        if (this.inclusion.getReference1() != null) {
+        if (initialesPatient != null)
+            this.patientLabel.setText(initialesPatient);
+
+        if (!this.inclusion.getReference1().equals("Aucun")) {
             this.reference1FileLabel.setText(FileManager.getFileName(this.inclusion.getReference1(), false));
-            this.reference1FileButton.setText("Modifier");
+            this.reference1FileButton.setText("Supprimer");
         }
 
-        if (this.inclusion.getReference2() != null) {
+        if (!this.inclusion.getReference2().equals("Aucun")) {
             this.reference2FileLabel.setText(FileManager.getFileName(this.inclusion.getReference2(), false));
-            this.reference2FileButton.setText("Modifier");
+            this.reference2FileButton.setText("Supprimer");
         }
 
-        if (this.inclusion.getDateInclusion() != null)
-            this.inclusionDatePicker.setValue(this.inclusion.getDateInclusion().toLocalDate());
+        if (dateInclusion != null)
+            this.inclusionDatePicker.setValue(dateInclusion.toLocalDate());
+
+        this.addButton.setDisable(false);
+        this.reference1FileButton.setDisable(false);
+        this.reference2FileButton.setDisable(false);
     }
 
     void setPatientInformations(int patientId, String initiales) {

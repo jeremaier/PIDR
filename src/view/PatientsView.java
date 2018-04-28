@@ -29,6 +29,7 @@ public class PatientsView {
         }
 
         assert rootLog != null;
+        patientStage.setResizable(false);
         patientStage.setScene(new Scene(rootLog));
         patientStage.show();
     }

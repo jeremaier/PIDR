@@ -30,6 +30,7 @@ public class TranscriptomieView {
         stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
+        stage.setResizable(false);
         stage.setScene(new Scene(rootLog));
         stage.show();
     }

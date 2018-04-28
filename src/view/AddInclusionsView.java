@@ -34,6 +34,7 @@ public class AddInclusionsView {
         }
 
         assert rootLog != null;
+        addInclusionStage.setResizable(false);
         addInclusionStage.setScene(new Scene(rootLog));
         addInclusionStage.show();
     }

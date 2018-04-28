@@ -32,6 +32,7 @@ public class SiteView {
         siteStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
+        siteStage.setResizable(false);
         siteStage.setScene(new Scene(rootLog));
         siteStage.show();
     }

@@ -90,6 +90,8 @@ public class FileManager {
                 fileList.add(file.getName());
         } catch (IOException e) {
             e.printStackTrace();
+            fileList = null;
+            this.closeFTPConnection();
             FileManager.openAlert("Impossible de commnuniquer avec le serveur");
         }
 
@@ -103,12 +105,12 @@ public class FileManager {
         return this.ftpClient;
     }
 
-    public void openFTPConnection() {
+    public boolean openFTPConnection() {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
         ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-        ftpClient.setConnectTimeout(7200000);
-        ftpClient.setDataTimeout(10000);
+        ftpClient.setConnectTimeout(2000);
+        ftpClient.setDataTimeout(500);
 
         try {
             ftpClient.connect("193.54.21.7");
@@ -118,10 +120,17 @@ public class FileManager {
 
             int reply = ftpClient.getReplyCode();
 
-            if (!FTPReply.isPositiveCompletion(reply))
+            if (!FTPReply.isPositiveCompletion(reply)) {
                 ftpClient.disconnect();
+                return false;
+            }
 
-            ftpClient.login(this.user, this.password);
+            if (!ftpClient.login(this.user, this.password)) {
+                ftpClient.logout();
+                ftpClient.disconnect();
+                return false;
+            }
+
             ftpClient.setSoTimeout(5000);
             ftpClient.setControlKeepAliveTimeout(120);
             ftpClient.setControlKeepAliveReplyTimeout(120);
@@ -131,7 +140,10 @@ public class FileManager {
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
     public void closeFTPConnection() {

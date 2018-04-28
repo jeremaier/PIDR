@@ -65,7 +65,7 @@ public class LoginController implements Initializable {
             FileManager fileManager = new FileManager(user.getText(), password.getText());
 
             /*TODO empecher co quand ftp marche pas*/
-            if (connection.getConnection() != null) {
+            if (connection.getConnection() != null && fileManager.openFTPConnection()) {
                 if (this.saveLogin.isSelected())
                     this.saveLoginInFile();
                 else this.deleteLoginFile();

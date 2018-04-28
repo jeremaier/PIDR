@@ -117,7 +117,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (!diag.toString().equals("")) {
+            if (diag != null) {
                 preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
@@ -223,7 +223,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, REFERENCE1 = ?, REFERENCE2 = ?, DATE_INCLUSION = ?, NUM_ANAPATH = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
             preparedStatement.setInt(6, id);
 

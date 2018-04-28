@@ -27,6 +27,7 @@ public class AddDiagView {
         }
 
         assert rootLog != null;
+        diagStage.setResizable(false);
         diagStage.setScene(new Scene(rootLog));
         diagStage.show();
     }
