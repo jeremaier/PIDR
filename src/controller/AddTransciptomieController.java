@@ -1,6 +1,7 @@
 package src.controller;
 
 import javafx.fxml.FXML;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,7 +13,6 @@ import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
@@ -79,6 +79,10 @@ public class AddTransciptomieController implements Initializable {
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private TranscriptomieDaompl transcriptomieDaompl;
     private int siteId;
+    private String fichierBrutPath;
+    private String fichierCutPath;
+    private String qualityReportPath;
+
 
 
     public AddTransciptomieController(Stage stage, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
@@ -104,7 +108,8 @@ public class AddTransciptomieController implements Initializable {
         }
     }
 
-    public void accepteButton(ActionEvent actionEvent) {
+    @FXML
+    private void accepteButton(ActionEvent actionEvent) {
         int Id;
         int Emplacement;
         int NumSerie;
@@ -128,7 +133,7 @@ public class AddTransciptomieController implements Initializable {
             Arnc = Double.parseDouble(ARNc.getText());
             Rin = Integer.parseInt(RIN.getText());
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, null, null, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, null);
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, fichierCutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaompl.insert(newTranscr);
 
             if (this.addTranscriptomieStage == null)
@@ -192,8 +197,20 @@ public class AddTransciptomieController implements Initializable {
                 Rin = transcriptomicAnalysis.getRIN();
             }
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(transcriptomicAnalysis.getId(), siteId, null, null, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, null);
-            transcriptomieDaompl.insert(newTranscr);
+            if (fichierBrutPath==null){
+                fichierBrutPath=this.transcriptomicAnalysis.getFichierBrut();
+            }
+
+            if (fichierCutPath==null){
+                fichierCutPath=this.transcriptomicAnalysis.getFichierCut();
+            }
+
+            if (qualityReportPath==null){
+                qualityReportPath=this.transcriptomicAnalysis.getQualityReport();
+            }
+
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, fichierCutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            transcriptomieDaompl.update(newTranscr,transcriptomicAnalysis.getId());
 
             if (this.addTranscriptomieStage == null)
                 this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
@@ -202,14 +219,32 @@ public class AddTransciptomieController implements Initializable {
 
     }
 
-    public void fichierBrutButton(ActionEvent actionEvent){
-
+    @FXML
+    private void fichierBrutButton(ActionEvent actionEvent){
         fileManager.openFTPConnection();
-        fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+        fichierBrutPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
         fileManager.closeConnection();
-
-
     }
 
+    @FXML
+    private void fichierCrutButton(ActionEvent actionEvent){
+        fileManager.openFTPConnection();
+        fichierCutPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+        fileManager.closeConnection();
+    }
 
+    @FXML
+    private void qualityReportButtonAction(ActionEvent actionEvent){
+        fileManager.openFTPConnection();
+        qualityReportPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+        fileManager.closeConnection();
+    }
+
+    @FXML
+    private void retour(ActionEvent actionEvent) {
+        this.addTranscriptomieStage = (Stage) addTranscriptomieStage.getScene().getWindow();
+        this.addTranscriptomieStage.close();
+    }
 }
+
+
