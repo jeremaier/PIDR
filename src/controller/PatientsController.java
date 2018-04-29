@@ -163,7 +163,6 @@ public class PatientsController implements Initializable {
                 this.dateField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-
         this.dateSearchField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue()) {
                 if (this.dateSearchField.getText().length() >= 4)
@@ -176,10 +175,9 @@ public class PatientsController implements Initializable {
                 this.dateSearchField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        //this.patientsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
         this.patientsTable.setOnMouseClicked((MouseEvent event) -> {
             int id = this.patientsTable.getSelectionModel().getSelectedIndex();
-            if (event.getButton().equals(MouseButton.PRIMARY) && id >= 0) {
+            if ((event.getButton().equals(MouseButton.PRIMARY) || event.getButton().equals(MouseButton.SECONDARY)) && id >= 0) {
                 this.selectedId = id;
                 Patient selectedPatient = this.patientsList.get(this.selectedId);
 
@@ -218,8 +216,8 @@ public class PatientsController implements Initializable {
     }
 
     private void populateIdPatients() {
-        for (Patient aPatientsList : this.patientsList)
-            this.idPatients.add(Integer.toString(aPatientsList.getId()));
+        for (Patient patient : this.patientsList)
+            this.idPatients.add(Integer.toString(patient.getId()));
     }
 
     private void populatePatients() {
@@ -273,11 +271,19 @@ public class PatientsController implements Initializable {
 
     @FXML
     private void removeAction() {
-        this.patientDaolmpl.delete(Integer.parseInt(this.idField.getText()));
-        this.patientsList.remove(this.patientsList.get(this.selectedId));
-        this.idPatients.clear();
-        populateIdPatients();
-        this.cleanFields();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer la suppression");
+        alert.setHeaderText("Vous allez supprimer le patient");
+        alert.setContentText("Confirmer?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            /*TODO Supprimer les docs qui vont avec*/
+            this.patientDaolmpl.delete(Integer.parseInt(this.idField.getText()));
+            this.patientsList.remove(this.patientsList.get(this.selectedId));
+            this.idPatients.clear();
+            this.populateIdPatients();
+            this.cleanFields();
+        } else alert.close();
     }
 
     @FXML
@@ -292,14 +298,18 @@ public class PatientsController implements Initializable {
 
     @FXML
     private void cancelAction() {
-        this.patientsStage = (Stage) this.cancelButton.getScene().getWindow();
+        if (this.patientsStage == null)
+            this.patientsStage = (Stage) this.cancelButton.getScene().getWindow();
+
         this.patientsStage.close();
     }
 
     @FXML
     private void choosePatientAction() {
+        if (this.patientsStage == null)
+            this.patientsStage = (Stage) this.chooseButton.getScene().getWindow();
+
         this.addInclusionController.setPatientInformations(Integer.parseInt(this.idField.getText()), this.initialesField.getText());
-        this.patientsStage = (Stage) this.chooseButton.getScene().getWindow();
         this.patientsStage.close();
     }
 }

@@ -14,8 +14,8 @@ public class PatientsView {
     public PatientsView(Connection connection, AddInclusionController addInclusionController) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
-
         Stage patientStage = new Stage();
+
         patientStage.setTitle("Patients");
         patientStage.setResizable(false);
 
@@ -29,6 +29,7 @@ public class PatientsView {
         }
 
         assert rootLog != null;
+        patientStage.setResizable(false);
         patientStage.setScene(new Scene(rootLog));
         patientStage.show();
     }

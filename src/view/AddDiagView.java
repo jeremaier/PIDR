@@ -1,23 +1,24 @@
 package src.view;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import src.controller.AddDiagController;
+import src.controller.AddLesionController;
+import src.table.Lesion;
 
 import java.io.IOException;
 
 public class AddDiagView {
-    public AddDiagView(Stage stage) {
+    public AddDiagView(AddLesionController addLesionController, Lesion lesion) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
+        Stage diagStage = new Stage();
 
-        stage.setTitle("Ajout d'un diagnostic");
+        diagStage.setTitle("Ajout d'un diagnostic");
         viewLoader.setLocation(getClass().getResource("/ressource/AddDiag.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddDiagController());
+        viewLoader.setControllerFactory(iC -> new AddDiagController(addLesionController, lesion));
 
         try {
             rootLog = viewLoader.load();
@@ -25,10 +26,9 @@ public class AddDiagView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
-
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        diagStage.setResizable(false);
+        diagStage.setScene(new Scene(rootLog));
+        diagStage.show();
     }
 }

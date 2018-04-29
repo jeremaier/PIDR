@@ -14,11 +14,11 @@ import java.sql.Connection;
 
 public class InclusionsView {
     public InclusionsView(Connection connection, FileManager fileManager) {
-        Stage inclusionsWindow = new Stage();
         Parent rootLog = null;
+        Stage inclusionsStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        inclusionsWindow.setTitle("Inclusions");
+        inclusionsStage.setTitle("Inclusions");
         viewLoader.setLocation(getClass().getResource("/ressource/Inclusions.fxml"));
         viewLoader.setControllerFactory(iC -> new InclusionsController(connection, fileManager));
 
@@ -26,14 +26,14 @@ public class InclusionsView {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            inclusionsWindow.close();
+            inclusionsStage.close();
         }
 
-        inclusionsWindow.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        inclusionsStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        inclusionsWindow.setResizable(false);
-        inclusionsWindow.setScene(new Scene(rootLog, 788, 600));
-        inclusionsWindow.show();
+        inclusionsStage.setResizable(false);
+        inclusionsStage.setScene(new Scene(rootLog, 788, 600));
+        inclusionsStage.show();
     }
 }

@@ -117,7 +117,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (!diag.toString().equals("")) {
+            if (diag != null) {
                 preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, initiales);
                 resultSet = preparedStatement.executeQuery();
@@ -168,7 +168,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             boolean found = false;
 
             for (Inclusion patient2 : inclusions2) {
-                if (patient2.getId() == inclusions1.get(i).getId()) {
+                if (patient2.getId().equals(inclusions1.get(i).getId())) {
                     found = true;
                     inclusions2.remove(patient2);
                     break;
@@ -223,7 +223,7 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, DATE_INCLUSION = ?, REFERENCE1 = ?, REFERENCE2 = ?, NUM_ANAPATH = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, REFERENCE1 = ?, REFERENCE2 = ?, DATE_INCLUSION = ?, NUM_ANAPATH = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
             preparedStatement.setInt(6, id);
 
@@ -277,12 +277,12 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
         if(indexDebut == 1)
-            preparedStatement.setInt(indexDebut, ((Inclusion) object).getId());
+            preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
 
         preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
-        preparedStatement.setDate(indexDebut + 2, ((Inclusion) object).getDateInclusion());
-        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference1());
-        preparedStatement.setString(indexDebut + 4, ((Inclusion) object).getReference2());
+        preparedStatement.setString(indexDebut + 2, ((Inclusion) object).getReference1());
+        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference2());
+        preparedStatement.setDate(indexDebut + 4, ((Inclusion) object).getDateInclusion());
         preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
 
         return preparedStatement;

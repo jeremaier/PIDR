@@ -5,7 +5,7 @@ import javafx.beans.property.*;
 import java.sql.Date;
 
 public class Inclusion {
-    private IntegerProperty id;
+    private StringProperty id;
     private IntegerProperty idPatient;
     private StringProperty initialesPatient;
     private String reference1 = "Aucun";
@@ -15,8 +15,9 @@ public class Inclusion {
     private StringProperty diag;
 
     public Inclusion() {
-        this.id = new SimpleIntegerProperty();
+        this.id = new SimpleStringProperty();
         this.idPatient = new SimpleIntegerProperty();
+        this.initialesPatient = new SimpleStringProperty();
         this.dateInclusion = new SimpleObjectProperty<>();
         this.numAnaPath = new SimpleIntegerProperty();
         this.diag = new SimpleStringProperty();
@@ -34,12 +35,12 @@ public class Inclusion {
         this.setDiag(diag);
     }
 
-    public int getId() {
+    public String getId() {
         return id.get();
     }
 
     public void setId(int id) {
-        this.id.set(id);
+        this.id.set(String.format("%03d", id));
     }
 
     public int getIdPatient() {
@@ -78,7 +79,7 @@ public class Inclusion {
         return numAnaPath.get();
     }
 
-    public IntegerProperty idProperty() {
+    public StringProperty idProperty() {
         return this.id;
     }
 

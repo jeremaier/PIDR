@@ -21,7 +21,7 @@
             <RowConstraints maxHeight="63.0" minHeight="63.0" prefHeight="63.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="289.0" minHeight="10.0" prefHeight="86.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-        <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAction" prefHeight="50.0"
+        <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#addAction" prefHeight="50.0"
                 prefWidth="150.0" text="Ajouter +" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                 GridPane.rowIndex="6">
             <font>
@@ -64,9 +64,8 @@
                 <Insets left="20.0"/>
             </GridPane.margin>
         </Label>
-        <Button fx:id="reference1FileButton" mnemonicParsing="false" onAction="#reference1FileAction"
-                prefHeight="35.0" prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1"
-                GridPane.rowIndex="4">
+        <Button fx:id="reference1FileButton" disable="true" mnemonicParsing="false" onAction="#reference1FileAction"
+                prefHeight="35.0" prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
@@ -77,7 +76,7 @@
             </GridPane.margin>
         </Label>
         <Button fx:id="addPatientButton" mnemonicParsing="false" onAction="#addPatientAction" prefHeight="35.0"
-                prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="1"
                 GridPane.valignment="CENTER">
             <GridPane.margin>
                 <Insets left="10.0"/>
@@ -85,12 +84,12 @@
         </Button>
         <Label fx:id="patientLabel" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <GridPane.margin>
-                <Insets left="130.0"/>
+                <Insets left="140.0"/>
             </GridPane.margin>
         </Label>
         <Label fx:id="reference1FileLabel" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <GridPane.margin>
-                <Insets left="130.0"/>
+                <Insets left="140.0"/>
             </GridPane.margin>
         </Label>
         <DatePicker fx:id="inclusionDatePicker" prefHeight="31.0" prefWidth="325.0" GridPane.columnIndex="1"
@@ -104,16 +103,15 @@
                 <Insets left="20.0"/>
             </GridPane.margin>
         </Label>
-        <Button fx:id="reference2FileButton" mnemonicParsing="false" onAction="#reference2FileAction"
-                prefHeight="35.0" prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1"
-                GridPane.rowIndex="5">
+        <Button fx:id="reference2FileButton" disable="true" mnemonicParsing="false" onAction="#reference2FileAction"
+                prefHeight="35.0" prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
         </Button>
         <Label fx:id="reference2FileLabel" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <GridPane.margin>
-                <Insets left="130.0"/>
+                <Insets left="140.0"/>
             </GridPane.margin>
         </Label>
     </GridPane>
