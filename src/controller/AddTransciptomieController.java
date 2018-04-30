@@ -237,10 +237,12 @@ public class AddTransciptomieController implements Initializable {
         if (transcriptomicAnalysis != null) {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
             fichierBrutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName ;
+            checkFichierBrut.setText(fileName);
 
         }else {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
             fichierBrutPath = "//trancriptomie//" + id.getText() + fileName;
+            checkFichierBrut.setText(fileName);
         }
     }
 
@@ -250,10 +252,11 @@ public class AddTransciptomieController implements Initializable {
         if (transcriptomicAnalysis != null) {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
             fichierCutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName ;
-
+            checkFichierCut.setText(fileName);
         }else {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
             fichierCutPath = "//trancriptomie//" + id.getText() + fileName;
+            checkFichierCut.setText(fileName);
         }
     }
 
@@ -263,10 +266,11 @@ public class AddTransciptomieController implements Initializable {
         if (transcriptomicAnalysis != null) {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
             qualityReportPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName;
-
+            checkQualityReport.setText(fileName);
         }else {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
             qualityReportPath = "//trancriptomie//" + id.getText() + fileName;
+            checkQualityReport.setText(fileName);
         }
     }
 
