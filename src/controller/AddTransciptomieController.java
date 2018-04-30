@@ -276,7 +276,7 @@ public class AddTransciptomieController implements Initializable {
 
     @FXML
     private void retour(ActionEvent actionEvent) {
-        this.addTranscriptomieStage = (Stage) addTranscriptomieStage.getScene().getWindow();
+        this.addTranscriptomieStage = (Stage) cancel.getScene().getWindow();
         this.addTranscriptomieStage.close();
     }
 }

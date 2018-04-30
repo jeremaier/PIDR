@@ -21,7 +21,7 @@ public class SiteView {
 
         siteStage.setTitle("Vision d'un site");
         viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));
-        viewLoader.setControllerFactory(iC -> new SiteController(connection, lesion));
+        viewLoader.setControllerFactory(iC -> new SiteController(connection, lesion, fileManager));
 
         try {
             rootLog = viewLoader.load();
