@@ -33,10 +33,10 @@
                         <Label text="La table est vide"/>
                     </placeholder>
                     <columns>
-                        <TableColumn editable="false" prefWidth="253.0" resizable="false"
+                        <TableColumn fx:id="siteCutane" editable="false" prefWidth="253.0" resizable="false"
                                      text="Site anatomique"/>
-                        <TableColumn prefWidth="253.0" resizable="false" text="Orientation"/>
-                        <TableColumn prefWidth="254.0" resizable="false" text="Diagnostic"/>
+                        <TableColumn fx:id="Orientation" prefWidth="253.0" resizable="false" text="Orientation"/>
+                        <TableColumn fx:id="diag" prefWidth="254.0" resizable="false" text="Diagnostic"/>
                     </columns>
                 </TableView>
                 <Button fx:id="transcriptomique" layoutX="583.0" layoutY="302.0" mnemonicParsing="false"
@@ -50,8 +50,8 @@
                 <TableView fx:id="sainTab" layoutX="20.0" layoutY="23.0" prefHeight="222.0"
                            prefWidth="760.0" AnchorPane.topAnchor="25.0">
                     <columns>
-                        <TableColumn prefWidth="380.0" resizable="false" text="Site"/>
-                        <TableColumn prefWidth="380.0" resizable="false" text="Diagnostic"/>
+                        <TableColumn fx:id="siteSain" prefWidth="380.0" resizable="false" text="Site"/>
+                        <TableColumn fx:id="diagSain" prefWidth="380.0" resizable="false" text="Diagnostic"/>
                     </columns>
                 </TableView>
             </AnchorPane>
@@ -62,6 +62,6 @@
             onAction="#removeSpectreButtonAction" prefHeight="31.0" prefWidth="166.0" text="Supprimer le spectre"/>
     <Button fx:id="fichierMoy" disable="true" layoutX="582.0" layoutY="440.0" mnemonicParsing="false"
             onAction="#fichierMoyAction" prefHeight="31.0" prefWidth="196.0" text="Fichier moyenné"/>
-    <ListView layoutX="22.0" layoutY="454.0" prefHeight="133.0" prefWidth="112.0"/>
+    <ListView fx:id="spectreList" layoutX="22.0" layoutY="454.0" prefHeight="133.0" prefWidth="112.0"/>
     <Button fx:id="downloadSpectre" disable="true" layoutX="148.0" layoutY="471.0" onAction="#downloadSpectreButtonAction" mnemonicParsing="false" text="Télécharger le spectre"/>
 </AnchorPane>

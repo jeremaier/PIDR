@@ -1,5 +1,7 @@
 package src.controller;
 
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +35,7 @@ public class SiteController implements Initializable {
     Button modifier;
 
     @FXML
-    ListView spectreList;
+    ListView<String> spectreList;
 
     @FXML
     Button downloadSpectre;
@@ -48,10 +50,10 @@ public class SiteController implements Initializable {
     Button transcriptomique;
 
     @FXML
-    TableView affecteTab;
+    TableView<CutaneousSite> affecteTab;
 
     @FXML
-    TableView sainTab;
+    TableView<CutaneousSite> sainTab;
 
     @FXML
     Tab affecte;
@@ -60,7 +62,7 @@ public class SiteController implements Initializable {
     Tab sain;
 
     @FXML
-    TableColumn<CutaneousSite, String> siteCutane;
+    TableColumn<CutaneousSite, String>  siteCutane;
 
     @FXML
     TableColumn<CutaneousSite, Integer> Orientation;
@@ -72,7 +74,7 @@ public class SiteController implements Initializable {
     TableColumn<CutaneousSite, String> siteSain;
 
     @FXML
-    TableColumn<CutaneousSite, String> diagSain;
+     TableColumn<CutaneousSite, String> diagSain;
 
     private Connection connection;
     private Stage siteStage;
@@ -88,9 +90,10 @@ public class SiteController implements Initializable {
     private TranscriptomieDaompl transcriptomieDaompl;
 
 
-    public SiteController(Connection connection, Lesion lesion){
+    public SiteController(Connection connection, Lesion lesion, FileManager fileManager){
         this.connection=connection;
         this.lesion = lesion;
+        this.fileManager = fileManager;
     }
 
 
@@ -104,13 +107,15 @@ public class SiteController implements Initializable {
         this.diagSain.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
 
         this.siteCutaneDaompl = new SiteCutaneDaompl(connection);
+        this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
+
         this.siteListeSain = siteCutaneDaompl.selectBySain(this.lesion.getId(), 1);
-        this.siteListeNonSain = siteCutaneDaompl.selectBySain(this.lesion.getId(), 2);
+        this.siteListeNonSain = siteCutaneDaompl.selectBySain(this.lesion.getId(), 0);
 
         this.populateSite(siteListeNonSain,siteListeSain);
 
 
-        this.sainTab.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        this.sainTab.getSelectionModel().selectedItemProperty().addListener( observableValue -> {
             selectedSite = (CutaneousSite) sainTab.getSelectionModel().getSelectedItem();
 
             if(selectedSite != null) {
@@ -134,7 +139,7 @@ public class SiteController implements Initializable {
             spectreList.setItems(spectre);
         });
 
-        this.affecteTab.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
             selectedSite = (CutaneousSite) affecteTab.getSelectionModel().getSelectedItem();
 
             if(selectedSite != null) {
@@ -183,19 +188,20 @@ public class SiteController implements Initializable {
         if(!siteListeNonSain.isEmpty())
             affecteTab.setItems(siteListeNonSain);
 
-        else affecteTab.refresh();
+
+        else affecteTab.setItems(FXCollections.observableArrayList());
 
         if(!siteListeSain.isEmpty())
             sainTab.setItems(siteListeSain);
 
-        else sainTab.refresh();
+        else sainTab.setItems(FXCollections.observableArrayList());
     }
 
     private void populateSpectre(ObservableList<String> spectre ) {
         if (!spectre.isEmpty()){
             spectreList.setItems(spectre);
         }
-        else spectreList.refresh();
+        else spectreList.setItems(FXCollections.observableArrayList());
     }
 
 
@@ -244,7 +250,7 @@ public class SiteController implements Initializable {
                 if (result.get() == ButtonType.OK){
 
                     siteCutaneDaompl.delete(this.selectedSite.getId());
-                    if(this.selectedSite.getHealthy()==0){
+                        if(this.selectedSite.getHealthy()==0){
                         this.siteListeNonSain.remove(selectedSite);
                     }else{
                         this.siteListeSain.remove(selectedSite);
@@ -270,7 +276,7 @@ public class SiteController implements Initializable {
 
     @FXML
     private void removeSpectreButtonAction(ActionEvent actionEvent){
-        if(this.selectedSpectreId==null && this.selectedSpectreId!=null){
+        if(this.selectedSpectreId!=null && this.selectedSite!=null){
             String[] s = this.selectedSite.getSpectre().split("|");
 
             //openFTPConnection();

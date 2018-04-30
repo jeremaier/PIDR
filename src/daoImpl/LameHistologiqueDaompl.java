@@ -89,6 +89,50 @@ public class LameHistologiqueDaompl extends DaoImpl implements LameHistologiqueD
     }
 
     @Override
+    public ObservableList<HistologicLamella> selectByLesion(int id) {
+        ObservableList<HistologicLamella> lame = FXCollections.observableArrayList();
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM lame_histologique WHERE ID_LESION = ? ORDER BY ID");
+
+            while (resultSet.next())
+                lame.add(this.addToLame(resultSet));
+
+            System.out.println("SELECT * FROM lame_histologique WHERE ID_LESION ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lame;
+    }
+
+    public void delete(int id) {
+        this.delete(connection, "lame_histologique", id);
+    }
+
+    @Override
     public List<HistologicLamella> selectAll() {
         ObservableList<HistologicLamella> lame = FXCollections.observableArrayList();
         Statement statement = null;
