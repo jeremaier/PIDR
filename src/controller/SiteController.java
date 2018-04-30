@@ -1,5 +1,6 @@
 package src.controller;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -110,7 +111,7 @@ public class SiteController implements Initializable {
         this.populateSite(siteListeNonSain,siteListeSain);
 
 
-        this.sainTab.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        this.sainTab.getSelectionModel().selectedItemProperty().addListener((ObservableValue observableValue, Object oldValue, Object newValue) -> {
             selectedSite = (CutaneousSite) sainTab.getSelectionModel().getSelectedItem();
 
             if(selectedSite != null) {

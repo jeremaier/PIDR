@@ -2,6 +2,7 @@ package src.table;
 
 import javafx.beans.property.*;
 import src.utils.Diag;
+import src.utils.SiteCutane;
 
 public class CutaneousSite {
     private IntegerProperty id;
@@ -9,23 +10,23 @@ public class CutaneousSite {
     private IntegerProperty healthy;
     private StringProperty site;
     private IntegerProperty orientation;
-    private Diag diag;
+    private StringProperty diag;
     private StringProperty autreDiag;
+    private StringProperty fichierDiag;
     private StringProperty spectre;
 
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
         this.healthy = new SimpleIntegerProperty();
-        this.site = new SimpleStringProperty();
         this.orientation = new SimpleIntegerProperty();
         this.autreDiag = new SimpleStringProperty();
         this.spectre = new SimpleStringProperty();
+        this.fichierDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite(int id, int idLesion, int healthy, String measurementNumber, String site, int orientation, String diag, String autreDiag, String spectre) {
+    public CutaneousSite( int idLesion, int healthy,  String site, int orientation, String diag, String autreDiag, String fichierDiag,  String spectre) {
         this();
-        this.setId(id);
         this.setIdLesion(idLesion);
         this.setHealthy(healthy);
         this.setSite(site);
@@ -33,6 +34,7 @@ public class CutaneousSite {
         this.setDiag(diag);
         this.setAutreDiag(autreDiag);
         this.setSpectre(spectre);
+
     }
 
     public int getId() {
@@ -75,12 +77,12 @@ public class CutaneousSite {
         this.orientation.set(orientation);
     }
 
-    public Diag getDiag() {
-        return this.diag;
+    public String getDiag() {
+        return this.diag.get();
     }
 
     public void setDiag(String diag) {
-        this.diag = Diag.valueOf(diag);
+        this.diag.set(diag);
     }
 
     public String getAutreDiag() {
@@ -90,6 +92,10 @@ public class CutaneousSite {
     public void setAutreDiag(String autreDiag) {
         this.autreDiag.set(autreDiag);
     }
+
+    public String getFichierDiag(){ return this.fichierDiag.get();}
+
+    public void setFichierDiag(String fichierDiag){ this.fichierDiag.set(fichierDiag);}
 
     public String getSpectre() { return this.spectre.get();}
 
@@ -117,8 +123,10 @@ public class CutaneousSite {
     }
 
     public StringProperty diagProperty() {
-        return this.diag.getName();
+        return this.diag;
     }
+
+    public StringProperty fichierDiag(){return  this.diag;}
 
     public StringProperty autreDiagProperty() {
         return this.autreDiag;

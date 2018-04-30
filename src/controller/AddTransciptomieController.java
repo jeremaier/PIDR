@@ -99,10 +99,21 @@ public class AddTransciptomieController implements Initializable {
         if (transcriptomicAnalysis == null) {
 
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.intValue() > 0) {
-                    accepte.setDisable(false);
-                } else {
+                if (newValue.intValue() == 0) {
                     accepte.setDisable(true);
+                    fichierBrut.setDisable(true);
+                    fichierCut.setDisable(true);
+                    qualityReport.setDisable(true);
+                    fichierCutPath=null;
+                    fichierBrutPath=null;
+                    qualityReportPath=null;
+
+                } else {
+                    accepte.setDisable(false);
+                    fichierBrut.setDisable(false);
+                    fichierCut.setDisable(false);
+                    qualityReport.setDisable(false);
+
                 }
             });
         }
@@ -221,18 +232,42 @@ public class AddTransciptomieController implements Initializable {
     }
 
     @FXML
-    private void fichierBrutButton(ActionEvent actionEvent){
-        fichierBrutPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+    private void fichierBrutButton(ActionEvent actionEvent) {
+        String fileName;
+        if (transcriptomicAnalysis != null) {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
+            fichierBrutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName ;
+
+        }else {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
+            fichierBrutPath = "//trancriptomie//" + id.getText() + fileName;
+        }
     }
 
     @FXML
     private void fichierCrutButton(ActionEvent actionEvent){
-        fichierCutPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+        String fileName;
+        if (transcriptomicAnalysis != null) {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
+            fichierCutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName ;
+
+        }else {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
+            fichierCutPath = "//trancriptomie//" + id.getText() + fileName;
+        }
     }
 
     @FXML
     private void qualityReportButtonAction(ActionEvent actionEvent){
-        qualityReportPath="//trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId())+fileManager.uploadToURL(addTranscriptomieStage,"trancriptomie//"+String.valueOf(this.transcriptomicAnalysis.getId()), null  );
+        String fileName;
+        if (transcriptomicAnalysis != null) {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
+            qualityReportPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName;
+
+        }else {
+            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
+            qualityReportPath = "//trancriptomie//" + id.getText() + fileName;
+        }
     }
 
     @FXML
