@@ -8,7 +8,11 @@ public interface TranscriptomieDao {
 
     TranscriptomicAnalysis selectById(int id);
 
+    TranscriptomicAnalysis selectBySite(int id);
+
     List<TranscriptomicAnalysis> selectAll();
 
     void update(TranscriptomicAnalysis transcriptomie, int id);
+
+
 }

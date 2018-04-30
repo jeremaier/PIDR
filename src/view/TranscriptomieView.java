@@ -8,18 +8,20 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.TranscriptomieController;
 import src.table.TranscriptomicAnalysis;
+import src.utils.FileManager;
 
 import java.io.IOException;
 import java.sql.Connection;
 
 public class TranscriptomieView {
-    public TranscriptomieView(Stage stage, Connection connection, TranscriptomicAnalysis transcriptomicAnalysis) {
+    public TranscriptomieView( Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
+        Stage stage = new Stage();
 
         stage.setTitle("Analyse transcriptomique");
         viewLoader.setLocation(getClass().getResource("/ressource/Transcriptomique.fxml"));
-        viewLoader.setControllerFactory(iC -> new TranscriptomieController(connection, transcriptomicAnalysis));
+        viewLoader.setControllerFactory(iC -> new TranscriptomieController(connection, fileManager, transcriptomicAnalysis, siteId));
 
         try {
             rootLog = viewLoader.load();

@@ -1,5 +1,6 @@
 package src.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -10,7 +11,9 @@ import javafx.stage.Stage;
 import src.daoImpl.TranscriptomieDaompl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.view.AddTranscriptomieView;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Optional;
@@ -78,25 +81,93 @@ public class TranscriptomieController implements Initializable {
     private TranscriptomieDaompl transcriptomieDaompl;
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private FileManager fileManager;
+    private int siteId;
 
-    public TranscriptomieController(Connection connection, TranscriptomicAnalysis transcriptomicAnalysis) {
+    public TranscriptomieController(Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
         this.transcriptomicAnalysis = transcriptomicAnalysis;
+        this.fileManager=fileManager;
+        this.siteId=siteId;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.ID.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
-        this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
-        this.numSerie.setText(Integer.toString(this.transcriptomicAnalysis.getSerialNumber()));
-        this.cy3.setText(Double.toString(this.transcriptomicAnalysis.getCyanine()));
-        this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
-        this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
-        this.critExclusion.setText(this.transcriptomicAnalysis.getExclusionCriteria());
-        this.activitesSpec.setText(this.transcriptomicAnalysis.getSpecificActivity());
-        this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
-        this.RIN.setText(Double.toString(this.transcriptomicAnalysis.getRIN()));
+
+
+        this.ID.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.ID.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
+                    }
+                }
+        );
+
+        this.emplacement.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
+                    }
+                }
+        );
+
+        this.numSerie.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.numSerie.setText(Integer.toString(this.transcriptomicAnalysis.getSerialNumber()));
+                    }
+                }
+        );
+
+        this.cy3.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.cy3.setText(Double.toString(this.transcriptomicAnalysis.getCyanine()));
+                    }
+                }
+        );
+
+        this.rendement.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
+                    }
+                }
+        );
+
+        this.concentration.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
+                    }
+                }
+        );
+
+        this.critExclusion.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.critExclusion.setText(this.transcriptomicAnalysis.getExclusionCriteria());
+                    }
+                }
+        );
+
+        this.activitesSpec.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.activitesSpec.setText(this.transcriptomicAnalysis.getSpecificActivity());
+                    }
+                }
+        );
+
+        this.ARNc.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
+                    }
+                }
+        );
+
+        this.RIN.labelForProperty().addListener(observable -> {
+                    if (transcriptomicAnalysis != null) {
+                        this.RIN.setText(Double.toString(this.transcriptomicAnalysis.getRIN()));
+                    }
+                }
+        );
+
+
+
         this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
+
     }
 
     @FXML
@@ -105,7 +176,7 @@ public class TranscriptomieController implements Initializable {
             this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
         }
 
-        //this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(), true, true);
+        this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(),null, true, true);
     }
 
     @FXML
@@ -136,8 +207,12 @@ public class TranscriptomieController implements Initializable {
     private void updateButtonAction() {
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
+        if (this.transcriptomicAnalysis != null) {
+            new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, siteId);
+        } else {
+            JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
 
-        //new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, this.transcriptomicAnalysis.getIdCutaneousSite());
+        }
     }
 
     @FXML
@@ -145,7 +220,12 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
 
-        //new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, this.transcriptomicAnalysis.getIdCutaneousSite());
+        if (this.transcriptomicAnalysis == null) {
+            new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, siteId);
+        } else {
+            JOptionPane.showMessageDialog(null, "Il y a déjà une analyse trascriptomique");
+
+        }
     }
 
     @FXML
@@ -160,10 +240,16 @@ public class TranscriptomieController implements Initializable {
             if (result.get() == ButtonType.OK) {
 
                 transcriptomieDaompl.delete(this.transcriptomicAnalysis.getId());
+                this.transcriptomicAnalysis=null;
 
             } else {
                 alert.close();
             }
         }
+    }
+
+    @FXML
+    private void refresh(ActionEvent actionEvent){
+        this.transcriptomicAnalysis=transcriptomieDaompl.selectById(siteId);
     }
 }

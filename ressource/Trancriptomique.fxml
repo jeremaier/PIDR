@@ -152,5 +152,6 @@
             <Font size="20.0" />
          </font>
       </Button>
+      <Button layoutX="110.0" layoutY="15.0" mnemonicParsing="false" onAction="#refresh" prefHeight="30.0" prefWidth="80.0" text="Refresh" />
    </children>
 </AnchorPane>

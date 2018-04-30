@@ -7,10 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.daoImpl.SiteCutaneDaompl;
+import src.daoImpl.TranscriptomieDaompl;
 import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.utils.FileManager;
 import src.view.AddSiteView;
+import src.view.TranscriptomieView;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -83,6 +85,7 @@ public class SiteController implements Initializable {
     private String selectedSpectre;
     private Lesion lesion;
     private Integer selectedSpectreId;
+    private TranscriptomieDaompl transcriptomieDaompl;
 
 
     public SiteController(Connection connection, Lesion lesion){
@@ -259,9 +262,9 @@ public class SiteController implements Initializable {
         if(this.selectedSpectre!=null && this.selectedSpectreId!=null){
             String[] s = this.selectedSite.getSpectre().split("|");
 
-            //openFTPConnection();
-           //this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId]);
-            //closeConnection();
+
+           this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId],null,true,true);
+
         }
     }
 
@@ -286,7 +289,19 @@ public class SiteController implements Initializable {
             this.spectre.remove(this.selectedSpectre);
 
             populateSpectre(spectre);
-            //closeConnection();
+        }
+    }
+
+    @FXML
+    private void transcriptomieButtonAction(ActionEvent actionEvent){
+        if(transcriptomieDaompl.selectBySite(this.selectedSite.getId())!=null){
+            if(this.siteStage==null){
+                new TranscriptomieView(connection,fileManager,transcriptomieDaompl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
+            }
+        }else{
+            if(this.siteStage==null){
+                new TranscriptomieView(connection,fileManager,null,this.selectedSite.getId());
+            }
         }
     }
 }

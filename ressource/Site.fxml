@@ -40,7 +40,7 @@
                     </columns>
                 </TableView>
                 <Button fx:id="transcriptomique" layoutX="583.0" layoutY="302.0" mnemonicParsing="false"
-                        prefHeight="31.0" prefWidth="197.0" text="Analyse transcriptomique"
+                        onAction="#transcriptomieButtonAction" prefHeight="31.0" prefWidth="197.0" text="Analyse transcriptomique"
                         AnchorPane.topAnchor="302.0"/>
             </AnchorPane>
         </Tab>

@@ -82,6 +82,45 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
     }
 
     @Override
+    public TranscriptomicAnalysis selectBySite(int id) {
+        TranscriptomicAnalysis transcr = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ? ORDER BY ID");
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+            transcr = this.addToTranscriptomie(resultSet);
+
+            System.out.println("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return transcr;
+    }
+
+    @Override
     public List<TranscriptomicAnalysis> selectAll() {
         ObservableList<TranscriptomicAnalysis> transcr = FXCollections.observableArrayList();
         Statement statement = null;
