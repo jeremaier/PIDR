@@ -11,7 +11,7 @@ import src.utils.FileManager;
 import java.sql.*;
 import java.util.List;
 
-public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueDao {
+public class LameHistologiqueDaompl extends DaoImpl implements LameHistologiqueDao {
     private Connection connection;
 
     public LameHistologiqueDaompl(Connection connection) {
@@ -57,7 +57,9 @@ public class LameHistologiqueDaompl extends daoImpl implements LameHistologiqueD
             preparedStatement = connection.prepareStatement("SELECT * FROM lame_histologique WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            lame = this.addToLame(resultSet);
+
+            if (resultSet.next())
+                lame = this.addToLame(resultSet);
 
             System.out.println("SELECT * FROM lame_histologique WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

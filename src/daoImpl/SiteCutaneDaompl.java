@@ -9,7 +9,7 @@ import src.utils.FileManager;
 
 import java.sql.*;
 
-public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
+public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
     private Connection connection;
 
     public SiteCutaneDaompl(Connection connection) {
@@ -52,7 +52,9 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            site = this.addToSite(resultSet);
+
+            if (resultSet.next())
+                site = this.addToSite(resultSet);
 
             System.out.println("SELECT * FROM site_cutane WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

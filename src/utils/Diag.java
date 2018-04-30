@@ -14,7 +14,7 @@ public enum Diag {
     private StringProperty name;
 
     Diag(String name) {
-        this.name = new SimpleStringProperty();
+        this.name = new SimpleStringProperty("");
         this.setName(name);
     }
 

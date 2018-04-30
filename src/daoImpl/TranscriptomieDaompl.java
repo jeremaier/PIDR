@@ -10,7 +10,7 @@ import src.utils.FileManager;
 import java.sql.*;
 import java.util.List;
 
-public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
+public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
     private Connection connection;
 
     public TranscriptomieDaompl (Connection connection) { this.connection = connection;}
@@ -52,7 +52,9 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            transcr = this.addToTranscriptomie(resultSet);
+
+            if (resultSet.next())
+                transcr = this.addToTranscriptomie(resultSet);
 
             System.out.println("SELECT * FROM analyse_transcriptomique WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
@@ -91,7 +93,9 @@ public class TranscriptomieDaompl extends daoImpl implements TranscriptomieDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            transcr = this.addToTranscriptomie(resultSet);
+
+            if (resultSet.next())
+                transcr = this.addToTranscriptomie(resultSet);
 
             System.out.println("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

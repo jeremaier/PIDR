@@ -72,7 +72,7 @@ public class InclusionsController implements Initializable {
     @FXML
     TableColumn<Inclusion, Integer> inclAnapath;
     @FXML
-    TableColumn<Inclusion, String> inclInitials;
+    TableColumn<Inclusion, String> inclIDPatient;
     @FXML
     TableColumn<Inclusion, String> inclDiagnostic;
 
@@ -96,14 +96,13 @@ public class InclusionsController implements Initializable {
         this.inclID.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         this.inclDate.setCellValueFactory(cellData -> cellData.getValue().dateInclusionProperty().asString());
         this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty().asObject());
-        this.inclInitials.setCellValueFactory(cellData -> cellData.getValue().initialesPatientProperty());
+        this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty().asString());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
         this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, false);
 
         if (this.procObservableList != null)
             this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
-        else this.fileManager.closeFTPConnection();
 
         this.procList.setItems(this.procObservableList);
         this.resList.setItems(this.resObservableList);
@@ -218,15 +217,25 @@ public class InclusionsController implements Initializable {
     private void removeAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
-        alert.setHeaderText("Vous allez supprimer l'inclusion");
+        alert.setHeaderText("Vous allez supprimer l'inclusion et les documents attachés");
         alert.setContentText("Confirmer?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            /*TODO Supprimer les docs qui vont avec*/
+            this.removeFiles();
             this.inclusionDaoImpl.delete(Integer.parseInt(this.selectedInclusion.getId()));
             this.inclusionsList.remove(this.selectedInclusion);
             this.inclusionsTable.getSelectionModel().clearSelection();
         } else alert.close();
+    }
+
+    private void removeFiles() {
+        String reference1Url = this.selectedInclusion.getReference1();
+        String reference2Url = this.selectedInclusion.getReference2();
+
+        if (!reference1Url.equals("Aucun"))
+            this.fileManager.removeFile(reference1Url);
+        if (!reference2Url.equals("Aucun"))
+            this.fileManager.removeFile(reference2Url);
     }
 
     @FXML
@@ -304,7 +313,6 @@ public class InclusionsController implements Initializable {
     @FXML
     private void removeDocAction() {
         if (this.selectedDoc != null) {
-
             if (this.fileManager.removeFile(this.selectedDoc)) {
                 this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
                 this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);

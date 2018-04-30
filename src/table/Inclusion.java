@@ -7,7 +7,6 @@ import java.sql.Date;
 public class Inclusion {
     private StringProperty id;
     private IntegerProperty idPatient;
-    private StringProperty initialesPatient;
     private String reference1 = "Aucun";
     private String reference2 = "Aucun";
     private ObjectProperty<Date> dateInclusion;
@@ -16,18 +15,16 @@ public class Inclusion {
 
     public Inclusion() {
         this.id = new SimpleStringProperty();
-        this.idPatient = new SimpleIntegerProperty();
-        this.initialesPatient = new SimpleStringProperty();
+        this.idPatient = new SimpleIntegerProperty(-1);
         this.dateInclusion = new SimpleObjectProperty<>();
         this.numAnaPath = new SimpleIntegerProperty();
         this.diag = new SimpleStringProperty();
     }
 
-    public Inclusion(int id, int idPatient, String initialesPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath, String diag) {
+    public Inclusion(int id, int idPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath, String diag) {
         this();
         this.setId(id);
         this.setIdPatient(idPatient);
-        this.setInitialesPatient(initialesPatient);
         this.reference1 = reference1;
         this.reference2 = reference2;
         this.setDateInclusion(dateInclusion);
@@ -109,17 +106,5 @@ public class Inclusion {
 
     public void setDiag(String diag) {
         this.diag.set(diag);
-    }
-
-    public String getInitialesPatient() {
-        return initialesPatient.get();
-    }
-
-    public StringProperty initialesPatientProperty() {
-        return initialesPatient;
-    }
-
-    public void setInitialesPatient(String initialesPatient) {
-        this.initialesPatient.set(initialesPatient);
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import src.daoImpl.InclusionDaoImpl;
+import src.daoImpl.PatientDaoImpl;
 import src.table.Inclusion;
 import src.utils.FileManager;
 import src.view.PatientsView;
@@ -46,7 +47,7 @@ public class AddInclusionController implements Initializable {
     private Inclusion inclusion;
     private InclusionsController inclusionsController;
     private InclusionDaoImpl inclusionDaoImpl;
-    private Connection connection;
+    private PatientDaoImpl patientDaoImpl;
     private Stage addInclusionStage;
     private FileManager fileManager;
     private int patientId;
@@ -58,8 +59,8 @@ public class AddInclusionController implements Initializable {
         this.inclusionsList = inclusionsList;
         this.inclusion = inclusion;
         this.inclusionDaoImpl = inclusionDaoImpl;
-        this.connection = connection;
         this.fileManager = fileManager;
+        this.patientDaoImpl = new PatientDaoImpl(connection);
     }
 
     @Override
@@ -74,8 +75,10 @@ public class AddInclusionController implements Initializable {
                 this.inclusionIDField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        this.inclusionIDField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.equals(oldValue)) {
+        this.idAnapathField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.idAnapathField.setText(newValue.replaceAll("[^\\d]", ""));
+            else {
                 if (this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText()))) {
                     this.addButton.setDisable(false);
                     this.reference1FileButton.setDisable(false);
@@ -101,10 +104,12 @@ public class AddInclusionController implements Initializable {
     private void setInclusionInformations() {
         this.inclusionIDField.setText(this.inclusion.getId());
         Date dateInclusion = this.inclusion.getDateInclusion();
-        String initialesPatient = this.inclusion.getInitialesPatient();
+        int numAna = this.inclusion.getNumAnaPat();
 
-        if (initialesPatient != null)
-            this.patientLabel.setText(initialesPatient);
+        if (this.inclusion.getIdPatient() != -1 && this.patientDaoImpl.selectById(this.inclusion.getIdPatient()).getInitiales() != null) {
+            this.patientLabel.setText("ID : " + Integer.toString(this.inclusion.getIdPatient()));
+            this.addPatientButton.setText("Supprimer");
+        }
 
         if (!this.inclusion.getReference1().equals("Aucun")) {
             this.reference1FileLabel.setText(FileManager.getFileName(this.inclusion.getReference1(), false));
@@ -119,6 +124,9 @@ public class AddInclusionController implements Initializable {
         if (dateInclusion != null)
             this.inclusionDatePicker.setValue(dateInclusion.toLocalDate());
 
+        if (numAna != 0)
+            this.idAnapathField.setText(Integer.toString(numAna));
+
         this.addButton.setDisable(false);
         this.reference1FileButton.setDisable(false);
         this.reference2FileButton.setDisable(false);
@@ -128,6 +136,7 @@ public class AddInclusionController implements Initializable {
         this.patientId = patientId;
         this.initiales = initiales;
         this.patientLabel.setText("ID : " + Integer.toString(this.patientId));
+        this.addPatientButton.setText("Supprimer");
     }
 
     @FXML
@@ -137,7 +146,6 @@ public class AddInclusionController implements Initializable {
         boolean newInclusion = this.inclusion.getId() == null;
         this.inclusion.setId(Integer.parseInt(id));
         this.inclusion.setIdPatient(this.patientId);
-        this.inclusion.setInitialesPatient(this.initiales);
 
         if (!this.reference1FileLabel.getText().equals("Aucun"))
             this.inclusion.setReference1(FileManager.getRefDirectoryName(id) + "//" + this.reference1FileLabel.getText());
@@ -167,7 +175,12 @@ public class AddInclusionController implements Initializable {
 
     @FXML
     private void addPatientAction() {
-        new PatientsView(this.connection, this);
+        if (this.addPatientButton.getText().equals("Supprimer")) {
+            this.patientId = -1;
+            this.patientLabel.setText("Aucun");
+            this.addPatientButton.setText("Ajouter");
+            this.inclusion.setIdPatient(this.patientId);
+        } else new PatientsView(this, this.patientDaoImpl);
     }
 
     @FXML

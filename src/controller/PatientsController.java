@@ -9,12 +9,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import src.daoImpl.PatientDaolmpl;
+import src.daoImpl.PatientDaoImpl;
 import src.table.Patient;
 import src.utils.Genre;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -60,17 +59,16 @@ public class PatientsController implements Initializable {
 
     private ObservableList<Genre> comboBoxValeurs = FXCollections.observableArrayList(Genre.M, Genre.F);
     private Stage patientsStage;
-    private Connection connection;
-    private PatientDaolmpl patientDaolmpl;
+    private PatientDaoImpl patientDaoImpl;
     private ObservableList<Patient> patientsList;
     private int selectedId;
     private AddInclusionController addInclusionController;
     private ArrayList<String> idPatients = new ArrayList<>();
     private boolean searchMode;
 
-    public PatientsController(Connection connection, AddInclusionController addInclusionController) {
-        this.connection = connection;
+    public PatientsController(AddInclusionController addInclusionController, PatientDaoImpl patientDaoImpl) {
         this.addInclusionController = addInclusionController;
+        this.patientDaoImpl = patientDaoImpl;
     }
 
     @Override
@@ -80,8 +78,7 @@ public class PatientsController implements Initializable {
         this.patGenreCol.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
         this.patDateCol.setCellValueFactory(cellData -> cellData.getValue().dateNaissanceProperty().asObject());
         this.genreComboBox.getItems().addAll(this.comboBoxValeurs);
-        this.patientDaolmpl = new PatientDaolmpl(this.connection);
-        this.patientsList = this.patientDaolmpl.selectAll();
+        this.patientsList = this.patientDaoImpl.selectAll();
         this.populatePatients();
         this.populateIdPatients();
 
@@ -247,10 +244,10 @@ public class PatientsController implements Initializable {
 
         if (this.searchMode) {
             this.searchMode = false;
-            this.patientsList = this.patientDaolmpl.selectAll();
+            this.patientsList = this.patientDaoImpl.selectAll();
         }
 
-        this.patientDaolmpl.insert(patient);
+        this.patientDaoImpl.insert(patient);
         this.idPatients.add(this.idField.getText());
         this.cleanFields();
         this.populatePatient(patient);
@@ -259,13 +256,13 @@ public class PatientsController implements Initializable {
     @FXML
     private void searchAction() {
         this.searchMode = true;
-        this.patientsList = this.patientDaolmpl.selectByFilters(this.idSearchField.getText().isEmpty() ? 0 : Integer.parseInt(this.idSearchField.getText()), this.initialesSearchField.getText(), this.dateSearchField.getText());
+        this.patientsList = this.patientDaoImpl.selectByFilters(this.idSearchField.getText().isEmpty() ? 0 : Integer.parseInt(this.idSearchField.getText()), this.initialesSearchField.getText(), this.dateSearchField.getText());
         this.populatePatients();
     }
 
     @FXML
     private void searchAllAction() {
-        this.patientsList = this.patientDaolmpl.selectAll();
+        this.patientsList = this.patientDaoImpl.selectAll();
         this.populatePatients();
     }
 
@@ -278,7 +275,7 @@ public class PatientsController implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             /*TODO Supprimer les docs qui vont avec*/
-            this.patientDaolmpl.delete(Integer.parseInt(this.idField.getText()));
+            this.patientDaoImpl.delete(Integer.parseInt(this.idField.getText()));
             this.patientsList.remove(this.patientsList.get(this.selectedId));
             this.idPatients.clear();
             this.populateIdPatients();
@@ -290,7 +287,7 @@ public class PatientsController implements Initializable {
     private void updatePatientInformations() {
         Patient selectedPatient = this.patientsList.get(this.selectedId);
         Patient patient = new Patient(Integer.parseInt(this.idField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.parseInt(this.dateField.getText()));
-        this.patientDaolmpl.update(patient, patient.getId());
+        this.patientDaoImpl.update(patient, patient.getId());
         selectedPatient.setInitiales(this.initialesField.getText());
         selectedPatient.setGenre(this.genreComboBox.getValue().toString());
         selectedPatient.setDateNaissance(Integer.parseInt(this.dateField.getText()));

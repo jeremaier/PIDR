@@ -9,7 +9,7 @@ import src.utils.FileManager;
 
 import java.sql.*;
 
-public class LesionDaoImpl extends daoImpl implements LesionDao {
+public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
     private Connection connection;
 
     public LesionDaoImpl(Connection connection) {
@@ -21,8 +21,8 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 1);
+            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?))");
@@ -52,7 +52,9 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM lesion WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            lesion = this.addToLesion(resultSet);
+
+            if (resultSet.next())
+                lesion = this.addToLesion(resultSet);
 
             System.out.println("SELECT * FROM lesion WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
@@ -163,8 +165,8 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
 
         try {
             preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
-            preparedStatement.setInt(8, id);
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
+            preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
@@ -193,7 +195,10 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select last_insert_id() as lastId from lesion");
-            lastId = resultSet.getInt("lastId");
+
+            if (resultSet.next())
+                lastId = resultSet.getInt("lastId");
+            else return -1;
 
             System.out.println("select last_insert_id() as lastId from lesion");
         } catch (MySQLNonTransientConnectionException e) {
@@ -254,18 +259,19 @@ public class LesionDaoImpl extends daoImpl implements LesionDao {
         this.delete(connection, "lesion", id);
     }
 
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
-        if(indexDebut == 1)
-            preparedStatement.setInt(indexDebut, ((Lesion) object).getId());
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
+        preparedStatement.setInt(1, ((Lesion) object).getIdInclusion());
+        preparedStatement.setString(2, ((Lesion) object).getPhotoSur());
+        preparedStatement.setString(3, ((Lesion) object).getPhotoHors());
+        preparedStatement.setString(4, ((Lesion) object).getPhotoFixe());
+        preparedStatement.setString(5, ((Lesion) object).getSiteAnatomique());
 
-        preparedStatement.setInt(indexDebut + 1, ((Lesion) object).getIdInclusion());
-        preparedStatement.setString(indexDebut + 2, ((Lesion) object).getPhotoSur());
-        preparedStatement.setString(indexDebut + 3, ((Lesion) object).getPhotoHors());
-        preparedStatement.setString(indexDebut + 4, ((Lesion) object).getPhotoFixe());
-        preparedStatement.setString(indexDebut + 5, ((Lesion) object).getSiteAnatomique());
-        preparedStatement.setString(indexDebut + 6, ((Lesion) object).getDiag().toString());
-        preparedStatement.setString(indexDebut + 7, ((Lesion) object).getAutreDiag());
-        preparedStatement.setString(indexDebut + 8, ((Lesion) object).getFichierMoy());
+        if (((Lesion) object).getDiag() == null)
+            preparedStatement.setString(6, null);
+        else preparedStatement.setString(6, ((Lesion) object).getDiag().toString());
+
+        preparedStatement.setString(7, ((Lesion) object).getAutreDiag());
+        preparedStatement.setString(8, ((Lesion) object).getFichierMoy());
 
         return preparedStatement;
     }

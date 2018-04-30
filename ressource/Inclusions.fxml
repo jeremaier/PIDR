@@ -70,7 +70,8 @@
                         <TableColumn fx:id="inclID" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" resizable="false" text="N° inclusion" />
                         <TableColumn fx:id="inclDate" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" text="Date" />
                         <TableColumn fx:id="inclAnapath" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" text="N° anapath" />
-                        <TableColumn fx:id="inclInitials" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" text="Initiales" />
+                        <TableColumn fx:id="inclIDPatient" editable="false" maxWidth="152.0" minWidth="152.0"
+                                     prefWidth="152.0" text="N° patient"/>
                         <TableColumn fx:id="inclDiagnostic" editable="false" maxWidth="152.0" minWidth="152.0" prefWidth="152.0" text="Diagnostic" />
                     </columns>
                     <columnResizePolicy>

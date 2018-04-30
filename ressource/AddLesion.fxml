@@ -43,8 +43,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoSurButton" mnemonicParsing="false" onAction="#addPhotoSurAction" prefHeight="35.0"
-                    prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoSurButton" disable="true" mnemonicParsing="false" onAction="#addPhotoSurAction"
+                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoSurLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -56,8 +56,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoHorsButton" mnemonicParsing="false" onAction="#addPhotoHorsAction" prefHeight="35.0"
-                    prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoHorsButton" disable="true" mnemonicParsing="false" onAction="#addPhotoHorsAction"
+                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoHorsLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -69,8 +69,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addPhotoFixeButton" mnemonicParsing="false" onAction="#addPhotoFixeAction" prefHeight="35.0"
-                    prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addPhotoFixeButton" disable="true" mnemonicParsing="false" onAction="#addPhotoFixeAction"
+                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="photoFixeLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -82,8 +82,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addDiagFileButton" mnemonicParsing="false" onAction="#addDiagFileAction" prefHeight="35.0"
-                    prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addDiagFileButton" disable="true" mnemonicParsing="false" onAction="#addDiagFileAction"
+                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="diagFileLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>
@@ -95,8 +95,8 @@
             <GridPane.margin>
                 <Insets left="10.0"/>
             </GridPane.margin>
-            <Button fx:id="addMoyFileButton" mnemonicParsing="false" onAction="#addMoyFileAction" prefHeight="35.0"
-                    prefWidth="120.0" text="Ajouter"/>
+            <Button fx:id="addMoyFileButton" disable="true" mnemonicParsing="false" onAction="#addMoyFileAction"
+                    prefHeight="35.0" prefWidth="120.0" text="Ajouter"/>
             <Label fx:id="addMoyFileLabel" text="Aucun" wrapText="true">
                 <HBox.margin>
                     <Insets left="10.0"/>

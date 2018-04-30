@@ -10,7 +10,7 @@ import src.utils.FileManager;
 
 import java.sql.*;
 
-public class InclusionDaoImpl extends daoImpl implements InclusionDao {
+public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private Connection connection;
 
     public InclusionDaoImpl(Connection connection) {
@@ -53,7 +53,9 @@ public class InclusionDaoImpl extends daoImpl implements InclusionDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            inclusion = this.addToInclusion(resultSet);
+
+            if (resultSet.next())
+                inclusion = this.addToInclusion(resultSet);
 
             System.out.println("SELECT * FROM inclusion WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

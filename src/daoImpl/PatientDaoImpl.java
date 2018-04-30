@@ -9,10 +9,10 @@ import src.utils.FileManager;
 
 import java.sql.*;
 
-public class PatientDaolmpl extends daoImpl implements PatientDao {
+public class PatientDaoImpl extends DaoImpl implements PatientDao {
     private Connection connection;
 
-    public PatientDaolmpl(Connection connection) {
+    public PatientDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -54,7 +54,9 @@ public class PatientDaolmpl extends daoImpl implements PatientDao {
             preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            patient = this.addToPatient(resultSet);
+
+            if (resultSet.next())
+                patient = this.addToPatient(resultSet);
 
             System.out.println("SELECT * FROM patient WHERE ID ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

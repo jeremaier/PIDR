@@ -6,12 +6,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import src.controller.AddInclusionController;
 import src.controller.PatientsController;
+import src.daoImpl.PatientDaoImpl;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 public class PatientsView {
-    public PatientsView(Connection connection, AddInclusionController addInclusionController) {
+    public PatientsView(AddInclusionController addInclusionController, PatientDaoImpl patientDaoImpl) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage patientStage = new Stage();
@@ -20,7 +20,7 @@ public class PatientsView {
         patientStage.setResizable(false);
 
         viewLoader.setLocation(getClass().getResource("/ressource/Patients.fxml"));
-        viewLoader.setControllerFactory(iC -> new PatientsController(connection, addInclusionController));
+        viewLoader.setControllerFactory(iC -> new PatientsController(addInclusionController, patientDaoImpl));
 
         try {
             rootLog = viewLoader.load();

@@ -149,15 +149,34 @@ public class LesionsController implements Initializable {
     public void removeAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
-        alert.setHeaderText("Vous allez supprimer la lesion");
+        alert.setHeaderText("Vous allez supprimer la lesion et les documents attachés");
         alert.setContentText("Confirmer?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            /*TODO Supprimer les docs qui vont avec*/
+            this.removeFiles();
             this.lesionDaoImpl.delete(this.selectedLesion.getId());
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
         } else alert.close();
+    }
+
+    private void removeFiles() {
+        String photoSurUrl = this.selectedLesion.getPhotoSur();
+        String photoHorsUrl = this.selectedLesion.getPhotoHors();
+        String photoFixeUrl = this.selectedLesion.getPhotoFixe();
+        String diagFileUrl = this.selectedLesion.getAutreDiag();
+        String fichierMoyUrl = this.selectedLesion.getFichierMoy();
+
+        if (!photoSurUrl.equals("Aucun"))
+            this.fileManager.removeFile(photoSurUrl);
+        if (!photoHorsUrl.equals("Aucun"))
+            this.fileManager.removeFile(photoHorsUrl);
+        if (!photoFixeUrl.equals("Aucun"))
+            this.fileManager.removeFile(photoFixeUrl);
+        if (!diagFileUrl.equals("Aucun"))
+            this.fileManager.removeFile(diagFileUrl);
+        if (!fichierMoyUrl.equals("Aucun"))
+            this.fileManager.removeFile(fichierMoyUrl);
     }
 
     public void siteCutaneAction() {
@@ -181,6 +200,8 @@ public class LesionsController implements Initializable {
     public void returnAction() {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.returnButton.getScene().getWindow();
+
+        this.fileManager.openFTPConnection();
 
         new InclusionsView(this.connection, this.fileManager);
 

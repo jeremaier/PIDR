@@ -16,8 +16,8 @@ import java.sql.Connection;
 public class SiteView {
     public SiteView(Lesion lesion, Connection connection, FileManager fileManager) {
         Parent rootLog = null;
-        FXMLLoader viewLoader = new FXMLLoader();
         Stage siteStage = new Stage();
+        FXMLLoader viewLoader = new FXMLLoader();
 
         siteStage.setTitle("Vision d'un site");
         viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));
@@ -27,6 +27,7 @@ public class SiteView {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+            siteStage.close();
         }
 
         siteStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());

@@ -1,14 +1,12 @@
 package src.table;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import src.utils.Diag;
 
 public class Lesion {
-    private IntegerProperty id;
-    private IntegerProperty idInclusion;
+    private int id;
+    private int idInclusion;
     private String photoSur = "Aucun";
     private String photoHors = "Aucun";
     private String photoFixe = "Aucun";
@@ -18,8 +16,6 @@ public class Lesion {
     private String fichierMoy = "Aucun";
 
     public Lesion() {
-        this.id = new SimpleIntegerProperty();
-        this.idInclusion = new SimpleIntegerProperty();
         this.siteAnatomique = new SimpleStringProperty();
     }
 
@@ -37,19 +33,19 @@ public class Lesion {
     }
 
     public int getId() {
-        return id.get();
+        return id;
     }
 
     public void setId(int id) {
-        this.id.set(id);
+        this.id = id;
     }
 
     public int getIdInclusion() {
-        return idInclusion.get();
+        return idInclusion;
     }
 
     public void setIdInclusion(int idInclusion) {
-        this.idInclusion.set(idInclusion);
+        this.idInclusion = idInclusion;
     }
 
     public String getPhotoSur() {
@@ -89,7 +85,26 @@ public class Lesion {
     }
 
     public void setDiag(String diag) {
-        this.diag = Diag.valueOf(diag);
+        switch (diag) {
+            case "Basocellulaire":
+                this.diag = Diag.BASO;
+                break;
+            case "Spinocellulaire":
+                this.diag = Diag.SPINO;
+                break;
+            case "Keratose actinique":
+                this.diag = Diag.KERATOSE;
+                break;
+            case "Autre...":
+                this.diag = Diag.AUTRE;
+                break;
+            case "Fichier":
+                this.diag = Diag.FICHIER;
+                break;
+            case "Pas de malignité":
+                this.diag = Diag.RIEN;
+                break;
+        }
     }
 
     public String getAutreDiag() {
@@ -106,20 +121,14 @@ public class Lesion {
         this.fichierMoy = fichierMoy;
     }
 
-    public IntegerProperty idProperty() {
-        return this.id;
-    }
-
-    public IntegerProperty idInclusionProperty() {
-        return this.idInclusion;
-    }
-
     public StringProperty siteAnatomiqueProperty() {
         return this.siteAnatomique;
     }
 
     public StringProperty diagProperty() {
-        return this.diag.getName();
+        if (this.diag != null)
+            return this.diag.getName();
+        else return new SimpleStringProperty("");
     }
 }
 
