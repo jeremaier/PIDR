@@ -221,7 +221,7 @@ public class SiteController implements Initializable {
         if(this.siteStage == null)
             this.siteStage = (Stage) ajouter.getScene().getWindow();
 
-        new AddSiteView(this.siteStage, null, this.connection, this.fileManager, this.lesion);
+        new AddSiteView( null, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML
@@ -229,7 +229,7 @@ public class SiteController implements Initializable {
         if(this.siteStage == null)
             this.siteStage = (Stage) ajouter.getScene().getWindow();
 
-        new AddSiteView(this.siteStage, this.selectedSite, this.connection, this.fileManager, this.lesion);
+        new AddSiteView( this.selectedSite, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML

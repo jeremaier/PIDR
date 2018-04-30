@@ -15,13 +15,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddTranscriptomieView {
-    public AddTranscriptomieView(Stage stage, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int id) {
+    public AddTranscriptomieView(Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int id) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
+        Stage stage = new Stage();
 
         stage.setTitle("Gestion des analyses transcriptomiques");
         viewLoader.setLocation(getClass().getResource("/ressource/AddTranscriptomie.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddTransciptomieController(stage,  connection, fileManager, transcriptomicAnalysis  , id));
+        viewLoader.setControllerFactory(iC -> new AddTransciptomieController(  connection, fileManager, transcriptomicAnalysis  , id));
 
         try {
             rootLog = viewLoader.load();

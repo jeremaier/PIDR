@@ -85,12 +85,12 @@ public class AddTransciptomieController implements Initializable {
 
 
 
-    public AddTransciptomieController(Stage stage, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
-        this.addTranscriptomieStage = stage;
+    public AddTransciptomieController( Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
         this.fileManager = fileManager;
         this.transcriptomicAnalysis = transcriptomicAnalysis;
         this.siteId = siteId;
+
 
     }
 
@@ -106,6 +106,7 @@ public class AddTransciptomieController implements Initializable {
                 }
             });
         }
+        this.transcriptomieDaompl=new TranscriptomieDaompl(connection);
     }
 
     @FXML

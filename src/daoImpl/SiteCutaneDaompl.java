@@ -25,7 +25,7 @@ public class SiteCutaneDaompl extends daoImpl implements SiteCutaneDao {
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 1);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO site_cutane (ID, ID_LESION, SAIN, NUM_MESURE, SITE, ORIENTATION, DIAGNOSTIQUE, AUTRE_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            System.out.println("INSERT INTO site_cutane (ID, ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIQUE, AUTRE_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();

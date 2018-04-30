@@ -208,7 +208,7 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
         if (this.transcriptomicAnalysis != null) {
-            new AddTranscriptomieView(transcriptomieStage, connection, fileManager, this.transcriptomicAnalysis, siteId);
+            new AddTranscriptomieView( connection, fileManager, this.transcriptomicAnalysis, siteId);
         } else {
             JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
 
@@ -221,7 +221,7 @@ public class TranscriptomieController implements Initializable {
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
 
         if (this.transcriptomicAnalysis == null) {
-            new AddTranscriptomieView(transcriptomieStage, connection, fileManager, null, siteId);
+            new AddTranscriptomieView( connection, fileManager, null, siteId);
         } else {
             JOptionPane.showMessageDialog(null, "Il y a déjà une analyse trascriptomique");
 
