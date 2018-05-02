@@ -24,7 +24,7 @@
     </TableView>
     <Button fx:id="photo" disable="true" layoutX="25.0" layoutY="540.0" mnemonicParsing="false" onAction="#photoButtonAction" prefHeight="48.0"
             prefWidth="130.0" text="Photo"/>
-    <Button fx:id="retour" layoutX="14.0" layoutY="11.0" minHeight="30.0" mnemonicParsing="false" prefHeight="30.0"
+    <Button fx:id="retour" layoutX="14.0" layoutY="11.0" minHeight="30.0" mnemonicParsing="false" onAction="#cancelButtonEvent" prefHeight="30.0"
             prefWidth="80.0" text="Retour" textAlignment="CENTER" AnchorPane.leftAnchor="20.0"
             AnchorPane.topAnchor="15.0">
         <font>

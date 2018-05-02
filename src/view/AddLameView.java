@@ -15,14 +15,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddLameView {
-    public AddLameView(HistologicLamella lame, Connection connection, FileManager fileManager, Lesion lesion) {
+    public AddLameView(HistologicLamella lame, Connection connection, FileManager fileManager, Lesion lesion, int numAnapat) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage stage= new Stage();
 
         stage.setTitle("Ajout d'une lame");
         viewLoader.setLocation(getClass().getResource("/ressource/AddLame.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddLameController());
+        viewLoader.setControllerFactory(iC -> new AddLameController(connection, fileManager, lesion, lame,numAnapat));
 
         try {
             rootLog = viewLoader.load();

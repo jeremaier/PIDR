@@ -112,7 +112,7 @@ public class LameController implements Initializable {
 
 
     @FXML
-    public void cancelButton(ActionEvent actionEvent) {
+    public void cancelButtonEvent   (ActionEvent actionEvent) {
         this.lameStage = (Stage) retour.getScene().getWindow();
         this.lameStage.close();
     }
@@ -122,7 +122,7 @@ public class LameController implements Initializable {
         if (lameStage == null)
             this.lameStage = (Stage) ajouter.getScene().getWindow();
 
-        //new AddLameView();
+        new AddLameView(null, connection,fileManager,lesion,numAnapat);
 
 
     }
@@ -133,7 +133,7 @@ public class LameController implements Initializable {
         if (lameStage == null)
             this.lameStage = (Stage) modifier.getScene().getWindow();
         if (selectedHistologicLamella != null) {
-           // new AddLameView();
+            new AddLameView(null, connection, fileManager, lesion, numAnapat);
         } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
