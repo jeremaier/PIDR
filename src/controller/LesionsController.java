@@ -142,13 +142,14 @@ public class LesionsController implements Initializable {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.photosButton.getScene().getWindow();
 
+        System.out.println(photoHors);
         this.fileManager.openFTPConnection();
 
         if (!photoHors.equals("Aucun"))
             choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, null, false, false);
 
         if (!photoSur.equals("Aucun"))
-            choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, choosenDirectory, false, false);
+            choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoSur, choosenDirectory, false, false);
 
         if (!photoFixe.equals("Aucun"))
             this.fileManager.downloadFromUrl(this.lesionsStage, photoFixe, choosenDirectory, false, false);
@@ -160,14 +161,14 @@ public class LesionsController implements Initializable {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.fileDiagButton.getScene().getWindow();
 
-        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFileDiag(), null, false, false);
+        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFileDiag(), null, true, true);
     }
 
     public void fichierMoyAction() {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.fichierMoyButton.getScene().getWindow();
 
-        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFichierMoy(), null, false, false);
+        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFichierMoy(), null, true, true);
 
     }
 

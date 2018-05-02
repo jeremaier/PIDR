@@ -198,7 +198,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         transcriptomicAnalysis.setId(resultSet.getInt("ID"));
         transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
         transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
-        transcriptomicAnalysis.setFichierCut(resultSet.getString("FICHIER_CUT"));
+        //transcriptomicAnalysis.setFichierCut(resultSet.getString("FICHIER_CUT"));
         transcriptomicAnalysis.setRIN(resultSet.getInt("RIN"));
         transcriptomicAnalysis.setConcentration(resultSet.getDouble("CONCENTRATION"));
         transcriptomicAnalysis.setARNC(resultSet.getDouble("ARNC"));
@@ -222,7 +222,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
 
         preparedStatement.setInt(indexDebut + 1, ((TranscriptomicAnalysis) object).getIdCutaneousSite());
         preparedStatement.setString(indexDebut + 2, ((TranscriptomicAnalysis) object).getFichierBrut());
-        preparedStatement.setString(indexDebut + 3, ((TranscriptomicAnalysis) object).getFichierCut());
+        //preparedStatement.setString(indexDebut + 3, ((TranscriptomicAnalysis) object).getFichierCut());
         preparedStatement.setInt(indexDebut + 4, ((TranscriptomicAnalysis) object).getRIN());
         preparedStatement.setDouble(indexDebut + 5, ((TranscriptomicAnalysis) object).getConcentration());
         preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getARNC());

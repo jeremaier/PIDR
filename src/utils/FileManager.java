@@ -6,6 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -13,8 +15,9 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
+import java.util.Observable;
 
-public class FileManager {
+public class FileManager extends Observable {
     private final static String procDirectoryName = ".//procedures";
     private final static String resDirectoryName = ".//resultats";
     private final static String refDirectoryName = "//ref";
@@ -22,6 +25,8 @@ public class FileManager {
     private SSLSessionReuseFTPSClient ftpClient;
     private String user;
     private String password;
+    private static long size = -1;
+    private static long bytes = -1;
 
     public FileManager(String user, String password) {
         this.user = user;
@@ -196,14 +201,27 @@ public class FileManager {
                 this.openFTPConnection();
 
             try {
-                File file = new File(selectedDirectory + "//" + FileManager.getFileName(url, false));
-                OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
+                String filePath = selectedDirectory + "//" + FileManager.getFileName(url, false);
+                FTPFile file = ftpClient.mlistFile(url);
+                this.setSize(file.getSize());
+
+                OutputStream outputStream = new CountingOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
+                    @Override
+                    public void beforeWrite(int count) {
+                        super.beforeWrite(count);
+                        setBytes(this.getCount());
+                    }
+                };
+
                 ftpClient.retrieveFile(url, outputStream);
                 outputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 FileManager.openAlert("Téléchargement impossible / Erreur de connexion");
             }
+
+            this.setSize(-1);
+            this.setBytes(-1);
 
             if (close)
                 this.closeFTPConnection();
@@ -221,11 +239,18 @@ public class FileManager {
 
         if(selectedFile != null) {
             InputStream input = null;
+            this.setSize(selectedFile.length());
 
             this.openFTPConnection();
 
             try {
-                input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
+                input = new CountingInputStream(new FileInputStream(new File(selectedFile.getAbsolutePath()))) {
+                    @Override
+                    public void afterRead(int count) {
+                        super.afterRead(count);
+                        setBytes(this.getCount());
+                    }
+                };
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
@@ -242,6 +267,9 @@ public class FileManager {
                 e.printStackTrace();
                 FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
             }
+
+            this.setSize(-1);
+            this.setBytes(-1);
 
             this.closeFTPConnection();
         }
@@ -264,5 +292,31 @@ public class FileManager {
                 }
             }
         }
+    }
+
+    public synchronized long getSize() {
+        return FileManager.size;
+    }
+
+    public void setSize(long size) {
+        synchronized (this) {
+            FileManager.size = size;
+        }
+
+        this.setChanged();
+        this.notifyObservers();
+    }
+
+    public synchronized long getBytes() {
+        return FileManager.bytes;
+    }
+
+    private void setBytes(long bytes) {
+        synchronized (this) {
+            FileManager.bytes = bytes;
+        }
+
+        this.setChanged();
+        this.notifyObservers();
     }
 }
