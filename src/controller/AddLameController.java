@@ -34,6 +34,8 @@ public class AddLameController implements Initializable {
     @FXML
     Label photoLabel;
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }

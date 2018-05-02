@@ -58,9 +58,6 @@ public class TranscriptomieController implements Initializable {
     Button fichierBrut;
 
     @FXML
-    Button fichierCut;
-
-    @FXML
     Button qualityReport;
 
     @FXML
@@ -179,14 +176,6 @@ public class TranscriptomieController implements Initializable {
         this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(),null, true, true);
     }
 
-    @FXML
-    private void ficherCutAction() {
-        if (this.transcriptomieStage == null) {
-            this.transcriptomieStage = (Stage) fichierCut.getScene().getWindow();
-        }
-
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getFichierCut(), null, true, true);
-    }
 
     @FXML
     private void qualityReportAction() {

@@ -6,7 +6,6 @@ public class TranscriptomicAnalysis {
     private IntegerProperty id;
     private IntegerProperty idCutaneousSite;
     private StringProperty fichierBrut;
-    private StringProperty fichierCut;
     private IntegerProperty RIN;
     private DoubleProperty concentration;
     private DoubleProperty ARNC;
@@ -22,7 +21,6 @@ public class TranscriptomicAnalysis {
         this.id = new SimpleIntegerProperty();
         this.idCutaneousSite = new SimpleIntegerProperty();
         this.fichierBrut = new SimpleStringProperty();
-        this.fichierCut = new SimpleStringProperty();
         this.RIN = new SimpleIntegerProperty();
         this.concentration = new SimpleDoubleProperty();
         this.ARNC = new SimpleDoubleProperty();
@@ -35,12 +33,11 @@ public class TranscriptomicAnalysis {
         this.qualityReport = new SimpleStringProperty();
     }
 
-    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, String fichierCut, int RIN, double concentration, double ARNC, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, int RIN, double concentration, double ARNC, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
         this();
         this.setId(id);
         this.setIdCutaneousSite(idCutaneousSite);
         this.setFichierBrut(fichierBrut);
-        this.setFichierBrut(fichierCut);
         this.setRIN(RIN);
         this.setConcentration(concentration);
         this.setARNC(ARNC);
@@ -78,14 +75,6 @@ public class TranscriptomicAnalysis {
 
     public void setFichierBrut(String fichierBrut) {
         this.fichierBrut.set(fichierBrut);
-    }
-
-    public String getFichierCut() {
-        return fichierCut.get();
-    }
-
-    public void setFichierCut(String fichierCut) {
-        this.fichierCut.set(fichierCut);
     }
 
     public int getRIN() {
@@ -177,10 +166,6 @@ public class TranscriptomicAnalysis {
 
     public StringProperty fichierBrutProperty() {
         return fichierBrut;
-    }
-
-    public StringProperty fichierCutProperty() {
-        return fichierCut;
     }
 
     public IntegerProperty RINProperty() {

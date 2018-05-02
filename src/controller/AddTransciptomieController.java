@@ -52,16 +52,10 @@ public class AddTransciptomieController implements Initializable {
     Button fichierBrut;
 
     @FXML
-    Button fichierCut;
-
-    @FXML
     Button qualityReport;
 
     @FXML
     Label checkFichierBrut;
-
-    @FXML
-    Label checkFichierCut;
 
     @FXML
     Label checkQualityReport;
@@ -80,7 +74,6 @@ public class AddTransciptomieController implements Initializable {
     private TranscriptomieDaompl transcriptomieDaompl;
     private int siteId;
     private String fichierBrutPath;
-    private String fichierCutPath;
     private String qualityReportPath;
 
 
@@ -102,16 +95,13 @@ public class AddTransciptomieController implements Initializable {
                 if (newValue.intValue() == 0) {
                     accepte.setDisable(true);
                     fichierBrut.setDisable(true);
-                    fichierCut.setDisable(true);
                     qualityReport.setDisable(true);
-                    fichierCutPath=null;
                     fichierBrutPath=null;
                     qualityReportPath=null;
 
                 } else {
                     accepte.setDisable(false);
                     fichierBrut.setDisable(false);
-                    fichierCut.setDisable(false);
                     qualityReport.setDisable(false);
 
                 }
@@ -145,7 +135,7 @@ public class AddTransciptomieController implements Initializable {
             Arnc = Double.parseDouble(ARNc.getText());
             Rin = Integer.parseInt(RIN.getText());
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, fichierCutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaompl.insert(newTranscr);
 
             if (this.addTranscriptomieStage == null)
@@ -213,15 +203,11 @@ public class AddTransciptomieController implements Initializable {
                 fichierBrutPath=this.transcriptomicAnalysis.getFichierBrut();
             }
 
-            if (fichierCutPath==null){
-                fichierCutPath=this.transcriptomicAnalysis.getFichierCut();
-            }
-
             if (qualityReportPath==null){
                 qualityReportPath=this.transcriptomicAnalysis.getQualityReport();
             }
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, fichierCutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaompl.update(newTranscr,transcriptomicAnalysis.getId());
 
             if (this.addTranscriptomieStage == null)
@@ -246,19 +232,6 @@ public class AddTransciptomieController implements Initializable {
         }
     }
 
-    @FXML
-    private void fichierCrutButton(ActionEvent actionEvent){
-        String fileName;
-        if (transcriptomicAnalysis != null) {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
-            fichierCutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) + fileName ;
-            checkFichierCut.setText(fileName);
-        }else {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
-            fichierCutPath = "//trancriptomie//" + id.getText() + fileName;
-            checkFichierCut.setText(fileName);
-        }
-    }
 
     @FXML
     private void qualityReportButtonAction(ActionEvent actionEvent){

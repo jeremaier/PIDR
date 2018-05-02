@@ -7,13 +7,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.AddLameController;
+import src.table.HistologicLamella;
+import src.table.Lesion;
+import src.utils.FileManager;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class AddLameView {
-    public AddLameView(Stage stage) {
+    public AddLameView(HistologicLamella lame, Connection connection, FileManager fileManager, Lesion lesion) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
+        Stage stage= new Stage();
 
         stage.setTitle("Ajout d'une lame");
         viewLoader.setLocation(getClass().getResource("/ressource/AddLame.fxml"));
