@@ -33,7 +33,8 @@ public class InclusionsView {
 
         assert rootLog != null;
         inclusionsStage.setResizable(false);
-        inclusionsStage.setScene(new Scene(rootLog, 788, 600));
+        inclusionsStage.setScene(new Scene(rootLog/*, 788, 600//*/
+        ));
         inclusionsStage.show();
     }
 }

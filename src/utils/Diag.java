@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public enum Diag {
+    NULL(""),
     BASO("Basocellulaire"),
     SPINO("Spinocellulaire"),
     KERATOSE("Keratose actinique"),

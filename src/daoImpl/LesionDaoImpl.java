@@ -5,9 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.LesionDao;
 import src.table.Lesion;
+import src.utils.Diag;
 import src.utils.FileManager;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
     private Connection connection;
@@ -21,11 +24,11 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?))");
+            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?))");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -164,12 +167,12 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
-            preparedStatement.setInt(9, id);
+            preparedStatement.setInt(10, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
+            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -194,13 +197,13 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
 
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("select last_insert_id() as lastId from lesion");
+            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM lesion");
 
             if (resultSet.next())
                 lastId = resultSet.getInt("lastId");
             else return -1;
 
-            System.out.println("select last_insert_id() as lastId from lesion");
+            System.out.println("SELECT last_insert_id() AS lastId FROM lesion");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -250,6 +253,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         lesion.setSiteAnatomique(resultSet.getString("SITE_ANATOMIQUE"));
         lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
         lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
+        lesion.setFileDiag(resultSet.getString("FILE_DIAG"));
         lesion.setFichierMoy(resultSet.getString("FICHIER_MOY"));
 
         return lesion;
@@ -271,8 +275,51 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         else preparedStatement.setString(6, ((Lesion) object).getDiag().toString());
 
         preparedStatement.setString(7, ((Lesion) object).getAutreDiag());
-        preparedStatement.setString(8, ((Lesion) object).getFichierMoy());
+        preparedStatement.setString(8, ((Lesion) object).getFileDiag());
+        preparedStatement.setString(9, ((Lesion) object).getFichierMoy());
 
         return preparedStatement;
+    }
+
+    public boolean moreThanOneDiag(Diag diag) {
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            ArrayList<String> diags = new ArrayList<>();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT DIAGNOSTIC FROM lesion");
+
+            while (resultSet.next())
+                diags.add(resultSet.getString("DIAGNOSTIC"));
+
+            System.out.println("SELECT DIAGNOSTIC FROM lesion");
+
+            if (Collections.frequency(diags, diag) > 1)
+                return true;
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return false;
     }
 }

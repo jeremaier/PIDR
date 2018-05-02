@@ -23,7 +23,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         if (patient.getAnneeNaissance() < 1900)
             FileManager.openAlert("Annee invalide");
         else try {
-            preparedStatement = connection.prepareStatement("INSERT INTO patient (ID, INITIALES, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO patient (ID, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 1);
             preparedStatement.executeUpdate();
 
@@ -86,7 +86,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
     }
 
     @Override
-    public ObservableList<Patient> selectByFilters(int id, String initiales, String date) {
+    public ObservableList<Patient> selectByFilters(int id, String genre, String date) {
         ObservableList<Patient> patients = FXCollections.observableArrayList();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -99,11 +99,13 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
                 this.addToObservableList(patients, resultSet);
             }
 
-            if (!initiales.equals("")) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE INITIALES = ? ORDER BY ID");
-                preparedStatement.setString(1, initiales);
-                resultSet = preparedStatement.executeQuery();
-                this.refreshList(patients, resultSet);
+            if (genre != null) {
+                if (!genre.equals("")) {
+                    preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE GENRE = ? ORDER BY ID");
+                    preparedStatement.setString(1, genre);
+                    resultSet = preparedStatement.executeQuery();
+                    this.refreshList(patients, resultSet);
+                }
             }
 
             if (!date.equals("")) {
@@ -214,9 +216,9 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         if (patient.getAnneeNaissance() < 1900)
             FileManager.openAlert("Annee invalide");
         else try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 0);
-            preparedStatement.setInt(4, id);
+            preparedStatement.setInt(3, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE patient SET INITIALES = ?, GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
@@ -252,7 +254,6 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         Patient patient = new Patient();
 
         patient.setId(resultSet.getInt("ID"));
-        patient.setInitiales(resultSet.getString("INITIALES"));
         patient.setGenre(resultSet.getString("GENRE"));
         patient.setDateNaissance(resultSet.getInt("ANNEE_NAISSANCE"));
 
@@ -267,9 +268,8 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         if(indexDebut == 1)
             preparedStatement.setInt(indexDebut, ((Patient) object).getId());
 
-        preparedStatement.setString(indexDebut + 1, ((Patient) object).getInitiales());
-        preparedStatement.setString(indexDebut + 2, ((Patient) object).getGenre());
-        preparedStatement.setInt(indexDebut + 3, ((Patient) object).getAnneeNaissance());
+        preparedStatement.setString(indexDebut + 1, ((Patient) object).getGenre());
+        preparedStatement.setInt(indexDebut + 2, ((Patient) object).getAnneeNaissance());
 
         return preparedStatement;
     }

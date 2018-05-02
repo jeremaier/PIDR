@@ -9,6 +9,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LesionDaoImpl;
 import src.table.Lesion;
 import src.utils.Diag;
@@ -55,15 +56,17 @@ public class AddLesionController implements Initializable {
     private Lesion lesion;
     private int idInclusion;
     private Stage addLesionStage;
+    private InclusionDaoImpl inclusionDaoImpl;
     private LesionDaoImpl lesionDaoImpl;
     private FileManager fileManager;
     private String idLesion;
     private boolean[] uploadedBeforeEdit = {true, true, true, true, true};
 
-    public AddLesionController(LesionsController lesionsController, Lesion lesion, int idInclusion, LesionDaoImpl lesionDaoImpl, FileManager fileManager) {
+    public AddLesionController(LesionsController lesionsController, Lesion lesion, int idInclusion, InclusionDaoImpl inclusionDaoImpl, LesionDaoImpl lesionDaoImpl, FileManager fileManager) {
         this.lesionsController = lesionsController;
         this.lesion = lesion;
         this.idInclusion = idInclusion;
+        this.inclusionDaoImpl = inclusionDaoImpl;
         this.lesionDaoImpl = lesionDaoImpl;
         this.fileManager = fileManager;
     }
@@ -84,14 +87,9 @@ public class AddLesionController implements Initializable {
 
         this.siteAnatomiqueField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals(oldValue)) {
-                if (this.siteAnatomiqueField.getText().length() >= 1) {
-                    this.addButton.setDisable(false);
-                    this.addPhotoSurButton.setDisable(false);
-                    this.addPhotoHorsButton.setDisable(false);
-                    this.addPhotoFixeButton.setDisable(false);
-                    this.addDiagFileButton.setDisable(false);
-                    this.addMoyFileButton.setDisable(false);
-                } else {
+                if (this.siteAnatomiqueField.getText().length() >= 1)
+                    this.enableButtons();
+                else {
                     this.addButton.setDisable(true);
                     this.addPhotoSurButton.setDisable(true);
                     this.addPhotoHorsButton.setDisable(true);
@@ -108,10 +106,24 @@ public class AddLesionController implements Initializable {
         });
     }
 
+    private void enableButtons() {
+        this.addButton.setDisable(false);
+        this.addPhotoSurButton.setDisable(false);
+        this.addPhotoHorsButton.setDisable(false);
+        this.addPhotoFixeButton.setDisable(false);
+        this.addDiagFileButton.setDisable(false);
+        this.addMoyFileButton.setDisable(false);
+    }
+
     private void setLesionInformations() {
+        Diag diag = this.lesion.getDiag();
         this.addButton.setText("Modifier");
         this.siteAnatomiqueField.setText(this.lesion.getSiteAnatomique());
         this.diagBox.getSelectionModel().select(this.lesion.getDiag());
+        this.enableButtons();
+
+        if (diag.equals(Diag.FICHIER) || diag.equals(Diag.AUTRE))
+            this.diagBox.setDisable(true);
 
         if (!this.lesion.getPhotoSur().equals("Aucun")) {
             this.photoSurLabel.setText(FileManager.getFileName(this.lesion.getPhotoSur(), false));
@@ -129,7 +141,7 @@ public class AddLesionController implements Initializable {
         }
 
         if (!this.lesion.getAutreDiag().equals("Aucun")) {
-            this.diagFileLabel.setText(FileManager.getFileName(this.lesion.getAutreDiag(), false));
+            this.diagFileLabel.setText(FileManager.getFileName(this.lesion.getFileDiag(), false));
             this.addDiagFileButton.setText("Supprimer");
         }
 
@@ -144,8 +156,10 @@ public class AddLesionController implements Initializable {
         this.lesion.setSiteAnatomique(this.siteAnatomiqueField.getText());
         Diag diagValue = this.diagBox.getValue();
 
-        if (diagValue != null)
+        if (diagValue != null) {
+            this.inclusionDaoImpl.updateDiag(diagValue.toString(), idInclusion);
             this.lesion.setDiag(diagValue.toString());
+        }
 
         this.lesion.setIdInclusion(this.idInclusion);
 
@@ -158,8 +172,8 @@ public class AddLesionController implements Initializable {
         if (!this.photoFixeLabel.getText().equals("Aucun"))
             this.lesion.setPhotoFixe(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.photoFixeLabel.getText());
 
-        if (!this.otherDiagButton.getText().equals("Aucun"))
-            this.lesion.setAutreDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.diagFileLabel.getText());
+        if (!this.diagFileLabel.getText().equals("Aucun"))
+            this.lesion.setFileDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.diagFileLabel.getText());
 
         if (!this.addMoyFileLabel.getText().equals("Aucun"))
             this.lesion.setFichierMoy(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.addMoyFileLabel.getText());
@@ -274,7 +288,7 @@ public class AddLesionController implements Initializable {
             if (addedFileName != null) {
                 this.addDiagFileButton.setText("Supprimer");
                 this.diagFileLabel.setText(addedFileName);
-                this.lesion.setDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
+                this.lesion.setFileDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
                 this.diagBox.setValue(Diag.FICHIER);
                 this.diagBox.setDisable(true);
             }

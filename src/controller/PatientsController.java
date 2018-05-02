@@ -21,17 +21,15 @@ public class PatientsController implements Initializable {
     @FXML
     TextField idField;
     @FXML
-    TextField initialesField;
-    @FXML
     TextField dateField;
     @FXML
     TextField idSearchField;
     @FXML
-    TextField initialesSearchField;
-    @FXML
     TextField dateSearchField;
     @FXML
     ComboBox<Genre> genreComboBox;
+    @FXML
+    ComboBox<Genre> genreSearchComboBox;
     @FXML
     Button addPatientButton;
     @FXML
@@ -51,13 +49,11 @@ public class PatientsController implements Initializable {
     @FXML
     TableColumn<Patient, Integer> patIdCol;
     @FXML
-    TableColumn<Patient, String> patInitialesCol;
-    @FXML
     TableColumn<Patient, String> patGenreCol;
     @FXML
     TableColumn<Patient, Integer> patDateCol;
 
-    private ObservableList<Genre> comboBoxValeurs = FXCollections.observableArrayList(Genre.M, Genre.F);
+    private ObservableList<Genre> comboBoxValeurs = FXCollections.observableArrayList(Genre.NULL, Genre.M, Genre.F);
     private Stage patientsStage;
     private PatientDaoImpl patientDaoImpl;
     private ObservableList<Patient> patientsList;
@@ -74,10 +70,10 @@ public class PatientsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.patIdCol.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-        this.patInitialesCol.setCellValueFactory(cellData -> cellData.getValue().initialesProperty());
         this.patGenreCol.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
         this.patDateCol.setCellValueFactory(cellData -> cellData.getValue().dateNaissanceProperty().asObject());
         this.genreComboBox.getItems().addAll(this.comboBoxValeurs);
+        this.genreSearchComboBox.getItems().addAll(this.comboBoxValeurs);
         this.patientsList = this.patientDaoImpl.selectAll();
         this.populatePatients();
         this.populateIdPatients();
@@ -107,40 +103,6 @@ public class PatientsController implements Initializable {
         this.idSearchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*"))
                 this.idSearchField.setText(newValue.replaceAll("[^\\d]", ""));
-        });
-
-        this.initialesField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() > oldValue.intValue()) {
-                if (this.initialesField.getText().length() >= 4)
-                    this.initialesField.setText(this.initialesField.getText().substring(0, 4));
-            }
-        });
-
-        this.initialesField.setTextFormatter(new TextFormatter<>((change) -> {
-            change.setText(change.getText().toUpperCase());
-            return change;
-        }));
-
-        this.initialesField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("[A-Za-z]*"))
-                this.initialesField.setText(newValue.replaceAll("[^A-Za-z]", ""));
-        });
-
-        this.initialesSearchField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() > oldValue.intValue()) {
-                if (this.initialesSearchField.getText().length() >= 4)
-                    this.initialesSearchField.setText(this.initialesSearchField.getText().substring(0, 4));
-            }
-        });
-
-        this.initialesSearchField.setTextFormatter(new TextFormatter<>((change) -> {
-            change.setText(change.getText().toUpperCase());
-            return change;
-        }));
-
-        this.initialesSearchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("[A-Za-z]*"))
-                this.initialesSearchField.setText(newValue.replaceAll("[^A-Za-z]", ""));
         });
 
         this.genreComboBox.itemsProperty().addListener((observable, oldValue, newValue) -> {
@@ -179,15 +141,24 @@ public class PatientsController implements Initializable {
                 Patient selectedPatient = this.patientsList.get(this.selectedId);
 
                 if (selectedPatient != null) {
+                    switch (selectedPatient.getGenre()) {
+                        case "Homme":
+                            this.genreComboBox.setValue(Genre.M);
+                            break;
+                        case "Femme":
+                            this.genreComboBox.setValue(Genre.F);
+                            break;
+                        default:
+                            this.genreComboBox.setValue(Genre.NULL);
+                            break;
+                    }
+
                     this.idField.setText(Integer.toString(selectedPatient.getId()));
-                    this.initialesField.setText(selectedPatient.getInitiales());
                     this.dateField.setText(Integer.toString(selectedPatient.getAnneeNaissance()));
-                    this.genreComboBox.setValue(selectedPatient.getGenre().equals("Homme") ? Genre.M : Genre.F);
                     this.removeButton.setDisable(false);
                     this.chooseButton.setDisable(false);
                 } else {
                     this.idField.setPromptText("ID");
-                    this.initialesField.setPromptText("Initiales");
                     this.dateField.setPromptText("Année de naissance");
                     this.genreComboBox.setPromptText("Genre");
                     this.removeButton.setDisable(true);
@@ -197,11 +168,6 @@ public class PatientsController implements Initializable {
         });
 
         this.idSearchField.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER)
-                this.searchAction();
-        });
-
-        this.initialesSearchField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER)
                 this.searchAction();
         });
@@ -231,8 +197,7 @@ public class PatientsController implements Initializable {
 
     private void cleanFields() {
         this.idField.setText("");
-        this.initialesField.setText("");
-        this.genreComboBox.setValue(null);
+        this.genreComboBox.setValue(Genre.NULL);
         this.dateField.setText("");
         this.idField.requestFocus();
         this.patientsTable.getSelectionModel().clearSelection();
@@ -240,7 +205,7 @@ public class PatientsController implements Initializable {
 
     @FXML
     private void addPatientAction() {
-        Patient patient = new Patient(Integer.parseInt(this.idField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.parseInt(this.dateField.getText()));
+        Patient patient = new Patient(Integer.parseInt(this.idField.getText()), this.genreComboBox.getValue().toString(), Integer.parseInt(this.dateField.getText()));
 
         if (this.searchMode) {
             this.searchMode = false;
@@ -256,7 +221,17 @@ public class PatientsController implements Initializable {
     @FXML
     private void searchAction() {
         this.searchMode = true;
-        this.patientsList = this.patientDaoImpl.selectByFilters(this.idSearchField.getText().isEmpty() ? 0 : Integer.parseInt(this.idSearchField.getText()), this.initialesSearchField.getText(), this.dateSearchField.getText());
+        this.idField.setPromptText("ID");
+        this.dateField.setPromptText("Année de naissance");
+        this.genreComboBox.setPromptText("Genre");
+        this.removeButton.setDisable(true);
+        this.chooseButton.setDisable(true);
+        this.modifyButton.setDisable(true);
+        this.selectedId = 0;
+        this.patientsList = this.patientDaoImpl.selectByFilters(this.idSearchField.getText().isEmpty() ? 0 : Integer.parseInt(this.idSearchField.getText()),
+                this.genreSearchComboBox.getValue() != null ? this.genreSearchComboBox.getValue().toString() : null,
+                this.dateSearchField.getText());
+
         this.populatePatients();
     }
 
@@ -274,7 +249,6 @@ public class PatientsController implements Initializable {
         alert.setContentText("Confirmer?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            /*TODO Supprimer les docs qui vont avec*/
             this.patientDaoImpl.delete(Integer.parseInt(this.idField.getText()));
             this.patientsList.remove(this.patientsList.get(this.selectedId));
             this.idPatients.clear();
@@ -286,9 +260,8 @@ public class PatientsController implements Initializable {
     @FXML
     private void updatePatientInformations() {
         Patient selectedPatient = this.patientsList.get(this.selectedId);
-        Patient patient = new Patient(Integer.parseInt(this.idField.getText()), this.initialesField.getText(), this.genreComboBox.getValue().toString(), Integer.parseInt(this.dateField.getText()));
+        Patient patient = new Patient(Integer.parseInt(this.idField.getText()), this.genreComboBox.getValue().toString(), Integer.parseInt(this.dateField.getText()));
         this.patientDaoImpl.update(patient, patient.getId());
-        selectedPatient.setInitiales(this.initialesField.getText());
         selectedPatient.setGenre(this.genreComboBox.getValue().toString());
         selectedPatient.setDateNaissance(Integer.parseInt(this.dateField.getText()));
     }
@@ -306,7 +279,7 @@ public class PatientsController implements Initializable {
         if (this.patientsStage == null)
             this.patientsStage = (Stage) this.chooseButton.getScene().getWindow();
 
-        this.addInclusionController.setPatientInformations(Integer.parseInt(this.idField.getText()), this.initialesField.getText());
+        this.addInclusionController.setPatientInformations(Integer.parseInt(this.idField.getText()));
         this.patientsStage.close();
     }
 }

@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import src.controller.LameController;
 
 import java.io.IOException;
 
@@ -17,7 +16,7 @@ public class LameView {
 
         stage.setTitle("Lame histologique");
         viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
-        viewLoader.setControllerFactory(iC -> new LameController());
+        // viewLoader.setControllerFactory(iC -> new LameController());
 
         try {
             rootLog = viewLoader.load();

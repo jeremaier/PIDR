@@ -1,22 +1,27 @@
 package src.table;
 
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class Inclusion {
     private StringProperty id;
     private IntegerProperty idPatient;
     private String reference1 = "Aucun";
     private String reference2 = "Aucun";
-    private ObjectProperty<Date> dateInclusion;
+    private StringProperty dateInclusion;
     private IntegerProperty numAnaPath;
     private StringProperty diag;
 
     public Inclusion() {
         this.id = new SimpleStringProperty();
         this.idPatient = new SimpleIntegerProperty(-1);
-        this.dateInclusion = new SimpleObjectProperty<>();
+        this.dateInclusion = new SimpleStringProperty();
         this.numAnaPath = new SimpleIntegerProperty();
         this.diag = new SimpleStringProperty();
     }
@@ -64,12 +69,13 @@ public class Inclusion {
         this.reference2 = reference;
     }
 
-    public Date getDateInclusion() {
+    public String getDateInclusion() {
         return dateInclusion.get();
     }
 
     public void setDateInclusion(Date dateInclusion) {
-        this.dateInclusion.set(dateInclusion);
+        DateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+        this.dateInclusion.set(fmt.format(dateInclusion));
     }
 
     public int getNumAnaPat() {
@@ -84,7 +90,7 @@ public class Inclusion {
         return this.idPatient;
     }
 
-    public ObjectProperty<Date> dateInclusionProperty() {
+    public StringProperty dateInclusionProperty() {
         return this.dateInclusion;
     }
 

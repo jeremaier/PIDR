@@ -7,21 +7,18 @@ import javafx.beans.property.StringProperty;
 
 public class Patient {
     private IntegerProperty id;
-    private StringProperty initiales;
     private StringProperty genre;
     private IntegerProperty anneeDeNaissance;
 
     public Patient() {
         this.id = new SimpleIntegerProperty();
-        this.initiales = new SimpleStringProperty();
         this.genre = new SimpleStringProperty();
         this.anneeDeNaissance = new SimpleIntegerProperty();
     }
 
-    public Patient(int id, String initiales, String genre, int anneeDeNaissance) {
+    public Patient(int id, String genre, int anneeDeNaissance) {
         this();
         this.setId(id);
-        this.setInitiales(initiales);
         this.setGenre(genre);
         this.setDateNaissance(anneeDeNaissance);
     }
@@ -42,24 +39,12 @@ public class Patient {
         this.genre.set(genre);
     }
 
-    public String getInitiales() {
-        return this.initiales.get();
-    }
-
-    public void setInitiales(String initiales) {
-        this.initiales.set(initiales);
-    }
-
     public int getAnneeNaissance() {
         return this.anneeDeNaissance.get();
     }
 
     public IntegerProperty idProperty() {
         return this.id;
-    }
-
-    public StringProperty initialesProperty() {
-        return this.initiales;
     }
 
     public StringProperty genreProperty() {

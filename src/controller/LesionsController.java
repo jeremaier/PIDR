@@ -8,9 +8,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LesionDaoImpl;
 import src.table.Inclusion;
 import src.table.Lesion;
+import src.utils.Diag;
 import src.utils.FileManager;
 import src.view.AddLesionView;
 import src.view.InclusionsView;
@@ -26,6 +28,10 @@ public class LesionsController implements Initializable {
     Button returnButton;
     @FXML
     Button photosButton;
+    @FXML
+    Button fichierMoyButton;
+    @FXML
+    Button fileDiagButton;
     @FXML
     Button siteCutaneButton;
     @FXML
@@ -47,14 +53,16 @@ public class LesionsController implements Initializable {
     private FileManager fileManager;
     private Inclusion inclusion;
     private Lesion selectedLesion;
-    private int selectedIdLesion;
+    private int selectedIdLesion = -1;
     private ObservableList<Lesion> lesionsList;
+    private InclusionDaoImpl inclusionDaoImpl;
     private LesionDaoImpl lesionDaoImpl;
     private Stage lesionsStage;
 
-    public LesionsController(Connection connection, FileManager fileManager, Inclusion inclusion) {
+    public LesionsController(Connection connection, FileManager fileManager, InclusionDaoImpl inclusionDaoImpl, Inclusion inclusion) {
         this.connection = connection;
         this.fileManager = fileManager;
+        this.inclusionDaoImpl = inclusionDaoImpl;
         this.inclusion = inclusion;
     }
 
@@ -73,21 +81,36 @@ public class LesionsController implements Initializable {
                 this.selectedIdLesion = id;
                 this.selectedLesion = this.lesionsList.get(this.selectedIdLesion);
 
-                if (this.selectedLesion == null) {
-                    this.removeButton.setDisable(true);
-                    this.editButton.setDisable(true);
-                    this.photosButton.setDisable(true);
-                    this.siteCutaneButton.setDisable(true);
-                    this.histologicLamellaButton.setDisable(true);
-                } else {
+                if (this.selectedLesion == null)
+                    this.disableButtons();
+                else {
                     this.removeButton.setDisable(false);
                     this.editButton.setDisable(false);
-                    this.photosButton.setDisable(false);
+
+                    if (!this.selectedLesion.getPhotoFixe().equals("Aucun") || !this.selectedLesion.getPhotoSur().equals("Aucun") || !this.selectedLesion.getPhotoHors().equals("Aucun"))
+                        this.photosButton.setDisable(false);
+
+                    if (!this.selectedLesion.getFileDiag().equals("Aucun"))
+                        this.fileDiagButton.setDisable(false);
+
+                    if (!this.selectedLesion.getFichierMoy().equals("Aucun"))
+                        this.fichierMoyButton.setDisable(false);
+
                     this.siteCutaneButton.setDisable(false);
                     this.histologicLamellaButton.setDisable(false);
                 }
             }
         });
+    }
+
+    private void disableButtons() {
+        this.removeButton.setDisable(true);
+        this.editButton.setDisable(true);
+        this.photosButton.setDisable(true);
+        this.fileDiagButton.setDisable(true);
+        this.fichierMoyButton.setDisable(true);
+        this.siteCutaneButton.setDisable(true);
+        this.histologicLamellaButton.setDisable(true);
     }
 
     void refreshLesions() {
@@ -120,33 +143,49 @@ public class LesionsController implements Initializable {
 
         this.fileManager.openFTPConnection();
 
-        if (photoHors != null)
+        if (!photoHors.equals("Aucun"))
             choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, null, false, false);
 
-        if (photoSur != null)
+        if (!photoSur.equals("Aucun"))
             choosenDirectory = this.fileManager.downloadFromUrl(this.lesionsStage, photoHors, choosenDirectory, false, false);
 
-        if (photoFixe != null)
+        if (!photoFixe.equals("Aucun"))
             this.fileManager.downloadFromUrl(this.lesionsStage, photoFixe, choosenDirectory, false, false);
 
         this.fileManager.closeFTPConnection();
+    }
+
+    public void fileDiagAction() {
+        if (this.lesionsStage == null)
+            this.lesionsStage = (Stage) this.fileDiagButton.getScene().getWindow();
+
+        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFileDiag(), null, false, false);
+    }
+
+    public void fichierMoyAction() {
+        if (this.lesionsStage == null)
+            this.lesionsStage = (Stage) this.fichierMoyButton.getScene().getWindow();
+
+        this.fileManager.downloadFromUrl(this.lesionsStage, this.selectedLesion.getFichierMoy(), null, false, false);
+
     }
 
     public void addAction() {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.addButton.getScene().getWindow();
 
-        new AddLesionView(this, null, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+        new AddLesionView(this, null, Integer.parseInt(this.inclusion.getId()), this.inclusionDaoImpl, this.lesionDaoImpl, this.fileManager);
     }
 
     public void editAction() {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.addButton.getScene().getWindow();
 
-        new AddLesionView(this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+        new AddLesionView(this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.inclusionDaoImpl, this.lesionDaoImpl, this.fileManager);
     }
 
     public void removeAction() {
+        Diag diag = this.selectedLesion.getDiag();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
         alert.setHeaderText("Vous allez supprimer la lesion et les documents attachés");
@@ -154,9 +193,15 @@ public class LesionsController implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             this.removeFiles();
+
+            if (!this.lesionDaoImpl.moreThanOneDiag(diag))
+                this.inclusionDaoImpl.removeDiag(diag, Integer.parseInt(this.inclusion.getId()));
+
             this.lesionDaoImpl.delete(this.selectedLesion.getId());
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
+            this.selectedIdLesion = -1;
+            this.disableButtons();
         } else alert.close();
     }
 

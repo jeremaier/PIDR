@@ -1,6 +1,7 @@
 package src.utils;
 
 public enum Genre {
+    NULL(""),
     M("Homme"),
     F("Femme");
 

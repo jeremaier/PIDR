@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.LesionsController;
+import src.daoImpl.InclusionDaoImpl;
 import src.table.Inclusion;
 import src.utils.FileManager;
 
@@ -14,14 +15,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class LesionsView {
-    public LesionsView(Connection connection, FileManager fileManager, Inclusion inclusion) {
+    public LesionsView(Connection connection, FileManager fileManager, InclusionDaoImpl inclusionDaoImpl, Inclusion inclusion) {
         Parent rootLog = null;
         Stage lesionsStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
         lesionsStage.setTitle("Lesions");
         viewLoader.setLocation(getClass().getResource("/ressource/Lesions.fxml"));
-        viewLoader.setControllerFactory(iC -> new LesionsController(connection, fileManager, inclusion));
+        viewLoader.setControllerFactory(iC -> new LesionsController(connection, fileManager, inclusionDaoImpl, inclusion));
 
         try {
             rootLog = viewLoader.load();

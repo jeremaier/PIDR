@@ -51,7 +51,6 @@ public class AddInclusionController implements Initializable {
     private Stage addInclusionStage;
     private FileManager fileManager;
     private int patientId;
-    private String initiales;
     private boolean[] uploadedBeforeEdit = {true, true};
 
     public AddInclusionController(InclusionsController inclusionsController, ObservableList<Inclusion> inclusionsList, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
@@ -103,10 +102,10 @@ public class AddInclusionController implements Initializable {
 
     private void setInclusionInformations() {
         this.inclusionIDField.setText(this.inclusion.getId());
-        Date dateInclusion = this.inclusion.getDateInclusion();
+        Date dateInclusion = InclusionDaoImpl.stringToDate(this.inclusion.getDateInclusion());
         int numAna = this.inclusion.getNumAnaPat();
 
-        if (this.inclusion.getIdPatient() != -1 && this.patientDaoImpl.selectById(this.inclusion.getIdPatient()).getInitiales() != null) {
+        if (this.inclusion.getIdPatient() != -1) {
             this.patientLabel.setText("ID : " + Integer.toString(this.inclusion.getIdPatient()));
             this.addPatientButton.setText("Supprimer");
         }
@@ -132,9 +131,8 @@ public class AddInclusionController implements Initializable {
         this.reference2FileButton.setDisable(false);
     }
 
-    void setPatientInformations(int patientId, String initiales) {
+    void setPatientInformations(int patientId) {
         this.patientId = patientId;
-        this.initiales = initiales;
         this.patientLabel.setText("ID : " + Integer.toString(this.patientId));
         this.addPatientButton.setText("Supprimer");
     }

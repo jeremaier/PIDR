@@ -13,23 +13,25 @@ public class Lesion {
     private StringProperty siteAnatomique;
     private Diag diag;
     private String autreDiag = "Aucun";
+    private String fileDiag = "Aucun";
     private String fichierMoy = "Aucun";
 
     public Lesion() {
         this.siteAnatomique = new SimpleStringProperty();
     }
 
-    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fichierMoy) {
+    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fileDiag, String fichierMoy) {
         this();
         this.setId(id);
         this.setIdInclusion(idInclusion);
-        this.photoSur = photoSur;
-        this.photoHors = photoHors;
-        this.photoFixe = photoFixe;
+        this.setPhotoSur(photoSur);
+        this.setPhotoHors(photoHors);
+        this.setPhotoFixe(photoFixe);
         this.setSiteAnatomique(siteAnatomique);
-        this.diag = Diag.valueOf(diag);
+        this.setDiag(Diag.valueOf(diag));
         this.setAutreDiag(autreDiag);
-        this.fichierMoy=fichierMoy;
+        this.setFileDiag(fileDiag);
+        this.setFichierMoy(fichierMoy);
     }
 
     public int getId() {
@@ -84,26 +86,32 @@ public class Lesion {
         return this.diag;
     }
 
+    public void setDiag(Diag diag) {
+        this.diag = diag;
+    }
+
     public void setDiag(String diag) {
-        switch (diag) {
-            case "Basocellulaire":
-                this.diag = Diag.BASO;
-                break;
-            case "Spinocellulaire":
-                this.diag = Diag.SPINO;
-                break;
-            case "Keratose actinique":
-                this.diag = Diag.KERATOSE;
-                break;
-            case "Autre...":
-                this.diag = Diag.AUTRE;
-                break;
-            case "Fichier":
-                this.diag = Diag.FICHIER;
-                break;
-            case "Pas de malignité":
-                this.diag = Diag.RIEN;
-                break;
+        if (diag != null) {
+            switch (diag) {
+                case "Basocellulaire":
+                    this.diag = Diag.BASO;
+                    break;
+                case "Spinocellulaire":
+                    this.diag = Diag.SPINO;
+                    break;
+                case "Keratose actinique":
+                    this.diag = Diag.KERATOSE;
+                    break;
+                case "Autre...":
+                    this.diag = Diag.AUTRE;
+                    break;
+                case "Fichier":
+                    this.diag = Diag.FICHIER;
+                    break;
+                case "Pas de malignité":
+                    this.diag = Diag.RIEN;
+                    break;
+            }
         }
     }
 
@@ -113,6 +121,14 @@ public class Lesion {
 
     public void setAutreDiag(String autreDiag) {
         this.autreDiag = autreDiag;
+    }
+
+    public String getFileDiag() {
+        return this.fileDiag;
+    }
+
+    public void setFileDiag(String fileDiag) {
+        this.fileDiag = fileDiag;
     }
 
     public String getFichierMoy(){ return this.fichierMoy;    }

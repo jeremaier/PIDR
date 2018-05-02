@@ -26,7 +26,7 @@ public class InclusionsController implements Initializable {
     @FXML
     TextField idAnapathField;
     @FXML
-    TextField initialesField;
+    TextField idPatientField;
     @FXML
     TextField searchDocField;
     @FXML
@@ -94,11 +94,11 @@ public class InclusionsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.inclID.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        this.inclDate.setCellValueFactory(cellData -> cellData.getValue().dateInclusionProperty().asString());
+        this.inclDate.setCellValueFactory(cellData -> cellData.getValue().dateInclusionProperty());
         this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty().asObject());
         this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty().asString());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
-        this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
+        this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.NULL, Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
         this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, false);
 
         if (this.procObservableList != null)
@@ -125,10 +125,10 @@ public class InclusionsController implements Initializable {
                 this.idInclusionField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        this.initialesField.lengthProperty().addListener((observable, oldValue, newValue) -> {
+        this.idPatientField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue())
-                if (this.initialesField.getText().length() >= 4)
-                    this.initialesField.setText(this.initialesField.getText().substring(0, 4));
+                if (this.idPatientField.getText().length() >= 4)
+                    this.idPatientField.setText(this.idPatientField.getText().substring(0, 4));
         });
 
         this.resList.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
@@ -201,7 +201,7 @@ public class InclusionsController implements Initializable {
         this.inclusionsList = this.inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
                 this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
                 this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
-                this.initialesField.getText(),
+                this.idPatientField.getText(),
                 this.diagnosticChoiceBox.getValue());
 
         this.populateInclusions();
@@ -360,7 +360,7 @@ public class InclusionsController implements Initializable {
         if(this.inclusionsStage == null)
             this.inclusionsStage = (Stage) this.lesionsButton.getScene().getWindow();
 
-        new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
+        new LesionsView(this.connection, this.fileManager, this.inclusionDaoImpl, this.selectedInclusion);
 
         this.inclusionsStage.close();
     }

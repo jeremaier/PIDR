@@ -9,7 +9,7 @@ public interface PatientDao {
 
     Patient selectById(int id);
 
-    List<Patient> selectByFilters(int id, String initiales, String date);
+    List<Patient> selectByFilters(int id, String genre, String date);
 
     List<Patient> selectAll();
 
