@@ -63,12 +63,14 @@ public class LameController implements Initializable {
     private FileManager fileManager;
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
+    private int numAnapat;
 
 
-    public LameController(Connection connection, Lesion lesion, FileManager fileManager) {
+    public LameController(Connection connection, Lesion lesion, FileManager fileManager, int numAnapat) {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
+        this.numAnapat = numAnapat;
     }
 
 
