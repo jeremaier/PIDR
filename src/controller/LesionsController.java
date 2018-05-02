@@ -16,6 +16,7 @@ import src.utils.Diag;
 import src.utils.FileManager;
 import src.view.AddLesionView;
 import src.view.InclusionsView;
+import src.view.LameView;
 import src.view.SiteView;
 
 import java.io.File;
@@ -237,7 +238,7 @@ public class LesionsController implements Initializable {
         if (this.lesionsStage == null)
             this.lesionsStage = (Stage) this.histologicLamellaButton.getScene().getWindow();
 
-        //new LameView(this.selectedLesion, this.connection, this.fileManager);
+        new LameView(this.connection, this.fileManager, this.selectedLesion, this.inclusion.getNumAnaPat());
 
         this.lesionsStage.close();
     }
