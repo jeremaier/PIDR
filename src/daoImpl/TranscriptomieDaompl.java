@@ -21,11 +21,11 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, FICHIER_CUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
+            System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -198,7 +198,6 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         transcriptomicAnalysis.setId(resultSet.getInt("ID"));
         transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
         transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
-        transcriptomicAnalysis.setFichierCut(resultSet.getString("FICHIER_CUT"));
         transcriptomicAnalysis.setRIN(resultSet.getInt("RIN"));
         transcriptomicAnalysis.setConcentration(resultSet.getDouble("CONCENTRATION"));
         transcriptomicAnalysis.setARNC(resultSet.getDouble("ARNC"));
@@ -222,17 +221,16 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
 
         preparedStatement.setInt(indexDebut + 1, ((TranscriptomicAnalysis) object).getIdCutaneousSite());
         preparedStatement.setString(indexDebut + 2, ((TranscriptomicAnalysis) object).getFichierBrut());
-        preparedStatement.setString(indexDebut + 3, ((TranscriptomicAnalysis) object).getFichierCut());
-        preparedStatement.setInt(indexDebut + 4, ((TranscriptomicAnalysis) object).getRIN());
-        preparedStatement.setDouble(indexDebut + 5, ((TranscriptomicAnalysis) object).getConcentration());
-        preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getARNC());
-        preparedStatement.setDouble(indexDebut + 7, ((TranscriptomicAnalysis) object).getCyanine());
-        preparedStatement.setDouble(indexDebut + 8, ((TranscriptomicAnalysis) object).getYield());
-        preparedStatement.setString(indexDebut + 9, ((TranscriptomicAnalysis) object).getSpecificActivity());
-        preparedStatement.setString(indexDebut + 10, ((TranscriptomicAnalysis) object).getExclusionCriteria());
-        preparedStatement.setInt(indexDebut + 11, ((TranscriptomicAnalysis) object).getSerialNumber());
-        preparedStatement.setInt(indexDebut + 12, ((TranscriptomicAnalysis) object).getLamellaLocation());
-        preparedStatement.setString(indexDebut + 13, ((TranscriptomicAnalysis) object).getQualityReport());
+        preparedStatement.setInt(indexDebut + 3, ((TranscriptomicAnalysis) object).getRIN());
+        preparedStatement.setDouble(indexDebut + 4, ((TranscriptomicAnalysis) object).getConcentration());
+        preparedStatement.setDouble(indexDebut + 5, ((TranscriptomicAnalysis) object).getARNC());
+        preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getCyanine());
+        preparedStatement.setDouble(indexDebut + 7, ((TranscriptomicAnalysis) object).getYield());
+        preparedStatement.setString(indexDebut + 8, ((TranscriptomicAnalysis) object).getSpecificActivity());
+        preparedStatement.setString(indexDebut + 9, ((TranscriptomicAnalysis) object).getExclusionCriteria());
+        preparedStatement.setInt(indexDebut + 10, ((TranscriptomicAnalysis) object).getSerialNumber());
+        preparedStatement.setInt(indexDebut + 11, ((TranscriptomicAnalysis) object).getLamellaLocation());
+        preparedStatement.setString(indexDebut + 12, ((TranscriptomicAnalysis) object).getQualityReport());
 
         return preparedStatement;
     }

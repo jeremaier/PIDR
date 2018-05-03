@@ -18,6 +18,7 @@ import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
 import src.view.AddLameView;
+import src.view.SiteView;
 
 import javax.swing.*;
 
@@ -113,8 +114,16 @@ public class LameController implements Initializable {
 
     @FXML
     public void cancelButtonEvent   (ActionEvent actionEvent) {
+
         this.lameStage = (Stage) retour.getScene().getWindow();
+
+
+        new SiteView(this.lesion, this.connection, this.fileManager);
+
+
         this.lameStage.close();
+
+
     }
 
     @FXML

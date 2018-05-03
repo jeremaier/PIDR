@@ -22,7 +22,7 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, site, 1);
+            preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIQUE, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -122,19 +122,18 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
     }
 
     @Override
-    public ObservableList<CutaneousSite> selectBySain(int id, int sain) {
+    public ObservableList<CutaneousSite> selectByLesion(int id) {
         ObservableList<CutaneousSite> site = FXCollections.observableArrayList();
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE SAIN = ? AND ID_LESION = ? ORDER BY ID");
-            preparedStatement.setInt(1, sain);
-            preparedStatement.setInt(2, id);
+            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE ID_LESION = ? ORDER BY ID");
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             this.addToObservableList(site, resultSet);
 
-            System.out.println("SELECT * FROM site_cutane SAIN^ID_LESION ORDER BY ID");
+            System.out.println("SELECT * FROM site_cutane ID_LESION ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -166,12 +165,12 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SAIN = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
+            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SAIN = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, FICHIER_DIAG=?, SPECTROSCOPIE = ? WHERE ID = ?");
+            System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, FICHIER_DIAG=?, SPECTROSCOPIE = ? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -210,7 +209,6 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
 
         site.setId(resultSet.getInt("ID"));
         site.setIdLesion(resultSet.getInt("ID_LESION"));
-        site.setHealthy(resultSet.getInt("SAIN"));
         site.setSite(resultSet.getString("SITE"));
         site.setOrientation(resultSet.getInt("ORIENTATION"));
         site.setDiag(resultSet.getString("DIAGNOSTIC"));
@@ -226,13 +224,12 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
             preparedStatement.setInt(indexDebut, ((CutaneousSite) object).getId());
 
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getIdLesion());
-        preparedStatement.setInt(indexDebut + 2, ((CutaneousSite) object).getHealthy());
-        preparedStatement.setString(indexDebut + 3, ((CutaneousSite) object).getSite());
-        preparedStatement.setInt(indexDebut + 4, ((CutaneousSite) object).getOrientation());
-        preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getDiag());
-        preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getAutreDiag());
-        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getFichierDiag());
-        preparedStatement.setString(indexDebut + 8, ((CutaneousSite) object).getSpectre());
+        preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite());
+        preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getOrientation());
+        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag());
+        preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getAutreDiag());
+        preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getFichierDiag());
+        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getSpectre());
 
         return preparedStatement;
     }

@@ -11,7 +11,7 @@ public interface SiteCutaneDao {
 
     List<CutaneousSite> selectAll();
 
-    List<CutaneousSite> selectBySain(int id, int sain);
+    List<CutaneousSite> selectByLesion(int id);
 
     void update(CutaneousSite site, int id);
 }

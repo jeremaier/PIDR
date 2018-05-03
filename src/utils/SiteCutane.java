@@ -4,14 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public enum SiteCutane {
-    L("Site lesionnel"),
-    PL("Site Perilesionnel"),
-    NL("Site Non lésionnel");
+    SAIN("SAIN"),
+    NULL(""),
+    L("L"),
+    PL("PL"),
+    NL("NL");
 
     private SimpleStringProperty name;
 
     SiteCutane(String name){
-        this.name= new SimpleStringProperty();
+        this.name= new SimpleStringProperty("");
+        this.setName(name);
 
     }
 
