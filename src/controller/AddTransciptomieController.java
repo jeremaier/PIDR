@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.utils.UploadTask;
 import src.view.TranscriptomieView;
 
 import java.net.URL;
@@ -90,8 +91,8 @@ public class AddTransciptomieController extends Controller implements Initializa
                     accepte.setDisable(true);
                     fichierBrut.setDisable(true);
                     qualityReport.setDisable(true);
-                    fichierBrutPath=null;
-                    qualityReportPath=null;
+                    fichierBrutPath = null;
+                    qualityReportPath = null;
 
                 } else {
                     accepte.setDisable(false);
@@ -197,23 +198,23 @@ public class AddTransciptomieController extends Controller implements Initializa
                 Rin = transcriptomicAnalysis.getRIN();
             }
 
-            if (fichierBrutPath==null){
-                if(this.transcriptomicAnalysis.getFichierBrut()==null){
-                    fichierBrutPath=null;
-                }else{
-                    fichierBrutPath=this.transcriptomicAnalysis.getFichierBrut();
+            if (fichierBrutPath == null) {
+                if (this.transcriptomicAnalysis.getFichierBrut() == null) {
+                    fichierBrutPath = null;
+                } else {
+                    fichierBrutPath = this.transcriptomicAnalysis.getFichierBrut();
                 }
             }
 
-            if (qualityReportPath==null){
-                if(this.transcriptomicAnalysis.getFichierBrut()==null) {
+            if (qualityReportPath == null) {
+                if (this.transcriptomicAnalysis.getFichierBrut() == null) {
                     qualityReportPath = null;
-                }else{
-                    fichierBrutPath=this.transcriptomicAnalysis.getQualityReport();
+                } else {
+                    fichierBrutPath = this.transcriptomicAnalysis.getQualityReport();
                 }
             }
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
             transcriptomieController.display(newTranscr);
 
@@ -225,47 +226,55 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @FXML
     private void fichierBrutButton() {
-       /* String fileName;
-        if (transcriptomicAnalysis != null) {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
-            fichierBrutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) +"//" + fileName ;
-            checkFichierBrut.setText(fileName);
-
-        }else {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
-            fichierBrutPath = "//trancriptomie//" + id.getText() +"//" + fileName;
-            checkFichierBrut.setText(fileName);
-        }*/
+        this.startUpload(qualityReport, checkFichierBrut, "//Transcriptomie//",null,1 );
     }
 
 
     @FXML
     private void qualityReportButtonAction() {
-        /*String fileName;
-        if (transcriptomicAnalysis != null) {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
-            qualityReportPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) +"//"+ fileName;
-            checkQualityReport.setText(fileName);
-        }else {
-            fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
-            qualityReportPath = "//trancriptomie//" + id.getText() +"//"+ fileName;
-            checkQualityReport.setText(fileName);
-        }*/
+        this.startUpload(qualityReport, checkQualityReport, "//Transcriptomie//",null,2 );
     }
 
     @FXML
     private void retour() {
         this.setStage(this.cancel);
 
-        new TranscriptomieView(connection,fileManager,transcriptomicAnalysis,siteId);
+        new TranscriptomieView(connection, fileManager, transcriptomicAnalysis, siteId);
 
         this.stage.close();
     }
 
-    @Override
-    public void enableButtons(boolean enable, boolean all) {
+    private void startUpload(Button button, Label label, String directory, String mesure, int num) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
 
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
+
+        FileManager.openFileChooser(this.stage, uploadTask);
+
+        new Thread(uploadTask).start();
     }
-}
+
+    private void endUpload(String addedFileName, String directory, Label label, int num) {
+        if (addedFileName != null) {
+            if (num == 1) {
+                this.fichierBrutPath = directory + addedFileName;
+
+            } else {
+                this.qualityReportPath = directory + addedFileName;
+            }
+            label.setText(addedFileName);
+
+            this.enableButtons(true, true);
+        }
+    }
+
+        @Override
+        public void enableButtons ( boolean enable, boolean all){
+
+        }
+    }
 
 
