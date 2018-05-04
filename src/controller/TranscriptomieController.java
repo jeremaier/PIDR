@@ -189,10 +189,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         }}, button);
     }
 
-    protected void endDownload() {
-        this.enableButtons(true, true);
-        this.progressBar.setVisible(false);
-    }
+
 
     @Override
     public void enableButtons(boolean enable, boolean all) {

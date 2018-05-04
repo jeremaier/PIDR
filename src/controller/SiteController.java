@@ -223,11 +223,14 @@ public class SiteController extends Controller implements Initializable {
 
     @FXML
     private void transcriptomieButtonAction() {
-        if (this.stage == null) {
+        this.setStage(this.transcriptomique);
             if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null)
                 new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
             else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
-        }
+
+
+        this.stage.close();
+
     }
 
     private void startDownload(String url, Button button) {
