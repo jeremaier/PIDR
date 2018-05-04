@@ -102,10 +102,7 @@ public class SiteController extends Controller implements Initializable {
 
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
-
-            if (selectedSite != null)
-                this.enableButtons(true, false);
-            else this.enableButtons(false, false);
+            this.enableButtons(selectedSite != null, false);
 
             String[] s0 = this.selectedSite.getSpectre().split("|");
 

@@ -1,6 +1,5 @@
 package src.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -112,7 +111,7 @@ public class AddTransciptomieController implements Initializable {
     }
 
     @FXML
-    private void accepteButton(ActionEvent actionEvent) {
+    private void accepteButton() {
         int Id;
         int Emplacement;
         int NumSerie;
@@ -222,8 +221,8 @@ public class AddTransciptomieController implements Initializable {
     }
 
     @FXML
-    private void fichierBrutButton(ActionEvent actionEvent) {
-        String fileName;
+    private void fichierBrutButton() {
+       /* String fileName;
         if (transcriptomicAnalysis != null) {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
             fichierBrutPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) +"//" + fileName ;
@@ -233,13 +232,13 @@ public class AddTransciptomieController implements Initializable {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
             fichierBrutPath = "//trancriptomie//" + id.getText() +"//" + fileName;
             checkFichierBrut.setText(fileName);
-        }
+        }*/
     }
 
 
     @FXML
-    private void qualityReportButtonAction(ActionEvent actionEvent){
-        String fileName;
+    private void qualityReportButtonAction() {
+        /*String fileName;
         if (transcriptomicAnalysis != null) {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()), null);
             qualityReportPath = "//trancriptomie//" + String.valueOf(this.transcriptomicAnalysis.getId()) +"//"+ fileName;
@@ -248,11 +247,11 @@ public class AddTransciptomieController implements Initializable {
             fileName=fileManager.uploadToURL(addTranscriptomieStage, "trancriptomie//" + id.getText(), null);
             qualityReportPath = "//trancriptomie//" + id.getText() +"//"+ fileName;
             checkQualityReport.setText(fileName);
-        }
+        }*/
     }
 
     @FXML
-    private void retour(ActionEvent actionEvent) {
+    private void retour() {
         this.addTranscriptomieStage = (Stage) cancel.getScene().getWindow();
 
         new TranscriptomieView(connection,fileManager,transcriptomicAnalysis,siteId);

@@ -142,7 +142,7 @@ public class LesionsController extends Controller implements Initializable {
             if ((event.getButton().equals(MouseButton.PRIMARY) || event.getButton().equals(MouseButton.SECONDARY)) && id >= 0) {
                 this.selectedIdLesion = id;
                 this.selectedLesion = this.lesionsList.get(this.selectedIdLesion);
-                this.enableButtons(this.selectedLesion == null, false);
+                this.enableButtons(this.selectedLesion != null, false);
             }
         });
     }

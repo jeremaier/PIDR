@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 import src.daoImpl.LesionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
@@ -73,7 +72,6 @@ public class TranscriptomieController extends Controller implements Initializabl
     Button supprimer;
 
     private Connection connection;
-    private Stage transcriptomieStage;
     private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private FileManager fileManager;
@@ -88,16 +86,11 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
         this.display(this.transcriptomicAnalysis);
-
-
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
-
     }
 
-    private void display(TranscriptomicAnalysis transcriptomicAnalysis) {
+    void display(TranscriptomicAnalysis transcriptomicAnalysis) {
         if (transcriptomicAnalysis != null) {
             this.ID.setText(Integer.toString(transcriptomicAnalysis.getId()));
             this.emplacement.setText(Integer.toString(transcriptomicAnalysis.getLamellaLocation()));
@@ -121,8 +114,6 @@ public class TranscriptomieController extends Controller implements Initializabl
             this.ARNc.setText("");
             this.RIN.setText("");
         }
-
-
     }
 
     @FXML
@@ -130,12 +121,10 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.fichierBrut);
     }
 
-
     @FXML
     private void qualityReportAction() {
         this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.qualityReport);
     }
-
 
     @FXML
     private void retour() {
@@ -147,28 +136,23 @@ public class TranscriptomieController extends Controller implements Initializabl
 
         new SiteView(lesion, connection, fileManager);
 
-        this.transcriptomieStage.close();
+        this.stage.close();
     }
 
     @FXML
     private void updateButtonAction() {
-        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
+        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
+        this.setStage(this.modifier);
 
-        if (this.transcriptomieStage == null)
-            this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
-        if (this.transcriptomicAnalysis != null) {
+        if (this.transcriptomicAnalysis != null)
             new AddTranscriptomieView(this, connection, fileManager, this.transcriptomicAnalysis, siteId);
-        } else {
-            JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
-        }
+        else JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
     }
 
     @FXML
     private void addButtonAction() {
-        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
-
-        if (this.transcriptomieStage == null)
-            this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
+        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
+        this.setStage(this.ajouter);
 
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView(this, connection, fileManager, null, siteId);
@@ -178,7 +162,6 @@ public class TranscriptomieController extends Controller implements Initializabl
             alert.setHeaderText(null);
             alert.setContentText("Il y a déjà une analyse trascriptomique enregistrée pour ce site cutané");
             alert.showAndWait();
-
         }
     }
 
@@ -196,9 +179,7 @@ public class TranscriptomieController extends Controller implements Initializabl
                 TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
                 this.transcriptomicAnalysis = null;
                 display(null);
-            } else {
-                alert.close();
-            }
+            } else alert.close();
         }
     }
 

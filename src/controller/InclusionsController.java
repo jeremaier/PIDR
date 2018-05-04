@@ -216,7 +216,7 @@ public class InclusionsController extends Controller implements Initializable {
 
         this.inclusionsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             this.selectedInclusion = this.inclusionsTable.getSelectionModel().getSelectedItem();
-            this.enableButtons(this.selectedInclusion == null, false);
+            this.enableButtons(this.selectedInclusion != null, false);
         });
 
         this.procList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());

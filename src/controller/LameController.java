@@ -88,11 +88,7 @@ public class LameController extends Controller implements Initializable {
 
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
             selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
-
-            if (selectedHistologicLamella != null)
-                this.enableButtons(true, false);
-            else this.enableButtons(false, false);
-
+            this.enableButtons(selectedHistologicLamella != null, false);
         });
 
     }

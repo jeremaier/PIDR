@@ -145,23 +145,23 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     public void photoButtonAction() {
-        this.startUpload(this.addPictureButton, photoLabel, histologicLamella != null ? "//lame_histologique//" : "//trancriptomie//", null);
+        this.startUpload(this.addPictureButton, photoLabel, histologicLamella != null ? "//lame_histologique//" : "//trancriptomie//");
     }
 
-    private void startUpload(Button button, Label label, String directory, String mesure) {
-        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
+    private void startUpload(Button button, Label label, String directory) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, null);
 
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, button, label));
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label));
 
         FileManager.openFileChooser(this.stage, uploadTask);
 
         new Thread(uploadTask).start();
     }
 
-    private void endUpload(String addedFileName, String directory, Button button, Label label) {
+    private void endUpload(String addedFileName, String directory, Label label) {
         if (addedFileName != null) {
             String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : Integer.toString(numAnapat) + lamellaNum.getText();
 
