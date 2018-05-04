@@ -9,15 +9,17 @@ public class UploadTask extends Task<Void> {
     private File selectedFile;
     private FileManager fileManager;
     private String directoy;
+    private String mesure;
 
-    public UploadTask(FileManager fileManager, String directoy) {
+    public UploadTask(FileManager fileManager, String directoy, String mesure) {
         this.fileManager = fileManager;
         this.directoy = directoy;
+        this.mesure = mesure;
     }
 
     @Override
     protected Void call() {
-        this.addedFileName = this.fileManager.uploadToURL(this, this.selectedFile, directoy, null);
+        this.addedFileName = this.fileManager.uploadToURL(this, this.selectedFile, directoy, mesure);
 
         return null;
     }

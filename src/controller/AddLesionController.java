@@ -300,7 +300,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     private void startUpload(String buttonName, Button button, Label label) {
-        UploadTask uploadTask = new UploadTask(this.fileManager, FileManager.getLesionFilesDirectoryName(this.idLesion));
+        UploadTask uploadTask = new UploadTask(this.fileManager, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
 
         this.setStage(button);
         this.enableButtons(false, true);

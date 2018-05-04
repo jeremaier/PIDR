@@ -2,7 +2,6 @@ package src.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -17,10 +16,11 @@ import src.view.SiteView;
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class LameController implements Initializable {
+public class LameController extends Controller implements Initializable {
 
     @FXML
     Button retour;
@@ -89,19 +89,15 @@ public class LameController implements Initializable {
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
             selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
 
-            if (selectedHistologicLamella != null) {
-                photo.setDisable(false);
-                supprimer.setDisable(false);
-            } else {
-                photo.setDisable(true);
-                photo.setDisable(true);
-            }
+            if (selectedHistologicLamella != null)
+                this.enableButtons(true, false);
+            else this.enableButtons(false, false);
 
         });
 
     }
 
-    public void populate() {
+    private void populate() {
         if (!lameList.isEmpty()) {
             this.tab.setItems(lameList);
         } else {
@@ -111,7 +107,7 @@ public class LameController implements Initializable {
 
 
     @FXML
-    public void cancelButtonEvent   (ActionEvent actionEvent) {
+    public void cancelButtonEvent() {
 
         this.lameStage = (Stage) retour.getScene().getWindow();
 
@@ -125,7 +121,7 @@ public class LameController implements Initializable {
     }
 
     @FXML
-    public void ajoutButtonAction(ActionEvent actionEvent) {
+    public void ajoutButtonAction() {
         if (lameStage == null)
             this.lameStage = (Stage) ajouter.getScene().getWindow();
 
@@ -135,7 +131,7 @@ public class LameController implements Initializable {
     }
 
     @FXML
-    public void modifActionButton(ActionEvent actionEvent) {
+    public void modifActionButton() {
 
         if (lameStage == null)
             this.lameStage = (Stage) modifier.getScene().getWindow();
@@ -147,7 +143,7 @@ public class LameController implements Initializable {
     }
 
     @FXML
-    public void removeButtonAction(ActionEvent actionEvent) {
+    public void removeButtonAction() {
         if (this.selectedHistologicLamella != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmer la suppresion");
@@ -170,16 +166,23 @@ public class LameController implements Initializable {
     }
 
     @FXML
-    public void photoButtonAction(ActionEvent actionEvent){
+    public void photoButtonAction() {
         if(this.selectedHistologicLamella.getPhoto() != null){
-            this.fileManager.downloadFromUrl(lameStage,selectedHistologicLamella.getPhoto(),null,true,true );
+            this.startDownload(this.selectedHistologicLamella.getPhoto(), this.photo);
         }else{
-            JOptionPane.showMessageDialog(null, "Pas de photo specifier pour cette lame lame");
-
+            JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
         }
-
-
     }
 
+    private void startDownload(String url, Button button) {
+        this.startDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button);
+    }
 
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+        photo.setDisable(!enable);
+        supprimer.setDisable(!enable);
+    }
 }

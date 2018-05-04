@@ -1,6 +1,5 @@
 package src.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,12 +10,13 @@ import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
+import src.utils.UploadTask;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
 
-public class AddLameController implements Initializable {
+public class AddLameController extends Controller implements Initializable {
     @FXML
     TextField lamellaNum;
 
@@ -64,29 +64,20 @@ public class AddLameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (histologicLamella == null)
+            lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, false));
 
-        if (histologicLamella == null) {
-            lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> {
-                if (lamellaNum.getText().length() > 0) {
-                    addButton.setDisable(true);
-                } else {
-                    addButton.setDisable(false);
-                }
-            });
-        }
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
-
-
     }
 
     @FXML
-    private void cancelButtonAction(ActionEvent actionEvent) {
+    private void cancelButtonAction() {
         this.addLameStage = (Stage) cancelButton.getScene().getWindow();
         this.addLameStage.close();
     }
 
     @FXML
-    private void accepteButtonAction(ActionEvent actionEvent) {
+    private void accepteButtonAction() {
             int Id;
             String cut;
             int vert;
@@ -153,17 +144,41 @@ public class AddLameController implements Initializable {
     }
 
     @FXML
-    public void photoButtonAction(ActionEvent actionEvent){
-        String fileName;
-        if (histologicLamella!= null) {
-            fileName=fileManager.uploadToURL(addLameStage, "//lame_histologique//" + String.valueOf(this.histologicLamella.getId()), null);
-            photoPath = "//lame_histologie//" + String.valueOf(this.histologicLamella.getId()) + "//" + fileName ;
-            photoLabel.setText(fileName);
+    public void photoButtonAction() {
+        this.startUpload(this.addPictureButton, photoLabel, histologicLamella != null ? "//lame_histologique//" : "//trancriptomie//", null);
+    }
 
-        }else {
-            fileName=fileManager.uploadToURL(addLameStage, "trancriptomie//" + (Integer.toString(numAnapat)+lamellaNum.getText()), null);
-            photoPath = "//trancriptomie//" + (Integer.toString(numAnapat)+lamellaNum.getText())+"//" + fileName;
-            photoLabel.setText(fileName);
+    private void startUpload(Button button, Label label, String directory, String mesure) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, button, label));
+
+        FileManager.openFileChooser(this.stage, uploadTask);
+
+        new Thread(uploadTask).start();
+    }
+
+    private void endUpload(String addedFileName, String directory, Button button, Label label) {
+        if (addedFileName != null) {
+            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : Integer.toString(numAnapat) + lamellaNum.getText();
+
+            this.photoPath = directory + path + addedFileName;
+            label.setText(addedFileName);
+        }
+
+        this.enableButtons(true, true);
+    }
+
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+        addButton.setDisable(!enable);
+
+        if (all) {
+            addPictureButton.setDisable(!enable);
+            cancelButton.setDisable(!enable);
         }
     }
 }

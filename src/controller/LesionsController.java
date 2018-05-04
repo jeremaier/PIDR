@@ -12,7 +12,6 @@ import src.daoImpl.LesionDaoImpl;
 import src.table.Inclusion;
 import src.table.Lesion;
 import src.utils.Diag;
-import src.utils.DownloadTask;
 import src.utils.FileManager;
 import src.utils.RemoveTask;
 import src.view.AddLesionView;
@@ -259,22 +258,7 @@ public class LesionsController extends Controller implements Initializable {
         }}, button);
     }
 
-    private void startDownload(ArrayList<String> urls, Button button) {
-        DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
-
-        this.setStage(button);
-        this.enableButtons(false, true);
-        this.progressBar.setVisible(true);
-        this.progressBar.progressProperty().bind(downloadTask.progressProperty());
-        this.progressLabel.textProperty().bind(downloadTask.messageProperty());
-        downloadTask.setSelectedDirectory(FileManager.openDirectoryChooser(this.stage));
-        downloadTask.setOnSucceeded(e -> this.endDownload());
-        downloadTask.setOnFailed(e -> this.endDownload());
-
-        new Thread(downloadTask).start();
-    }
-
-    private void endDownload() {
+    protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);
     }

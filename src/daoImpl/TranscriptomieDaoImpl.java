@@ -19,57 +19,6 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         TranscriptomieDaoImpl.connection = connection;
     }
 
-    public static void delete(int id) {
-        TranscriptomieDaoImpl.delete(SQLConnection.getConnection(), "analyse_transcriptomique", id);
-    }
-
-    public static ArrayList<TranscriptomicAnalysis> removeLamellas(String id) {
-        ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
-            preparedStatement.setString(1, id);
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                TranscriptomicAnalysis transcriptomicAnalysis = new TranscriptomicAnalysis();
-
-                transcriptomicAnalysis.setId(resultSet.getInt("ID"));
-                transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
-                transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
-
-                transcriptomicAnalyses.add(transcriptomicAnalysis);
-            }
-
-            System.out.println("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return transcriptomicAnalyses;
-    }
-
     @Override
     public void insert(TranscriptomicAnalysis transcr) {
         PreparedStatement preparedStatement = null;
@@ -265,8 +214,8 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         return transcriptomicAnalysis;
     }
 
-    public void delete(int id) {
-        this.delete(connection, "analyse_transcriptomique", id);
+    public static void delete(int id) {
+        TranscriptomieDaoImpl.delete(SQLConnection.getConnection(), "analyse_transcriptomique", id);
     }
 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
@@ -287,5 +236,52 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         preparedStatement.setString(indexDebut + 12, ((TranscriptomicAnalysis) object).getQualityReport());
 
         return preparedStatement;
+    }
+
+    public static ArrayList<TranscriptomicAnalysis> removeLamellas(String id) {
+        ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
+            preparedStatement.setString(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                TranscriptomicAnalysis transcriptomicAnalysis = new TranscriptomicAnalysis();
+
+                transcriptomicAnalysis.setId(resultSet.getInt("ID"));
+                transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
+                transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
+
+                transcriptomicAnalyses.add(transcriptomicAnalysis);
+            }
+
+            System.out.println("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return transcriptomicAnalyses;
     }
 }

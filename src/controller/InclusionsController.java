@@ -10,7 +10,10 @@ import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LesionDaoImpl;
 import src.table.Inclusion;
 import src.table.Lesion;
-import src.utils.*;
+import src.utils.Diag;
+import src.utils.FileManager;
+import src.utils.RemoveTask;
+import src.utils.UploadTask;
 import src.view.AddInclusionsView;
 import src.view.LesionsView;
 
@@ -280,6 +283,7 @@ public class InclusionsController extends Controller implements Initializable {
         if (!(ref2Url = this.selectedInclusion.getReference2()).equals("Aucun"))
             refs.add(ref2Url);
 
+        this.refDownloadButton.setVisible(false);
         this.startDownload(refs, this.refDownloadButton);
     }
 
@@ -390,30 +394,14 @@ public class InclusionsController extends Controller implements Initializable {
         }}, button);
     }
 
-    private void startDownload(ArrayList<String> urls, Button button) {
-        DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
-
-        this.setStage(button);
-        this.enableButtons(false, true);
-        this.refDownloadButton.setVisible(false);
-        this.progressBar.setVisible(true);
-        this.progressBar.progressProperty().bind(downloadTask.progressProperty());
-        this.progressLabel.textProperty().bind(downloadTask.messageProperty());
-        downloadTask.setOnSucceeded(e -> this.endDownload());
-        downloadTask.setOnFailed(e -> this.endDownload());
-        downloadTask.setSelectedDirectory(FileManager.openDirectoryChooser(this.stage));
-
-        new Thread(downloadTask).start();
-    }
-
-    private void endDownload() {
+    protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);
         this.refDownloadButton.setVisible(true);
     }
 
     private void startUpload(String buttonName, Button button, String directory) {
-        UploadTask uploadTask = new UploadTask(this.fileManager, directory);
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, null);
 
         this.setStage(button);
         this.enableButtons(false, true);

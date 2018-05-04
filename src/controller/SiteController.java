@@ -1,15 +1,12 @@
 package src.controller;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.daoImpl.InclusionDaoImpl;
-import src.daoImpl.LesionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.CutaneousSite;
@@ -173,7 +170,7 @@ public class SiteController implements Initializable {
 
 
     @FXML
-    private void retour(ActionEvent actionEvent) {
+    private void retour() {
         InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
         Inclusion inclusion = inclusionDaoImpl.selectById(this.lesion.getIdInclusion());
 
@@ -186,7 +183,7 @@ public class SiteController implements Initializable {
 
 
     @FXML
-    private void fichierMoyAction(ActionEvent actionEvent) {
+    private void fichierMoyAction() {
         if ( this.siteStage== null) {
             this.siteStage = (Stage) fichierMoy.getScene().getWindow();
         }
@@ -195,7 +192,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void addButtonAction(ActionEvent actionEvent){
+    private void addButtonAction() {
         if(this.siteStage == null)
             this.siteStage = (Stage) ajouter.getScene().getWindow();
 
@@ -203,7 +200,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void updateButtonAction(ActionEvent actionEvent){
+    private void updateButtonAction() {
         if(this.siteStage == null)
             this.siteStage = (Stage) ajouter.getScene().getWindow();
 
@@ -211,7 +208,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void delButtonAction(ActionEvent actionEvent){
+    private void delButtonAction() {
             if(this.selectedSite!=null){
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmer la suppresion");
@@ -231,7 +228,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void downloadSpectreButtonAction(ActionEvent actionEvent){
+    private void downloadSpectreButtonAction() {
         if(this.selectedSpectre!=null && this.selectedSpectreId!=null){
             String[] s = this.selectedSite.getSpectre().split("|");
 
@@ -242,7 +239,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void removeSpectreButtonAction(ActionEvent actionEvent){
+    private void removeSpectreButtonAction() {
         if(this.selectedSpectreId!=null && this.selectedSite!=null){
             String[] s = this.selectedSite.getSpectre().split("|");
 
@@ -266,7 +263,7 @@ public class SiteController implements Initializable {
     }
 
     @FXML
-    private void transcriptomieButtonAction(ActionEvent actionEvent){
+    private void transcriptomieButtonAction() {
         if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null) {
             if(this.siteStage==null){
                 new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());

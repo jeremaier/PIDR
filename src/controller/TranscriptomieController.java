@@ -1,6 +1,5 @@
 package src.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -11,7 +10,6 @@ import javafx.stage.Stage;
 import src.daoImpl.LesionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
-import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
@@ -21,14 +19,11 @@ import src.view.SiteView;
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-//import src.view.AddTranscriptomieView;
-
-public class TranscriptomieController implements Initializable {
-
-
+public class TranscriptomieController extends Controller implements Initializable {
     @FXML
     Label ID;
 
@@ -76,7 +71,6 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     Button supprimer;
-
 
     private Connection connection;
     private Stage transcriptomieStage;
@@ -171,20 +165,13 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void fichierBrutAction() {
-        if (this.transcriptomieStage == null) {
-            this.transcriptomieStage = (Stage) fichierBrut.getScene().getWindow();
-        }
-
-        this.fileManager.downloadFromUrl(transcriptomieStage,this.transcriptomicAnalysis.getFichierBrut(),null, true, true);
+        this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.fichierBrut);
     }
 
 
     @FXML
     private void qualityReportAction() {
-        if (this.transcriptomieStage == null) {
-            this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
-        }
-        this.fileManager.downloadFromUrl(transcriptomieStage, this.transcriptomicAnalysis.getQualityReport(), null, true, true);
+        this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.qualityReport);
     }
 
 
@@ -192,7 +179,7 @@ public class TranscriptomieController implements Initializable {
     private void retour() {
         this.transcriptomieStage = (Stage) transcriptomieStage.getScene().getWindow();
 
-        SiteCutaneDaompl siteCutaneDaompl = new SiteCutaneDaompl(connection);
+        SiteCutaneDaoImpl siteCutaneDaompl = new SiteCutaneDaoImpl(connection);
         LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
 
         Lesion lesion = lesionDaoImlp.selectById(siteCutaneDaompl.selectById(siteId).getIdLesion());
@@ -210,7 +197,6 @@ public class TranscriptomieController implements Initializable {
             new AddTranscriptomieView( connection, fileManager, this.transcriptomicAnalysis, siteId);
         } else {
             JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
-
         }
     }
 
@@ -222,8 +208,7 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView( connection, fileManager, null, siteId);
         } else {
-            JOptionPane.showMessageDialog(null, "Il y a d�j� une analyse trascriptomique");
-
+            JOptionPane.showMessageDialog(null, "Il y a déjà une analyse trascriptomique");
         }
     }
 
@@ -237,10 +222,8 @@ public class TranscriptomieController implements Initializable {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-
                 TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
-                this.transcriptomicAnalysis=null;
-
+                this.transcriptomicAnalysis = null;
             } else {
                 alert.close();
             }
@@ -248,7 +231,28 @@ public class TranscriptomieController implements Initializable {
     }
 
     @FXML
-    private void refresh(ActionEvent actionEvent){
+    private void refresh() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectById(siteId);
+    }
+
+    private void startDownload(String url, Button button) {
+        this.startDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button);
+    }
+
+    private void endDownload() {
+        this.enableButtons(true, true);
+        this.progressBar.setVisible(false);
+    }
+
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+        this.fichierBrut.setDisable(!enable);
+        this.qualityReport.setDisable(!enable);
+        this.retour.setDisable(!enable);
+        this.modifier.setDisable(!enable);
+        this.ajouter.setDisable(!enable);
+        this.supprimer.setDisable(!enable);
     }
 }

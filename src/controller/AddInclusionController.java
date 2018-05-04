@@ -247,7 +247,7 @@ public class AddInclusionController extends Controller implements Initializable 
 
     private void startUpload(String buttonName, Button button, Label label) {
         String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText());
-        UploadTask uploadTask = new UploadTask(this.fileManager, directory);
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, null);
 
         this.setStage(button);
         this.enableButtons(false, true);
