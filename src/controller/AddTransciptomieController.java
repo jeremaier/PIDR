@@ -82,6 +82,7 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("coucou");
         if (transcriptomicAnalysis == null) {
 
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -129,15 +130,18 @@ public class AddTransciptomieController extends Controller implements Initializa
             Rin = Integer.parseInt(RIN.getText());
 
             TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
-            transcriptomieController.display(newTranscr);
-
             transcriptomieDaoImpl.insert(newTranscr);
+            transcriptomieController.display(newTranscr);
 
             this.setStage(this.accepte);
             this.stage.close();
 
         } else {
-
+            if (id.getText().length() > 0) {
+                Id = Integer.parseInt(id.getText());
+            } else {
+                Id = transcriptomicAnalysis.getId();
+            }
 
             if (emplacement.getText().length() > 0) {
                 Emplacement = Integer.parseInt(emplacement.getText());
@@ -194,16 +198,24 @@ public class AddTransciptomieController extends Controller implements Initializa
             }
 
             if (fichierBrutPath==null){
-                fichierBrutPath=this.transcriptomicAnalysis.getFichierBrut();
+                if(this.transcriptomicAnalysis.getFichierBrut()==null){
+                    fichierBrutPath=null;
+                }else{
+                    fichierBrutPath=this.transcriptomicAnalysis.getFichierBrut();
+                }
             }
 
             if (qualityReportPath==null){
-                qualityReportPath=this.transcriptomicAnalysis.getQualityReport();
+                if(this.transcriptomicAnalysis.getFichierBrut()==null) {
+                    qualityReportPath = null;
+                }else{
+                    fichierBrutPath=this.transcriptomicAnalysis.getQualityReport();
+                }
             }
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
-            transcriptomieController.display(newTranscr);
+            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
+            transcriptomieController.display(newTranscr);
 
             this.setStage(this.accepte);
             this.stage.close();
