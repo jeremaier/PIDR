@@ -13,6 +13,7 @@ import src.table.Lesion;
 import src.utils.Diag;
 import src.utils.FileManager;
 import src.utils.SiteCutane;
+import src.view.SiteView;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -23,8 +24,6 @@ public class AddSiteController implements Initializable {
     @FXML
     ComboBox<SiteCutane> siteCutane;
 
-    @FXML
-    CheckBox sain;
 
     @FXML
     TextField orientation;
@@ -63,33 +62,33 @@ public class AddSiteController implements Initializable {
     private CutaneousSite site;
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
-    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
+    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL,SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
     private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
-    private String fichierDiagPath;
-    private String spectrePath;
-    private int healthy;
+    private String fichierDiagPath=null;
+    private String spectrePath=null;
+    private SiteController siteController;
 
 
-    public AddSiteController(CutaneousSite site, Connection connection, FileManager fileManager, Lesion lesion) {
+    public AddSiteController(SiteController siteController, CutaneousSite site, Connection connection, FileManager fileManager, Lesion lesion) {
         this.connection = connection;
         this.fileManager = fileManager;
         this.site = site;
         this.lesion = lesion;
+        this.siteController = siteController;
     }
 
     public void initialize(URL location, ResourceBundle resources) {
-        siteCutane.setItems(siteValeur);
-        diag.setItems(diagValeur);
+        siteCutane.getItems().addAll(this.siteValeur);
+        diag.getItems().addAll(this.diagValeur);
 
-        sain.selectedProperty().addListener(observable -> {
-            if (sain.isSelected()) {
+        siteCutane.itemsProperty().addListener(observable -> {
+            if (siteCutane.getValue().equals(SiteCutane.SAIN)) {
                 siteCutane.setDisable(true);
                 orientation.setDisable(true);
-                healthy = 1;
+
             } else {
                 siteCutane.setDisable(false);
                 orientation.setDisable(false);
-                healthy = 0;
             }
 
         });
@@ -108,66 +107,80 @@ public class AddSiteController implements Initializable {
 
     @FXML
     private void cancelButtonAction(ActionEvent actionEvent) {
-        this.addSiteStage = (Stage) addSiteStage.getScene().getWindow();
+        this.addSiteStage = (Stage) annuler.getScene().getWindow();
+
+        new SiteView(this.lesion,connection,fileManager);
+
         this.addSiteStage.close();
 
     }
 
     @FXML
     private void accepteButtonAction(ActionEvent actionEvent) {
-        String SITE;
-        int Orientation;
-        String diagnostique;
+        String SITE = SiteCutane.NULL.toString();
+        Integer Orientation = 0;
+        String diagnostique = SiteCutane.NULL.toString();
         String AutreDiag;
 
 
         if (site == null) {
-            SITE = siteCutane.getSelectionModel().getSelectedItem().toString();
-            Orientation = Integer.parseInt(orientation.getText());
-            diagnostique = diag.getSelectionModel().getSelectedItem().toString();
-            AutreDiag = autreDiag.getText();
+            if (siteCutane.getValue() != null) {
+                SITE = siteCutane.getValue().toString();
 
+                if (orientation.getText().length() > 0)
+                    Orientation = Integer.parseInt(orientation.getText());
 
-            CutaneousSite newSite = new CutaneousSite(lesion.getId(), healthy, SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
-            siteCutaneDaoImpl.insert(newSite);
-        } else {
-            if (siteCutane.getSelectionModel().getSelectedItem() != null) {
-                SITE = siteCutane.getSelectionModel().getSelectedItem().toString();
-            } else {
-                SITE = site.getSite();
-            }
+                if (siteCutane.getValue() != null)
+                    diagnostique = diag.getValue().toString();
 
-            if (orientation.getText().length() > 0) {
-                Orientation = Integer.parseInt(orientation.getText());
-            } else {
-                Orientation = site.getOrientation();
-            }
-
-            if (diag.getSelectionModel().getSelectedItem() != null) {
-                diagnostique = diag.getSelectionModel().getSelectedItem().toString();
-            } else {
-                diagnostique = site.getDiag();
-            }
-
-            if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null) {
                 AutreDiag = autreDiag.getText();
-            } else if (autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null) {
-                AutreDiag = null;
+
+                CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+                this.siteController.populateSingleSite(newSite);
+                siteCutaneDaoImpl.insert(newSite);
             } else {
-                AutreDiag = site.getAutreDiag();
+                if (siteCutane.getSelectionModel().getSelectedItem() != null) {
+                    SITE = siteCutane.getSelectionModel().getSelectedItem().toString();
+                } else {
+                    SITE = site.getSite();
+                }
+
+                if (orientation.getText().length() > 0) {
+                    Orientation = Integer.parseInt(orientation.getText());
+                } else {
+                    Orientation = site.getOrientation();
+                }
+
+                if (diag.getSelectionModel().getSelectedItem() != null) {
+                    diagnostique = diag.getSelectionModel().getSelectedItem().toString();
+                } else {
+                    diagnostique = site.getDiag();
+                }
+
+                if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null) {
+                    AutreDiag = autreDiag.getText();
+                } else if (autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null) {
+                    AutreDiag = null;
+                } else {
+                    AutreDiag = site.getAutreDiag();
+                }
+
+                if (fichierDiagPath == null)
+                    fichierDiagPath = site.getFichierDiag();
+
+
+                if (spectrePath == null)
+                    spectrePath = site.getSpectre();
+
+                CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+                siteCutaneDaoImpl.update(newSite, site.getId());
             }
 
-            if (fichierDiagPath == null)
-                fichierDiagPath = site.getFichierDiag();
+            if (this.addSiteStage == null)
+                this.addSiteStage = (Stage) this.ajouter.getScene().getWindow();
 
-
-            if (spectrePath == null)
-                spectrePath = site.getSpectre();
-
-            CutaneousSite newSite = new CutaneousSite(lesion.getId(), healthy, SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
-            siteCutaneDaoImpl.update(newSite, site.getId());
+            this.addSiteStage.close();
         }
-
     }
 
     @FXML

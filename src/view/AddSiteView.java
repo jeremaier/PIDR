@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.AddSiteController;
+import src.controller.SiteController;
 import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.utils.FileManager;
@@ -15,14 +16,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddSiteView {
-    public AddSiteView( CutaneousSite site, Connection connection, FileManager  fileManager, Lesion lesion) {
+    public AddSiteView(SiteController siteController, CutaneousSite site, Connection connection, FileManager  fileManager, Lesion lesion) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage stage=new Stage();
 
         stage.setTitle("Ajout d'un site cutané");
         viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
-        viewLoader.setControllerFactory(iC -> new AddSiteController( site, connection, fileManager, lesion));
+        viewLoader.setControllerFactory(iC -> new AddSiteController(siteController, site, connection, fileManager, lesion));
 
         try {
             rootLog = viewLoader.load();

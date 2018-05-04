@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.view.TranscriptomieView;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -248,6 +249,9 @@ public class AddTransciptomieController implements Initializable {
     @FXML
     private void retour(ActionEvent actionEvent) {
         this.addTranscriptomieStage = (Stage) cancel.getScene().getWindow();
+
+        new TranscriptomieView(connection,fileManager,transcriptomicAnalysis,siteId);
+
         this.addTranscriptomieStage.close();
     }
 }

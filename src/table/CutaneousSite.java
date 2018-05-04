@@ -19,16 +19,17 @@ public class CutaneousSite {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
         this.healthy = new SimpleIntegerProperty();
+        this.site = new SimpleStringProperty();
         this.orientation = new SimpleIntegerProperty();
+        this.diag = new SimpleStringProperty();
         this.autreDiag = new SimpleStringProperty();
         this.spectre = new SimpleStringProperty();
         this.fichierDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite( int idLesion, int healthy,  String site, int orientation, String diag, String autreDiag, String fichierDiag,  String spectre) {
+    public CutaneousSite( int idLesion,String site, int orientation, String diag, String autreDiag, String fichierDiag,  String spectre) {
         this();
         this.setIdLesion(idLesion);
-        this.setHealthy(healthy);
         this.setSite(site);
         this.setOrientation(orientation);
         this.setDiag(diag);
@@ -51,14 +52,6 @@ public class CutaneousSite {
 
     public void setIdLesion(int idLesion) {
         this.idLesion.set(idLesion);
-    }
-
-    public int getHealthy() {
-        return this.healthy.get();
-    }
-
-    public void setHealthy(int healthy) {
-        this.healthy.set(healthy);
     }
 
     public String getSite() {
@@ -108,11 +101,6 @@ public class CutaneousSite {
     public IntegerProperty idLesionProperty() {
         return this.idLesion;
     }
-
-    public IntegerProperty healthyProperty() {
-        return this.healthy;
-    }
-
 
     public StringProperty siteProperty() {
         return this.site;

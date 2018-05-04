@@ -8,10 +8,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import src.daoImpl.LesionDaoImpl;
+import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
+import src.table.CutaneousSite;
+import src.table.Lesion;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 import src.view.AddTranscriptomieView;
+import src.view.SiteView;
 
 import javax.swing.*;
 import java.net.URL;
@@ -161,9 +166,7 @@ public class TranscriptomieController implements Initializable {
                 }
         );
 
-
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
-
     }
 
     @FXML
@@ -188,6 +191,14 @@ public class TranscriptomieController implements Initializable {
     @FXML
     private void retour() {
         this.transcriptomieStage = (Stage) transcriptomieStage.getScene().getWindow();
+
+        SiteCutaneDaompl siteCutaneDaompl = new SiteCutaneDaompl(connection);
+        LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
+
+        Lesion lesion = lesionDaoImlp.selectById(siteCutaneDaompl.selectById(siteId).getIdLesion());
+
+        new SiteView(lesion,connection,fileManager);
+
         this.transcriptomieStage.close();
     }
 

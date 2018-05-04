@@ -20,13 +20,14 @@ public class TranscriptomieView {
         Stage stage = new Stage();
 
         stage.setTitle("Analyse transcriptomique");
-        viewLoader.setLocation(getClass().getResource("/ressource/Transcriptomique.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Trancriptomique.fxml"));
         viewLoader.setControllerFactory(iC -> new TranscriptomieController(connection, fileManager, transcriptomicAnalysis, siteId));
 
         try {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+            stage.close();
         }
 
         stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
