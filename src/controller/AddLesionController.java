@@ -185,7 +185,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     public void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.cancelButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton);
         ArrayList<String> files = new ArrayList<>();
         String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
         String photoSur, photoHors, photoFixe, otherDiag, moyFile;
@@ -249,7 +249,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
-        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(button);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button);
 
         switch (buttonName) {
             case "sur":

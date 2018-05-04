@@ -11,10 +11,6 @@ public class RemoveTask extends Task<Void> {
     private FileManager fileManager;
     private ArrayList<String> urls;
 
-    public RemoveTask(FileManager fileManager) {
-        this.fileManager = fileManager;
-    }
-
     public RemoveTask(Controller controller, FileManager fileManager) {
         this.controller = controller;
         this.fileManager = fileManager;
@@ -37,6 +33,7 @@ public class RemoveTask extends Task<Void> {
     }
 
     public RemoveTask setParameters(Button button) {
+        System.out.println(controller);
         this.controller.setStage(button);
         this.controller.enableButtons(false, true);
         this.controller.progressBar.setVisible(true);

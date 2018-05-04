@@ -55,8 +55,6 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     TextField numMesur;
 
-    private Connection connection;
-    private FileManager fileManager;
     private CutaneousSite site;
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
@@ -65,7 +63,6 @@ public class AddSiteController extends Controller implements Initializable {
     private String fichierDiagPath = null;
     private String spectrePath = null;
     private SiteController siteController;
-
 
     public AddSiteController(SiteController siteController, CutaneousSite site, Connection connection, FileManager fileManager, Lesion lesion) {
         this.connection = connection;

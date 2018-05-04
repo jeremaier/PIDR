@@ -82,15 +82,17 @@ public class PatientsController implements Initializable {
             if (!oldValue.equals(newValue)) {
                 this.selectedId = this.idPatients.indexOf(this.idField.getText());
 
-                if (this.idPatients.contains(this.idField.getText())) {
-                    this.modifyButton.setDisable(false);
-                    this.addPatientButton.setDisable(true);
-                } else if (!this.idField.getText().equals("")) {
-                    this.modifyButton.setDisable(true);
-                    this.addPatientButton.setDisable(false);
-                } else {
-                    this.modifyButton.setDisable(true);
-                    this.addPatientButton.setDisable(true);
+                if (Integer.parseInt(this.idField.getText()) > 0) {
+                    if (this.idPatients.contains(this.idField.getText())) {
+                        this.modifyButton.setDisable(false);
+                        this.addPatientButton.setDisable(true);
+                    } else if (!this.idField.getText().equals("")) {
+                        this.modifyButton.setDisable(true);
+                        this.addPatientButton.setDisable(false);
+                    } else {
+                        this.modifyButton.setDisable(true);
+                        this.addPatientButton.setDisable(true);
+                    }
                 }
             }
         });

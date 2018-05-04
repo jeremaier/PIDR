@@ -18,7 +18,6 @@ import src.view.SiteView;
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -71,10 +70,8 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     Button supprimer;
 
-    private Connection connection;
     private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private TranscriptomicAnalysis transcriptomicAnalysis;
-    private FileManager fileManager;
     private int siteId;
 
     public TranscriptomieController(Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
@@ -181,17 +178,6 @@ public class TranscriptomieController extends Controller implements Initializabl
                 display(null);
             } else alert.close();
         }
-    }
-
-    private void startDownload(String url, Button button) {
-        this.startDownload(new ArrayList<String>() {{
-            add(url);
-        }}, button);
-    }
-
-    protected void endDownload() {
-        this.enableButtons(true, true);
-        this.progressBar.setVisible(false);
     }
 
     @Override

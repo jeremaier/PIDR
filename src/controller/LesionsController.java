@@ -252,12 +252,6 @@ public class LesionsController extends Controller implements Initializable {
         this.stage.close();
     }
 
-    private void startDownload(String url, Button button) {
-        this.startDownload(new ArrayList<String>() {{
-            add(url);
-        }}, button);
-    }
-
     protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);

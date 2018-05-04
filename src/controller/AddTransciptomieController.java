@@ -5,7 +5,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
@@ -15,7 +14,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
 
-public class AddTransciptomieController implements Initializable {
+public class AddTransciptomieController extends Controller implements Initializable {
     @FXML
     TextField id;
 
@@ -64,18 +63,12 @@ public class AddTransciptomieController implements Initializable {
     @FXML
     Button cancel;
 
-
-    private Connection connection;
-    private Stage addTranscriptomieStage;
-    private FileManager fileManager;
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private int siteId;
     private String fichierBrutPath;
     private String qualityReportPath;
     private TranscriptomieController transcriptomieController;
-
-
 
     public AddTransciptomieController(TranscriptomieController transcriptomieController, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
@@ -140,9 +133,8 @@ public class AddTransciptomieController implements Initializable {
 
             transcriptomieDaoImpl.insert(newTranscr);
 
-            if (this.addTranscriptomieStage == null)
-                this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
-            this.addTranscriptomieStage.close();
+            this.setStage(this.accepte);
+            this.stage.close();
 
         } else {
 
@@ -213,9 +205,8 @@ public class AddTransciptomieController implements Initializable {
             transcriptomieController.display(newTranscr);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
 
-            if (this.addTranscriptomieStage == null)
-                this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
-            this.addTranscriptomieStage.close();
+            this.setStage(this.accepte);
+            this.stage.close();
         }
 
     }
@@ -252,11 +243,16 @@ public class AddTransciptomieController implements Initializable {
 
     @FXML
     private void retour() {
-        this.addTranscriptomieStage = (Stage) cancel.getScene().getWindow();
+        this.setStage(this.cancel);
 
         new TranscriptomieView(connection,fileManager,transcriptomicAnalysis,siteId);
 
-        this.addTranscriptomieStage.close();
+        this.stage.close();
+    }
+
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+
     }
 }
 

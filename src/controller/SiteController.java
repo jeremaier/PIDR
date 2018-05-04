@@ -69,11 +69,9 @@ public class SiteController extends Controller implements Initializable {
     @FXML
      TableColumn<CutaneousSite, String> diagSain;
 
-    private Connection connection;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
     private ObservableList<String> spectre;
-    private FileManager fileManager;
     private CutaneousSite selectedSite;
     private String selectedSpectre;
     private Lesion lesion;
@@ -213,7 +211,7 @@ public class SiteController extends Controller implements Initializable {
         if (this.selectedSpectreId != null && this.selectedSite != null) {
             this.s = this.selectedSite.getSpectre().split("~#");
 
-            RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.supprimer);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer);
             removeTask.setUrls(new ArrayList<String>() {{
                 add(s[selectedSpectreId]);
             }});
@@ -228,12 +226,6 @@ public class SiteController extends Controller implements Initializable {
                 new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
             else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
         }
-    }
-
-    private void startDownload(String url, Button button) {
-        this.startDownload(new ArrayList<String>() {{
-            add(url);
-        }}, button);
     }
 
     @Override

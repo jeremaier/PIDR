@@ -77,8 +77,6 @@ public class InclusionsController extends Controller implements Initializable {
     @FXML
     TableColumn<Inclusion, String> inclDiagnostic;
 
-    private Connection connection;
-    private FileManager fileManager;
     private InclusionDaoImpl inclusionDaoImpl;
     private ObservableList<Inclusion> inclusionsList;
     private ObservableList<String> procObservableList;
@@ -263,7 +261,7 @@ public class InclusionsController extends Controller implements Initializable {
 
     private void remove() {
         ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
-        RemoveTask task = new RemoveTask(this.fileManager).setParameters(this.removeButton);
+        RemoveTask task = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
 
         if (lesionsToRemove.size() != 0)
             LesionsController.remove(task, this.selectedInclusion, lesionsToRemove);
@@ -326,21 +324,21 @@ public class InclusionsController extends Controller implements Initializable {
     @FXML
     private void removeDocAction() {
         if (this.selectedDoc != null) {
-            RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.removeDocButton);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeDocButton);
 
             removeTask.setUrls(new ArrayList<String>() {{
                 add(selectedDoc);
             }});
 
             removeTask.setOnSucceeded(e -> {
-                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
-                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
+                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
+                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
                 this.populateDocs(this.resObservableList, this.procObservableList);
             });
 
             removeTask.setOnFailed(e -> {
-                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
-                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
+                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
+                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
                 this.populateDocs(this.resObservableList, this.procObservableList);
             });
 
@@ -388,15 +386,10 @@ public class InclusionsController extends Controller implements Initializable {
         this.stage.close();
     }
 
-    private void startDownload(String url, Button button) {
-        this.startDownload(new ArrayList<String>() {{
-            add(url);
-        }}, button);
-    }
-
     protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);
+        this.progressLabel.setVisible(false);
         this.refDownloadButton.setVisible(true);
     }
 

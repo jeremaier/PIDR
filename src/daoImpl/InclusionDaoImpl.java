@@ -92,10 +92,10 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         for (int i = inclusions1.size() - 1; i >= 0; i--) {
             boolean found = false;
 
-            for (Inclusion patient2 : inclusions2) {
-                if (patient2.getId().equals(inclusions1.get(i).getId())) {
+            for (Inclusion inclusion : inclusions2) {
+                if (inclusion.getId().equals(inclusions1.get(i).getId())) {
                     found = true;
-                    inclusions2.remove(patient2);
+                    inclusions2.remove(inclusion);
                     break;
                 }
             }

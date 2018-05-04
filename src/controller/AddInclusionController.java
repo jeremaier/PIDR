@@ -77,7 +77,7 @@ public class AddInclusionController extends Controller implements Initializable 
             if (!newValue.matches("\\d*"))
                 this.idAnapathField.setText(newValue.replaceAll("[^\\d]", ""));
             else
-                this.enableButtons(this.inclusionIDField.getText().length() < 1 || this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText())), false);
+                this.enableButtons(this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText())), false);
         });
     }
 
@@ -107,9 +107,10 @@ public class AddInclusionController extends Controller implements Initializable 
         Date dateInclusion = InclusionDaoImpl.stringToDate(this.inclusion.getDateInclusion());
         int numAna = this.inclusion.getNumAnaPat();
 
-        if (this.inclusion.getIdPatient() != -1) {
+        if (this.inclusion.getIdPatient() != 0) {
             this.patientLabel.setText("ID : " + Integer.toString(this.inclusion.getIdPatient()));
             this.addPatientButton.setText("Supprimer");
+            this.patientId = this.inclusion.getIdPatient();
         }
 
         if (!this.inclusion.getReference1().equals("Aucun")) {
@@ -141,11 +142,12 @@ public class AddInclusionController extends Controller implements Initializable 
 
     @FXML
     private void addAction() {
-        /*TODO Faire que les fichiers s'add et se suppr au moment de quitter la fenetre*/
         String id = this.inclusionIDField.getText();
         boolean newInclusion = this.inclusion.getId() == null;
         this.inclusion.setId(Integer.parseInt(id));
-        this.inclusion.setIdPatient(this.patientId);
+
+        if (this.patientId != 0)
+            this.inclusion.setIdPatient(this.patientId);
 
         if (!this.reference1FileLabel.getText().equals("Aucun"))
             this.inclusion.setReference1(FileManager.getRefDirectoryName(id) + "//" + this.reference1FileLabel.getText());
@@ -156,8 +158,7 @@ public class AddInclusionController extends Controller implements Initializable 
         if (this.inclusionDatePicker.getValue() != null)
             this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
 
-        if (!this.idAnapathField.getText().equals(""))
-            this.inclusion.setNumAnaPath(Integer.parseInt(this.idAnapathField.getText()));
+        this.inclusion.setNumAnaPath(!this.idAnapathField.getText().equals("") ? Integer.parseInt(this.idAnapathField.getText()) : 0);
 
         if (newInclusion) {
             this.inclusionDaoImpl.insert(this.inclusion);
@@ -174,7 +175,7 @@ public class AddInclusionController extends Controller implements Initializable 
     @FXML
     private void addPatientAction() {
         if (this.addPatientButton.getText().equals("Supprimer")) {
-            this.patientId = -1;
+            this.patientId = 0;
             this.patientLabel.setText("Aucun");
             this.addPatientButton.setText("Ajouter");
             this.inclusion.setIdPatient(this.patientId);
@@ -183,7 +184,7 @@ public class AddInclusionController extends Controller implements Initializable 
 
     @FXML
     private void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.cancelButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton);
         String ref1, ref2;
         String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//";
         ArrayList<String> refs = new ArrayList<>();
@@ -197,9 +198,10 @@ public class AddInclusionController extends Controller implements Initializable 
         }
 
         removeTask.setUrls(refs);
-        removeTask.setOnSucceeded(e -> this.stage.close());
 
         new Thread(removeTask).start();
+
+        this.stage.close();
     }
 
     @FXML
@@ -217,7 +219,7 @@ public class AddInclusionController extends Controller implements Initializable 
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
-        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.removeButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
 
         switch (buttonName) {
             case "ref1":

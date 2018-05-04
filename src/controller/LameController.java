@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
@@ -16,7 +15,6 @@ import src.view.SiteView;
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -55,15 +53,11 @@ public class LameController extends Controller implements Initializable {
     @FXML
     Button supprimer;
 
-    private Connection connection;
-    private Stage lameStage;
     private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
     private ObservableList<HistologicLamella> lameList;
-    private FileManager fileManager;
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
     private int numAnapat;
-
 
     public LameController(Connection connection, Lesion lesion, FileManager fileManager, int numAnapat) {
         this.connection = connection;
@@ -82,7 +76,6 @@ public class LameController extends Controller implements Initializable {
         this.Coloration.setCellValueFactory(cellData -> cellData.getValue().colorationProperty());
 
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
-
         this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
         this.populate();
 
@@ -101,26 +94,18 @@ public class LameController extends Controller implements Initializable {
         }
     }
 
-
     @FXML
     public void cancelButtonEvent() {
-
-        this.lameStage = (Stage) retour.getScene().getWindow();
-
+        this.setStage(this.retour);
 
         new SiteView(this.lesion, this.connection, this.fileManager);
 
-
-        this.lameStage.close();
-
-
+        this.stage.close();
     }
 
     @FXML
     public void ajoutButtonAction() {
-        if (lameStage == null)
-            this.lameStage = (Stage) ajouter.getScene().getWindow();
-
+        this.setStage(this.ajouter);
         new AddLameView(null, connection,fileManager,lesion,numAnapat);
 
 
@@ -128,9 +113,8 @@ public class LameController extends Controller implements Initializable {
 
     @FXML
     public void modifActionButton() {
+        this.setStage(this.modifier);
 
-        if (lameStage == null)
-            this.lameStage = (Stage) modifier.getScene().getWindow();
         if (selectedHistologicLamella != null) {
             new AddLameView(null, connection, fileManager, lesion, numAnapat);
         } else {
@@ -168,12 +152,6 @@ public class LameController extends Controller implements Initializable {
         }else{
             JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
         }
-    }
-
-    private void startDownload(String url, Button button) {
-        this.startDownload(new ArrayList<String>() {{
-            add(url);
-        }}, button);
     }
 
     @Override

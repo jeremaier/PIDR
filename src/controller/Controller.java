@@ -31,6 +31,12 @@ public abstract class Controller {
 
     public abstract void enableButtons(boolean enable, boolean all);
 
+    protected void startDownload(String url, Button button) {
+        this.startDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button);
+    }
+
     void startDownload(ArrayList<String> urls, Button button) {
         DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
 
@@ -49,6 +55,7 @@ public abstract class Controller {
     protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);
+        this.progressLabel.setVisible(false);
     }
 
     public void endRemove() {

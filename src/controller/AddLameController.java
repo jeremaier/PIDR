@@ -5,7 +5,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
@@ -44,11 +43,7 @@ public class AddLameController extends Controller implements Initializable {
     @FXML
     Label photoLabel;
 
-
-    private Connection connection;
-    private Stage addLameStage;
     private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
-    private FileManager fileManager;
     private Lesion lesion;
     private int numAnapat;
     private HistologicLamella histologicLamella;
@@ -72,75 +67,40 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     private void cancelButtonAction() {
-        this.addLameStage = (Stage) cancelButton.getScene().getWindow();
-        this.addLameStage.close();
+        this.setStage(this.cancelButton);
+        this.stage.close();
     }
 
     @FXML
     private void accepteButtonAction() {
-            int Id;
-            String cut;
-            int vert;
-            int noir;
-            String coloration;
+        int id, vert, noir;
+        String cut, coloration;
 
-
-        if(this.histologicLamella!=null){
-            Id=Integer.parseInt(Integer.toString(numAnapat)+lamellaNum.getText());
+        if (this.histologicLamella != null) {
+            id = Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText());
             cut=this.cutArea.getText();
             vert=Integer.parseInt(this.greenOrientation.getText());
             noir=Integer.parseInt(this.blackOrientation.getText());
             coloration=this.coloration.getText();
 
-            HistologicLamella newLame = new HistologicLamella(Id, lesion.getId(), cut,vert,noir, coloration, photoPath);
+            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, vert, noir, coloration, photoPath);
             this.lameHistologiqueDaoImpl.insert(newLame);
-
-            if(this.addLameStage==null)
-                this.addLameStage = (Stage) addButton.getScene().getWindow();
-            this.addLameStage.close();
-        }else{
-
-            if(this.lamellaNum.getText().length()>0){
-                Id=Integer.parseInt(Integer.toString(numAnapat)+lamellaNum.getText());
-            }else{
-                Id=this.histologicLamella.getId();
-            }
-
-            if(this.cutArea.getText().length()>0){
-                cut=this.cutArea.getText();
-            }else{
-                cut=this.histologicLamella.getSiteCoupe();
-            }
-
-            if(this.greenOrientation.getText().length()>0){
-                vert=Integer.parseInt(this.greenOrientation.getText());
-            } else {
-                vert=this.histologicLamella.getOrientationVert();
-            }
-
-            if(this.blackOrientation.getText().length()>0){
-                noir=Integer.parseInt(this.blackOrientation.getText());
-            }else {
-                noir=this.histologicLamella.getOrientationNoir();
-            }
-
-            if(this.coloration.getText().length()>0){
-                coloration=this.coloration.getText();
-            }else{
-                coloration=this.histologicLamella.getColoration();
-            }
+        } else {
+            id = this.lamellaNum.getText().length() > 0 ? Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText()) : this.histologicLamella.getId();
+            cut = this.cutArea.getText().length() > 0 ? this.cutArea.getText() : this.histologicLamella.getSiteCoupe();
+            vert = this.greenOrientation.getText().length() > 0 ? Integer.parseInt(this.greenOrientation.getText()) : this.histologicLamella.getOrientationVert();
+            noir = this.blackOrientation.getText().length() > 0 ? Integer.parseInt(this.blackOrientation.getText()) : this.histologicLamella.getOrientationNoir();
+            coloration = this.coloration.getText().length() > 0 ? this.coloration.getText() : this.histologicLamella.getColoration();
 
             if(photoPath==null)
                 photoPath=this.histologicLamella.getPhoto();
 
-            HistologicLamella newLame = new HistologicLamella(Id, lesion.getId(), cut,vert,noir, coloration, photoPath);
+            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, vert, noir, coloration, photoPath);
             this.lameHistologiqueDaoImpl.update(newLame, this.histologicLamella.getId());
-
-            if(this.addLameStage==null)
-                this.addLameStage = (Stage) addButton.getScene().getWindow();
-            this.addLameStage.close();
-
         }
+
+        this.setStage(this.addButton);
+        this.stage.close();
     }
 
     @FXML
