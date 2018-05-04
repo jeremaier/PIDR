@@ -76,14 +76,16 @@ public class AddTransciptomieController implements Initializable {
     private int siteId;
     private String fichierBrutPath;
     private String qualityReportPath;
+    private TranscriptomieController transcriptomieController;
 
 
 
-    public AddTransciptomieController( Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
+    public AddTransciptomieController(TranscriptomieController transcriptomieController, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
         this.fileManager = fileManager;
         this.transcriptomicAnalysis = transcriptomicAnalysis;
         this.siteId = siteId;
+        this.transcriptomieController = transcriptomieController;
 
 
     }
@@ -138,6 +140,8 @@ public class AddTransciptomieController implements Initializable {
 
             TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaompl.insert(newTranscr);
+            transcriptomieController.display(newTranscr);
+
 
             if (this.addTranscriptomieStage == null)
                 this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
@@ -210,6 +214,7 @@ public class AddTransciptomieController implements Initializable {
 
             TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaompl.update(newTranscr,transcriptomicAnalysis.getId());
+            transcriptomieController.display(newTranscr);
 
             if (this.addTranscriptomieStage == null)
                 this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
