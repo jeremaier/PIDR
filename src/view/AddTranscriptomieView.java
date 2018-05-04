@@ -1,14 +1,11 @@
 package src.view;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import src.controller.AddTransciptomieController;
 import src.controller.TranscriptomieController;
-import src.table.CutaneousSite;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 
@@ -16,12 +13,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddTranscriptomieView {
-    public AddTranscriptomieView(TranscriptomieController transcriptomieController, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int id) {
+    public AddTranscriptomieView(Stage parentStage, TranscriptomieController transcriptomieController, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int id) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
-        Stage stage = new Stage();
+        Stage addTranscriptomieStage = new Stage();
 
-        stage.setTitle("Gestion des analyses transcriptomiques");
+        addTranscriptomieStage.setX(parentStage.getX() + parentStage.getWidth());
+        addTranscriptomieStage.setY(parentStage.getY());
+        addTranscriptomieStage.setTitle("Gestion des analyses transcriptomiques");
         viewLoader.setLocation(getClass().getResource("/ressource/AddTranscriptomie.fxml"));
         viewLoader.setControllerFactory(iC -> new AddTransciptomieController(transcriptomieController,  connection, fileManager, transcriptomicAnalysis  , id));
 
@@ -31,10 +30,9 @@ public class AddTranscriptomieView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
-
         assert rootLog != null;
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        addTranscriptomieStage.setResizable(false);
+        addTranscriptomieStage.setScene(new Scene(rootLog));
+        addTranscriptomieStage.show();
     }
 }

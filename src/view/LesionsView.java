@@ -20,6 +20,7 @@ public class LesionsView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         lesionsStage.setTitle("Lesions");
+        lesionsStage.setX(lesionsStage.getX() - 25);
         viewLoader.setLocation(getClass().getResource("/ressource/Lesions.fxml"));
         viewLoader.setControllerFactory(iC -> new LesionsController(connection, fileManager, inclusion));
 

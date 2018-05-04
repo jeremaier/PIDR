@@ -15,15 +15,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddInclusionsView {
-    public AddInclusionsView(InclusionsController inclusionsController, ObservableList<Inclusion> inclusionsList, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
+    public AddInclusionsView(Stage parentStage, InclusionsController inclusionsController, ObservableList<Inclusion> inclusionsList, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addInclusionStage = new Stage();
 
+        addInclusionStage.setX(parentStage.getX() + parentStage.getWidth());
+        addInclusionStage.setY(parentStage.getY());
         addInclusionStage.setTitle(inclusion == null ? "Ajout d'une inclusion" : "Modification d'une inclusion");
-        //addInclusionStage.setX(stage.getX() + stage.getWidth() / 2);
-        //addInclusionStage.setY(stage.getY() + stage.getHeight() / 2);
-
         viewLoader.setLocation(getClass().getResource("/ressource/AddInclusion.fxml"));
         viewLoader.setControllerFactory(iC -> new AddInclusionController(inclusionsController, inclusionsList, inclusion, inclusionDaoImpl, connection, fileManager));
 

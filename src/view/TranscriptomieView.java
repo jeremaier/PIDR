@@ -17,9 +17,10 @@ public class TranscriptomieView {
     public TranscriptomieView( Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
-        Stage stage = new Stage();
+        Stage transcriptomieStage = new Stage();
 
-        stage.setTitle("Analyse transcriptomique");
+        transcriptomieStage.setTitle("Analyse transcriptomique");
+        transcriptomieStage.setX(transcriptomieStage.getX() - 25);
         viewLoader.setLocation(getClass().getResource("/ressource/Trancriptomique.fxml"));
         viewLoader.setControllerFactory(iC -> new TranscriptomieController(connection, fileManager, transcriptomicAnalysis, siteId));
 
@@ -27,14 +28,14 @@ public class TranscriptomieView {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            stage.close();
+            transcriptomieStage.close();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        transcriptomieStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        stage.setResizable(false);
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        transcriptomieStage.setResizable(false);
+        transcriptomieStage.setScene(new Scene(rootLog));
+        transcriptomieStage.show();
     }
 }

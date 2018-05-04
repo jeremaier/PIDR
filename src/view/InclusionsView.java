@@ -19,6 +19,7 @@ public class InclusionsView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         inclusionsStage.setTitle("Inclusions");
+        inclusionsStage.setX(inclusionsStage.getX() - 25);
         viewLoader.setLocation(getClass().getResource("/ressource/Inclusions.fxml"));
         viewLoader.setControllerFactory(iC -> new InclusionsController(connection, fileManager));
 
@@ -33,8 +34,7 @@ public class InclusionsView {
 
         assert rootLog != null;
         inclusionsStage.setResizable(false);
-        inclusionsStage.setScene(new Scene(rootLog/*, 788, 600//*/
-        ));
+        inclusionsStage.setScene(new Scene(rootLog));
         inclusionsStage.show();
     }
 }

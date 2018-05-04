@@ -8,7 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import src.daoImpl.InclusionDaoImpl;
+import src.daoImpl.LameHistologiqueDaoImpl;
 import src.daoImpl.LesionDaoImpl;
+import src.table.HistologicLamella;
 import src.table.Inclusion;
 import src.table.Lesion;
 import src.utils.Diag;
@@ -60,61 +62,17 @@ public class LesionsController extends Controller implements Initializable {
         this.inclusion = inclusion;
     }
 
-    private static void remove(RemoveTask removeTask, Inclusion inclusion, Lesion lesion) {
-        LesionsController.remove(removeTask, inclusion, new ArrayList<Lesion>() {{
-            add(lesion);
-        }});
-    }
+    static void remove(RemoveTask task, Inclusion inclusion, ArrayList<Lesion> lesions) {
+        ArrayList<HistologicLamella> lamesToRemove = new ArrayList<>();
 
-    static void remove(RemoveTask removeTask, Inclusion inclusion, ArrayList<Lesion> lesions) {
-        LesionsController.removeFTP(removeTask, lesions);
-        LesionsController.removeSQL(inclusion, lesions);
-    }
+        for (Lesion lesion : lesions)
+            lamesToRemove.addAll(LameHistologiqueDaoImpl.removeLamellas(Integer.toString(lesion.getId())));
 
-    private static void removeSQL(Inclusion inclusion, ArrayList<Lesion> lesions) {
-        for (Lesion lesion : lesions) {
-            Diag diag = lesion.getDiag();
+        LesionsController.removeFTPSQL(task, inclusion, lesions);
 
-            if (!LesionDaoImpl.moreThanOneDiag(diag))
-                InclusionDaoImpl.removeDiag(diag, Integer.parseInt(inclusion.getId()));
-
-            LesionDaoImpl.delete(lesion.getId());
-        }
-    }
-
-    private static void removeFTP(RemoveTask removeTask, ArrayList<Lesion> lesions) {
-        ArrayList<String> urls = new ArrayList<>();
-
-        for (Lesion lesion : lesions) {
-            String photoSur, photoHors, photoFixe, diagFile, fichierMoy;
-
-            if (!(photoSur = lesion.getPhotoSur()).equals("Aucun"))
-                urls.add(photoSur);
-
-            if (!(photoHors = lesion.getPhotoHors()).equals("Aucun"))
-                urls.add(photoHors);
-
-            if (!(photoFixe = lesion.getPhotoFixe()).equals("Aucun"))
-                urls.add(photoFixe);
-
-            if (!(diagFile = lesion.getFileDiag()).equals("Aucun"))
-                urls.add(diagFile);
-
-            if (!(fichierMoy = lesion.getFichierMoy()).equals("Aucun"))
-                urls.add(fichierMoy);
-        }
-
-        removeTask.setUrls(urls);
-
-        new Thread(removeTask).start();
-    }
-
-    void refreshLesions() {
-        this.lesionsList = this.lesionDaoImpl.selectAll();
-
-        if (!this.lesionsList.isEmpty())
-            this.lesionsTable.setItems(this.lesionsList);
-        else this.lesionsTable.setItems(FXCollections.observableArrayList());
+        /*if (lamesToRemove.size() != 0)
+            LameController.remove(task, lamesToRemove);
+        else new Thread(task).start();*/
     }
 
     void populateLesions(Lesion lesion) {
@@ -199,16 +157,65 @@ public class LesionsController extends Controller implements Initializable {
         this.startDownload(this.selectedLesion.getFichierMoy(), this.fileDiagButton);
     }
 
+    private static void removeFTPSQL(RemoveTask removeTask, Inclusion inclusion, ArrayList<Lesion> lesions) {
+        LesionsController.removeFTP(removeTask, lesions);
+        LesionsController.removeSQL(inclusion, lesions);
+    }
+
+    private static void removeSQL(Inclusion inclusion, ArrayList<Lesion> lesions) {
+        for (Lesion lesion : lesions) {
+            Diag diag = lesion.getDiag();
+
+            if (!LesionDaoImpl.moreThanOneDiag(diag))
+                InclusionDaoImpl.removeDiag(diag, Integer.parseInt(inclusion.getId()));
+
+            LesionDaoImpl.delete(lesion.getId());
+        }
+    }
+
+    private static void removeFTP(RemoveTask removeTask, ArrayList<Lesion> lesions) {
+        ArrayList<String> urls = new ArrayList<>();
+
+        for (Lesion lesion : lesions) {
+            String photoSur, photoHors, photoFixe, diagFile, fichierMoy;
+
+            if (!(photoSur = lesion.getPhotoSur()).equals("Aucun"))
+                urls.add(photoSur);
+
+            if (!(photoHors = lesion.getPhotoHors()).equals("Aucun"))
+                urls.add(photoHors);
+
+            if (!(photoFixe = lesion.getPhotoFixe()).equals("Aucun"))
+                urls.add(photoFixe);
+
+            if (!(diagFile = lesion.getFileDiag()).equals("Aucun"))
+                urls.add(diagFile);
+
+            if (!(fichierMoy = lesion.getFichierMoy()).equals("Aucun"))
+                urls.add(fichierMoy);
+        }
+
+        removeTask.addUrls(urls);
+    }
+
+    void refreshLesions() {
+        this.lesionsList = this.lesionDaoImpl.selectAllByInclusion(Integer.parseInt(this.inclusion.getId()));
+
+        if (!this.lesionsList.isEmpty())
+            this.lesionsTable.setItems(this.lesionsList);
+        else this.lesionsTable.setItems(FXCollections.observableArrayList());
+    }
+
     public void addAction() {
         this.setStage(this.addButton);
 
-        new AddLesionView(this, null, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+        new AddLesionView(this.stage, this, null, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
     }
 
     public void editAction() {
         this.setStage(this.editButton);
 
-        new AddLesionView(this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+        new AddLesionView(this.stage, this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
     }
 
     public void removeAction() {
@@ -219,12 +226,18 @@ public class LesionsController extends Controller implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             this.enableButtons(false, true);
-            LesionsController.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.inclusion, this.selectedLesion);
+            this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.inclusion, this.selectedLesion);
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
             this.selectedIdLesion = -1;
             this.enableButtons(true, true);
         } else alert.close();
+    }
+
+    private void remove(RemoveTask removeTask, Inclusion inclusion, Lesion lesion) {
+        LesionsController.removeFTPSQL(removeTask, inclusion, new ArrayList<Lesion>() {{
+            add(lesion);
+        }});
     }
 
     public void siteCutaneAction() {
@@ -250,10 +263,5 @@ public class LesionsController extends Controller implements Initializable {
         new InclusionsView(this.connection, this.fileManager);
 
         this.stage.close();
-    }
-
-    protected void endDownload() {
-        this.enableButtons(true, true);
-        this.progressBar.setVisible(false);
     }
 }

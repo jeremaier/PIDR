@@ -76,13 +76,16 @@ public class AddInclusionController extends Controller implements Initializable 
         this.idAnapathField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*"))
                 this.idAnapathField.setText(newValue.replaceAll("[^\\d]", ""));
-            else
-                this.enableButtons(this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText())), false);
         });
+
+        this.inclusionIDField.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText())), false));
     }
 
     @Override
     public void enableButtons(boolean enable, boolean all) {
+        if (this.addButton.getText().equals("Modifier"))
+            this.inclusionIDField.setDisable(true);
+
         this.addButton.setDisable(!enable);
         this.reference1FileButton.setDisable(!enable);
         this.reference2FileButton.setDisable(!enable);
@@ -132,6 +135,7 @@ public class AddInclusionController extends Controller implements Initializable 
         this.addButton.setDisable(false);
         this.reference1FileButton.setDisable(false);
         this.reference2FileButton.setDisable(false);
+        this.inclusionIDField.setDisable(true);
     }
 
     void setPatientInformations(int patientId) {
@@ -197,8 +201,7 @@ public class AddInclusionController extends Controller implements Initializable 
                 refs.add(directory + ref2);
         }
 
-        removeTask.setUrls(refs);
-
+        removeTask.addUrls(refs);
         new Thread(removeTask).start();
 
         this.stage.close();
@@ -219,31 +222,38 @@ public class AddInclusionController extends Controller implements Initializable 
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button);
 
         switch (buttonName) {
             case "ref1":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(inclusion.getReference1());
                 }});
+
+                this.inclusion.setReference1("Aucun");
                 break;
             case "ref2":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(inclusion.getReference2());
                 }});
+
+                this.inclusion.setReference2("Aucun");
                 break;
         }
 
         removeTask.setOnSucceeded(e -> {
             button.setText("Ajouter");
             label.setText("Aucun");
+            this.enableButtons(true, true);
         });
 
-        removeTask.setOnFailed(e -> {
+        removeTask.setOnSucceeded(e -> {
             button.setText("Ajouter");
             label.setText("Aucun");
+            this.enableButtons(true, true);
         });
 
+        this.inclusionDaoImpl.update(inclusion, Integer.parseInt(this.inclusionIDField.getText()));
         new Thread(removeTask).start();
     }
 

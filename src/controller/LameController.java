@@ -97,7 +97,6 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void cancelButtonEvent() {
         this.setStage(this.retour);
-
         new SiteView(this.lesion, this.connection, this.fileManager);
 
         this.stage.close();
@@ -106,9 +105,7 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void ajoutButtonAction() {
         this.setStage(this.ajouter);
-        new AddLameView(null, connection,fileManager,lesion,numAnapat);
-
-
+        new AddLameView(this.stage, null, connection, fileManager, lesion, numAnapat);
     }
 
     @FXML
@@ -116,7 +113,7 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.modifier);
 
         if (selectedHistologicLamella != null) {
-            new AddLameView(null, connection, fileManager, lesion, numAnapat);
+            new AddLameView(this.stage, null, connection, fileManager, lesion, numAnapat);
         } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }

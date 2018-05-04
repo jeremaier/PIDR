@@ -7,7 +7,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -20,8 +19,8 @@ import java.util.Observable;
 public class FileManager extends Observable {
     private final static String procDirectoryName = ".//procedures";
     private final static String resDirectoryName = ".//resultats";
-    private final static String refDirectoryName = "//ref";
-    private final static String lesionFilesDirectoryName = "//lesion";
+    private final static String refDirectoryName = "//inclusions";
+    private final static String lesionFilesDirectoryName = "//lesions";
     private SSLSessionReuseFTPSClient ftpClient;
     private String user;
     private String password;
@@ -118,7 +117,7 @@ public class FileManager extends Observable {
     public boolean openFTPConnection() {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
-        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+        //ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         ftpClient.setConnectTimeout(2000);
         ftpClient.setDataTimeout(500);
 
@@ -182,13 +181,16 @@ public class FileManager extends Observable {
         this.openFTPConnection();
 
         try {
-            task.updateProgressBar();
+            task.updateProgressBar(-1, "Suppression...");
 
             for (String url : urls)
                 ftpClient.deleteFile(url);
+
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de supprimer le fichier");
+        } finally {
+            task.updateProgressBar(0, "");
         }
 
         this.closeFTPConnection();

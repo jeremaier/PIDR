@@ -31,7 +31,7 @@ public abstract class Controller {
 
     public abstract void enableButtons(boolean enable, boolean all);
 
-    protected void startDownload(String url, Button button) {
+    void startDownload(String url, Button button) {
         this.startDownload(new ArrayList<String>() {{
             add(url);
         }}, button);
