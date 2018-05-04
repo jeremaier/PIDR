@@ -24,11 +24,12 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         PreparedStatement preparedStatement = null;
 
         try {
+            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
+            System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -174,10 +175,10 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         try {
             preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, FICHIER_CUT = ?, RNA = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
-            preparedStatement.setInt(8, id);
+            preparedStatement.setInt(14, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE analyse_transcriptomique SET" + "ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, FICHIER_CUT = ?, RNA = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            System.out.println("UPDATE analyse_transcriptomique SET" + "ID_SITE_CUTANE = ?, FICHIER_BRUT = ?,  RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();

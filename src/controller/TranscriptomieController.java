@@ -82,85 +82,88 @@ public class TranscriptomieController extends Controller implements Initializabl
     public TranscriptomieController(Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
         this.transcriptomicAnalysis = transcriptomicAnalysis;
-        this.fileManager=fileManager;
-        this.siteId=siteId;
+        this.fileManager = fileManager;
+        this.siteId = siteId;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
 
-        this.ID.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.ID.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
-                    }
-                }
-        );
+        this.display(this.transcriptomicAnalysis);
 
-        this.emplacement.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
-                    }
-                }
-        );
-
-        this.numSerie.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.numSerie.setText(Integer.toString(this.transcriptomicAnalysis.getSerialNumber()));
-                    }
-                }
-        );
-
-        this.cy3.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.cy3.setText(Double.toString(this.transcriptomicAnalysis.getCyanine()));
-                    }
-                }
-        );
-
-        this.rendement.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
-                    }
-                }
-        );
-
-        this.concentration.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
-                    }
-                }
-        );
-
-        this.critExclusion.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.critExclusion.setText(this.transcriptomicAnalysis.getExclusionCriteria());
-                    }
-                }
-        );
-
-        this.activitesSpec.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.activitesSpec.setText(this.transcriptomicAnalysis.getSpecificActivity());
-                    }
-                }
-        );
-
-        this.ARNc.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
-                    }
-                }
-        );
-
-        this.RIN.labelForProperty().addListener(observable -> {
-                    if (transcriptomicAnalysis != null) {
-                        this.RIN.setText(Double.toString(this.transcriptomicAnalysis.getRIN()));
-                    }
-                }
-        );
 
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
+
+    }
+
+    public void display(TranscriptomicAnalysis transcriptomicAnalysis) {
+        if (transcriptomicAnalysis != null) {
+
+            this.ID.setText(Integer.toString(transcriptomicAnalysis.getId()));
+        } else {
+            this.ID.setText("");
+        }
+
+        if (transcriptomicAnalysis != null) {
+            this.emplacement.setText(Integer.toString(transcriptomicAnalysis.getLamellaLocation()));
+        } else {
+            this.emplacement.setText("");
+
+        }
+
+        if (transcriptomicAnalysis != null) {
+            this.numSerie.setText(Integer.toString(transcriptomicAnalysis.getSerialNumber()));
+        } else {
+            this.numSerie.setText("");
+
+        }
+
+        if (transcriptomicAnalysis != null) {
+            this.cy3.setText(Double.toString(transcriptomicAnalysis.getCyanine()));
+        } else {
+            this.cy3.setText("");
+
+        }
+
+        if (transcriptomicAnalysis != null) {
+            this.rendement.setText(Double.toString(transcriptomicAnalysis.getYield()));
+        } else {
+            this.rendement.setText("");
+        }
+
+
+        if (transcriptomicAnalysis != null) {
+            this.concentration.setText(Double.toString(transcriptomicAnalysis.getConcentration()));
+        } else {
+            this.concentration.setText("");
+        }
+
+
+        if (transcriptomicAnalysis != null) {
+            this.critExclusion.setText(transcriptomicAnalysis.getExclusionCriteria());
+        } else {
+            this.critExclusion.setText("");
+        }
+        if (transcriptomicAnalysis != null) {
+            this.activitesSpec.setText(transcriptomicAnalysis.getSpecificActivity());
+        } else {
+            this.activitesSpec.setText("");
+        }
+
+
+        if (transcriptomicAnalysis != null) {
+            this.ARNc.setText(Double.toString(transcriptomicAnalysis.getARNC()));
+        } else {
+            this.ARNc.setText("");
+        }
+
+        if (transcriptomicAnalysis != null) {
+            this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
+        } else {
+            this.RIN.setText("");
+        }
+
     }
 
     @FXML
@@ -177,24 +180,26 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void retour() {
-        this.transcriptomieStage = (Stage) transcriptomieStage.getScene().getWindow();
+        this.transcriptomieStage = (Stage) retour.getScene().getWindow();
 
         SiteCutaneDaoImpl siteCutaneDaompl = new SiteCutaneDaoImpl(connection);
         LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
 
         Lesion lesion = lesionDaoImlp.selectById(siteCutaneDaompl.selectById(siteId).getIdLesion());
 
-        new SiteView(lesion,connection,fileManager);
+        new SiteView(lesion, connection, fileManager);
 
         this.transcriptomieStage.close();
     }
 
     @FXML
     private void updateButtonAction() {
+        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
+
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
         if (this.transcriptomicAnalysis != null) {
-            new AddTranscriptomieView( connection, fileManager, this.transcriptomicAnalysis, siteId);
+            new AddTranscriptomieView(this, connection, fileManager, this.transcriptomicAnalysis, siteId);
         } else {
             JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
         }
@@ -202,18 +207,26 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void addButtonAction() {
+        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
+
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
 
         if (this.transcriptomicAnalysis == null) {
-            new AddTranscriptomieView( connection, fileManager, null, siteId);
+            new AddTranscriptomieView(this, connection, fileManager, null, siteId);
         } else {
-            JOptionPane.showMessageDialog(null, "Il y a déjà une analyse trascriptomique");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Il y a déjà une analyse trascriptomique enregistrée pour ce site cutané");
+            alert.showAndWait();
+
         }
     }
 
     @FXML
     private void dellButtonAction() {
+        this.transcriptomicAnalysis=transcriptomieDaompl.selectBySite(siteId);
         if (this.transcriptomicAnalysis != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmer la suppresion");
@@ -222,17 +235,14 @@ public class TranscriptomieController extends Controller implements Initializabl
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
+
                 TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
                 this.transcriptomicAnalysis = null;
+                display(transcriptomicAnalysis);
             } else {
                 alert.close();
             }
         }
-    }
-
-    @FXML
-    private void refresh() {
-        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectById(siteId);
     }
 
     private void startDownload(String url, Button button) {
