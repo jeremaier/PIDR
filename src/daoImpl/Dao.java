@@ -5,15 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 abstract class Dao {
-    void delete(Connection connection, String table, int id) {
+    static void delete(Connection connection, String table, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("DELETE FROM " + table + " WHERE id = ?");
+            preparedStatement = connection.prepareStatement("DELETE FROM " + table + " WHERE ID = ?");
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("DELETE FROM " + table + " WHERE id = ?");
+            System.out.println("DELETE FROM " + table + " WHERE ID = ?");
         } catch(Exception e) {
             e.printStackTrace();
         } finally {

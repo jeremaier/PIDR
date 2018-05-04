@@ -6,15 +6,14 @@ import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Observable;
 
 public class FileManager extends Observable {
@@ -25,8 +24,6 @@ public class FileManager extends Observable {
     private SSLSessionReuseFTPSClient ftpClient;
     private String user;
     private String password;
-    private static long size = -1;
-    private static long bytes = -1;
 
     public FileManager(String user, String password) {
         this.user = user;
@@ -43,11 +40,18 @@ public class FileManager extends Observable {
         return urlSplit[urlSplit.length - 1];
     }
 
-    private static File openDirectoryChooser(Stage stage) {
+    public static File openDirectoryChooser(Stage stage) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choisissez un dossier");
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return directoryChooser.showDialog(stage);
+    }
+
+    public static void openFileChooser(Stage stage, UploadTask uploadTask) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisissez un fichier");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        uploadTask.setSelectedFile(fileChooser.showOpenDialog(stage));
     }
 
     public static String getFilePath(String name) {
@@ -113,7 +117,7 @@ public class FileManager extends Observable {
     public boolean openFTPConnection() {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
-        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+        //ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         ftpClient.setConnectTimeout(2000);
         ftpClient.setDataTimeout(500);
 
@@ -151,7 +155,7 @@ public class FileManager extends Observable {
         return true;
     }
 
-    public void closeFTPConnection() {
+    private void closeFTPConnection() {
         if (this.getConnection() != null) {
             try {
                 ftpClient.logout();
@@ -173,84 +177,64 @@ public class FileManager extends Observable {
         return fileMatchList;
     }
 
-    public final boolean removeFile(String url) {
+    final void removeFiles(RemoveTask task, ArrayList<String> urls) {
         this.openFTPConnection();
 
         try {
-            ftpClient.deleteFile(url);
+            task.updateProgressBar();
+
+            for (String url : urls)
+                ftpClient.deleteFile(url);
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de supprimer le fichier");
-            return false;
         }
 
         this.closeFTPConnection();
-
-        return true;
     }
 
-    public final File downloadFromUrl(Stage stage, String url, File choosenDirectory, boolean open, boolean close) {
-        File selectedDirectory;
-
-        if (choosenDirectory == null)
-            selectedDirectory = FileManager.openDirectoryChooser(stage);
-        else selectedDirectory = choosenDirectory;
-
+    public final void downloadFromUrl(DownloadTask task, File selectedDirectory, ArrayList<String> urls) {
         if(selectedDirectory != null) {
-            if (open)
-                this.openFTPConnection();
+            this.openFTPConnection();
 
             try {
-                String filePath = selectedDirectory + "//" + FileManager.getFileName(url, false);
-                FTPFile file = ftpClient.mlistFile(url);
-                this.setSize(file.getSize());
+                for (String url : urls) {
+                    String filePath = selectedDirectory + "//" + FileManager.getFileName(url, false);
+                    FTPFile file = ftpClient.mlistFile(url);
+                    long fileSize = file.getSize();
 
-                OutputStream outputStream = new CountingOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
-                    @Override
-                    public void beforeWrite(int count) {
-                        super.beforeWrite(count);
-                        setBytes(this.getCount());
-                    }
-                };
+                    OutputStream outputStream = new CountingOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
+                        @Override
+                        public void beforeWrite(int count) {
+                            super.beforeWrite(count);
+                            task.updateProgressBar(this.getCount(), fileSize);
+                        }
+                    };
 
-                ftpClient.retrieveFile(url, outputStream);
-                outputStream.close();
+                    ftpClient.retrieveFile(url, outputStream);
+                    outputStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 FileManager.openAlert("Téléchargement impossible / Erreur de connexion");
             }
 
-            this.setSize(-1);
-            this.setBytes(-1);
-
-            if (close)
-                this.closeFTPConnection();
+            task.updateProgressBar(0, 0);
+            this.closeFTPConnection();
         }
-
-        return selectedDirectory;
     }
 
-    public final String uploadToURL(Stage stage, String dossier, String mesure) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisissez un fichier");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        File selectedFile = fileChooser.showOpenDialog(stage);
+    /*public final String uploadToURL(Stage stage, String dossier, String mesure) {
         String fileName = null;
 
         if(selectedFile != null) {
             InputStream input = null;
-            this.setSize(selectedFile.length());
 
             this.openFTPConnection();
+            this.setSize(selectedFile.length());
 
             try {
-                input = new CountingInputStream(new FileInputStream(new File(selectedFile.getAbsolutePath()))) {
-                    @Override
-                    public void afterRead(int count) {
-                        super.afterRead(count);
-                        setBytes(this.getCount());
-                    }
-                };
+                input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
@@ -269,10 +253,44 @@ public class FileManager extends Observable {
             }
 
             this.setSize(-1);
-            this.setBytes(-1);
+            this.closeFTPConnection();
+        }
+
+        return fileName;
+    }*/
+
+    final String uploadToURL(UploadTask task, File selectedFile, String dossier, String mesure) {
+        String fileName = null;
+
+        if (selectedFile != null) {
+            InputStream input = null;
+
+            this.openFTPConnection();
+
+            try {
+                input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
+            }
+
+            fileName = FileManager.getFileName(selectedFile.toString(), true);
+            task.updateProgressBar(-1);
+
+            try {
+                this.makeDirectories(dossier);
+
+                if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
+                    fileName = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
+            }
 
             this.closeFTPConnection();
         }
+
+        task.updateProgressBar(0);
 
         return fileName;
     }
@@ -292,31 +310,5 @@ public class FileManager extends Observable {
                 }
             }
         }
-    }
-
-    public synchronized long getSize() {
-        return FileManager.size;
-    }
-
-    public void setSize(long size) {
-        synchronized (this) {
-            FileManager.size = size;
-        }
-
-        this.setChanged();
-        this.notifyObservers();
-    }
-
-    public synchronized long getBytes() {
-        return FileManager.bytes;
-    }
-
-    private void setBytes(long bytes) {
-        synchronized (this) {
-            FileManager.bytes = bytes;
-        }
-
-        this.setChanged();
-        this.notifyObservers();
     }
 }

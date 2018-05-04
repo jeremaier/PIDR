@@ -4,22 +4,25 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import src.daoImpl.InclusionDaoImpl;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import src.dao.InclusionDao;
 import src.daoImpl.LesionDaoImpl;
 import src.table.Lesion;
 import src.utils.Diag;
 import src.utils.FileManager;
+import src.utils.RemoveTask;
+import src.utils.UploadTask;
 import src.view.AddDiagView;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class AddLesionController implements Initializable, Observer {
+public class AddLesionController extends Controller implements Initializable {
     @FXML
     TextField siteAnatomiqueField;
     @FXML
@@ -50,26 +53,17 @@ public class AddLesionController implements Initializable, Observer {
     Label photoHorsLabel;
     @FXML
     Label photoFixeLabel;
-    @FXML
-    Label progressLabel;
-    @FXML
-    ProgressBar progressBar;
 
     private LesionsController lesionsController;
     private Lesion lesion;
     private int idInclusion;
-    private Stage addLesionStage;
-    private InclusionDaoImpl inclusionDaoImpl;
     private LesionDaoImpl lesionDaoImpl;
-    private FileManager fileManager;
     private String idLesion;
-    private boolean[] uploadedBeforeEdit = {true, true, true, true, true};
 
-    public AddLesionController(LesionsController lesionsController, Lesion lesion, int idInclusion, InclusionDaoImpl inclusionDaoImpl, LesionDaoImpl lesionDaoImpl, FileManager fileManager) {
+    public AddLesionController(LesionsController lesionsController, Lesion lesion, int idInclusion, LesionDaoImpl lesionDaoImpl, FileManager fileManager) {
         this.lesionsController = lesionsController;
         this.lesion = lesion;
         this.idInclusion = idInclusion;
-        this.inclusionDaoImpl = inclusionDaoImpl;
         this.lesionDaoImpl = lesionDaoImpl;
         this.fileManager = fileManager;
     }
@@ -79,7 +73,6 @@ public class AddLesionController implements Initializable, Observer {
         ObservableList<Diag> diags = FXCollections.observableArrayList();
         Collections.addAll(diags, Diag.values());
         this.diagBox.setItems(diags);
-        fileManager.addObserver(this);
 
         if (this.lesion != null)
             this.setLesionInformations();
@@ -91,9 +84,7 @@ public class AddLesionController implements Initializable, Observer {
 
         this.siteAnatomiqueField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals(oldValue)) {
-                if (this.siteAnatomiqueField.getText().length() >= 1)
-                    this.enableButtons();
-                else this.disableButtons();
+                this.enableButtons(this.siteAnatomiqueField.getText().length() >= 1, false);
             }
         });
 
@@ -103,22 +94,18 @@ public class AddLesionController implements Initializable, Observer {
         });
     }
 
-    private void enableButtons() {
-        this.addButton.setDisable(false);
-        this.addPhotoSurButton.setDisable(false);
-        this.addPhotoHorsButton.setDisable(false);
-        this.addPhotoFixeButton.setDisable(false);
-        this.addDiagFileButton.setDisable(false);
-        this.addMoyFileButton.setDisable(false);
-    }
+    public void enableButtons(boolean enable, boolean all) {
+        this.addButton.setDisable(!enable);
+        this.addPhotoSurButton.setDisable(!enable);
+        this.addPhotoHorsButton.setDisable(!enable);
+        this.addPhotoFixeButton.setDisable(!enable);
+        this.addDiagFileButton.setDisable(!enable);
+        this.addMoyFileButton.setDisable(!enable);
 
-    private void disableButtons() {
-        this.addButton.setDisable(true);
-        this.addPhotoSurButton.setDisable(true);
-        this.addPhotoHorsButton.setDisable(true);
-        this.addPhotoFixeButton.setDisable(true);
-        this.addDiagFileButton.setDisable(true);
-        this.addMoyFileButton.setDisable(true);
+        if (all) {
+            this.addButton.setDisable(!enable);
+            this.cancelButton.setDisable(!enable);
+        }
     }
 
     private void setLesionInformations() {
@@ -127,7 +114,7 @@ public class AddLesionController implements Initializable, Observer {
         this.siteAnatomiqueField.setText(this.lesion.getSiteAnatomique());
         this.diagBox.getSelectionModel().select(this.lesion.getDiag());
         this.idLesion = Integer.toString(this.lesion.getId());
-        this.enableButtons();
+        this.enableButtons(true, false);
 
         if (diag != null)
             if (diag.equals(Diag.FICHIER) || diag.equals(Diag.AUTRE))
@@ -160,12 +147,11 @@ public class AddLesionController implements Initializable, Observer {
     }
 
     public void addAction() {
-        /*TODO Faire que les fichiers s'add et se suppr au moment de quitter la fenetre*/
         this.lesion.setSiteAnatomique(this.siteAnatomiqueField.getText());
         Diag diagValue = this.diagBox.getValue();
 
         if (diagValue != null) {
-            this.inclusionDaoImpl.updateDiag(diagValue.toString(), idInclusion);
+            InclusionDao.updateDiag(diagValue.toString(), idInclusion);
             this.lesion.setDiag(diagValue.toString());
         }
 
@@ -194,168 +180,165 @@ public class AddLesionController implements Initializable, Observer {
             this.lesionsController.populateLesions(this.lesion);
         }
 
-        if (this.addLesionStage == null)
-            this.addLesionStage = (Stage) this.addButton.getScene().getWindow();
-
-        this.addLesionStage.close();
+        this.setStage(this.addButton);
+        this.stage.close();
     }
 
     public void cancelAction() {
-        if (!this.photoSurLabel.getText().equals("Aucun") && !this.uploadedBeforeEdit[0])
-            this.fileManager.removeFile(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.photoSurLabel.getText());
+        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.cancelButton);
+        ArrayList<String> files = new ArrayList<>();
+        String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
+        String photoSur, photoHors, photoFixe, otherDiag, moyFile;
 
-        if (!this.photoHorsLabel.getText().equals("Aucun") && !this.uploadedBeforeEdit[1])
-            this.fileManager.removeFile(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.photoHorsLabel.getText());
+        if (!this.addButton.getText().equals("Modifier")) {
+            if (!(photoSur = directory + this.photoSurLabel.getText()).equals("Aucun"))
+                files.add(photoSur);
 
-        if (!this.photoFixeLabel.getText().equals("Aucun") && !this.uploadedBeforeEdit[2])
-            this.fileManager.removeFile(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.photoFixeLabel.getText());
+            if (!(photoHors = directory + this.photoHorsLabel.getText()).equals("Aucun"))
+                files.add(photoHors);
 
-        if (!this.otherDiagButton.getText().equals("Aucun") && !this.uploadedBeforeEdit[3])
-            this.fileManager.removeFile(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.diagFileLabel.getText());
+            if (!(photoFixe = directory + this.photoFixeLabel.getText()).equals("Aucun"))
+                files.add(photoFixe);
 
-        if (!this.addMoyFileLabel.getText().equals("Aucun") && !this.uploadedBeforeEdit[4])
-            this.fileManager.removeFile(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.addMoyFileLabel.getText());
+            if (!(otherDiag = directory + this.diagFileLabel.getText()).equals("Aucun"))
+                files.add(otherDiag);
 
-        if (this.addLesionStage == null)
-            this.addLesionStage = (Stage) this.cancelButton.getScene().getWindow();
+            if (!(moyFile = directory + this.addMoyFileLabel.getText()).equals("Aucun"))
+                files.add(moyFile);
+        }
 
-        this.addLesionStage.close();
+        removeTask.setUrls(files);
+        removeTask.setOnSucceeded(e -> this.stage.close());
+
+        new Thread(removeTask).start();
     }
 
     public void otherDiagAction() {
-        if (this.addLesionStage == null)
-            this.addLesionStage = (Stage) this.otherDiagButton.getScene().getWindow();
-
+        this.setStage(this.otherDiagButton);
         new AddDiagView(this, this.lesion);
     }
 
     public void addPhotoSurAction() {
-        if (this.photoSurLabel.getText().equals("Aucun")) {
-            if (this.addLesionStage == null)
-                this.addLesionStage = (Stage) this.addPhotoSurButton.getScene().getWindow();
-
-            String addedFileName = this.fileManager.uploadToURL(this.addLesionStage, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
-
-            if (addedFileName != null) {
-                this.addPhotoSurButton.setText("Supprimer");
-                this.photoSurLabel.setText(addedFileName);
-                this.lesion.setPhotoSur(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
-            }
-        } else {
-            this.fileManager.removeFile(this.lesion.getPhotoSur());
-            this.addPhotoSurButton.setText("Ajouter");
-            this.lesion.setPhotoSur("Aucun");
-            this.photoSurLabel.setText("Aucun");
-        }
+        if (this.photoSurLabel.getText().equals("Aucun"))
+            this.startUpload("sur", this.addPhotoSurButton, this.photoSurLabel);
+        else this.removeFileFromFTP("sur", this.addPhotoSurButton, this.photoSurLabel);
     }
 
     public void addPhotoHorsAction() {
-        if (this.photoHorsLabel.getText().equals("Aucun")) {
-            if (this.addLesionStage == null)
-                this.addLesionStage = (Stage) this.addPhotoHorsButton.getScene().getWindow();
-
-            String addedFileName = this.fileManager.uploadToURL(this.addLesionStage, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
-
-            if (addedFileName != null) {
-                this.addPhotoHorsButton.setText("Supprimer");
-                this.photoHorsLabel.setText(addedFileName);
-                this.lesion.setPhotoHors(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
-            }
-        } else {
-            this.fileManager.removeFile(this.lesion.getPhotoHors());
-            this.addPhotoHorsButton.setText("Ajouter");
-            this.photoHorsLabel.setText("Aucun");
-            this.lesion.setPhotoHors("Aucun");
-        }
+        if (this.photoHorsLabel.getText().equals("Aucun"))
+            this.startUpload("hors", this.addPhotoHorsButton, this.photoHorsLabel);
+        else this.removeFileFromFTP("hors", this.addPhotoHorsButton, this.photoHorsLabel);
     }
 
     public void addPhotoFixeAction() {
-        if (this.photoFixeLabel.getText().equals("Aucun")) {
-            if (this.addLesionStage == null)
-                this.addLesionStage = (Stage) this.addPhotoFixeButton.getScene().getWindow();
-
-            String addedFileName = this.fileManager.uploadToURL(this.addLesionStage, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
-
-            if (addedFileName != null) {
-                this.addPhotoFixeButton.setText("Supprimer");
-                this.photoFixeLabel.setText(addedFileName);
-                this.lesion.setPhotoFixe(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
-            }
-        } else {
-            this.fileManager.removeFile(this.lesion.getPhotoFixe());
-            this.addPhotoFixeButton.setText("Ajouter");
-            this.photoFixeLabel.setText("Aucun");
-            this.lesion.setPhotoFixe("Aucun");
-        }
+        if (this.photoFixeLabel.getText().equals("Aucun"))
+            this.startUpload("fixe", this.addPhotoFixeButton, this.photoFixeLabel);
+        else this.removeFileFromFTP("fixe", this.addPhotoFixeButton, this.photoFixeLabel);
     }
 
     public void addDiagFileAction() {
-        if (this.diagFileLabel.getText().equals("Aucun")) {
-            if (this.addLesionStage == null)
-                this.addLesionStage = (Stage) this.addDiagFileButton.getScene().getWindow();
-
-            String addedFileName = this.fileManager.uploadToURL(this.addLesionStage, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
-
-            if (addedFileName != null) {
-                this.addDiagFileButton.setText("Supprimer");
-                this.diagFileLabel.setText(addedFileName);
-                this.lesion.setFileDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
-                this.diagBox.setValue(Diag.FICHIER);
-                this.diagBox.setDisable(true);
-            }
-        } else {
-            this.fileManager.removeFile(this.lesion.getFileDiag());
-            this.addDiagFileButton.setText("Ajouter");
-            this.diagFileLabel.setText("Aucun");
-            this.diagBox.setValue(null);
-            this.diagBox.setDisable(false);
-            this.lesion.setFileDiag("Aucun");
-        }
+        if (this.diagFileLabel.getText().equals("Aucun"))
+            this.startUpload("diag", this.addDiagFileButton, this.diagFileLabel);
+        else this.removeFileFromFTP("diag", this.addDiagFileButton, this.diagFileLabel);
     }
 
     public void addMoyFileAction() {
-        if (this.addMoyFileLabel.getText().equals("Aucun")) {
-            if (this.addLesionStage == null)
-                this.addLesionStage = (Stage) this.addMoyFileButton.getScene().getWindow();
-
-            String addedFileName = this.fileManager.uploadToURL(this.addLesionStage, FileManager.getLesionFilesDirectoryName(this.idLesion), null);
-
-            if (addedFileName != null) {
-                this.addMoyFileButton.setText("Supprimer");
-                this.addMoyFileLabel.setText(addedFileName);
-                this.lesion.setFichierMoy(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName);
-            }
-        } else {
-            this.fileManager.removeFile(this.lesion.getFichierMoy());
-            this.addMoyFileButton.setText("Ajouter");
-            this.addMoyFileLabel.setText("Aucun");
-            this.lesion.setFichierMoy("Aucun");
-        }
+        if (this.addMoyFileLabel.getText().equals("Aucun"))
+            this.startUpload("moyFile", this.addMoyFileButton, this.addMoyFileLabel);
+        else this.removeFileFromFTP("moyFile", this.addMoyFileButton, this.addMoyFileLabel);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        double size = Double.longBitsToDouble(((FileManager) o).getSize());
-        double bytes = Double.longBitsToDouble(((FileManager) o).getBytes());
+    private void removeFileFromFTP(String buttonName, Button button, Label label) {
+        RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(button);
 
-        System.out.println(((FileManager) o).getSize());
-
-        if (size >= 0) {
-            double progress = bytes / size;
-
-            this.disableButtons();
-            this.addButton.setDisable(true);
-            this.cancelButton.setDisable(true);
-            this.progressBar.setProgress(bytes / size);
-            this.progressLabel.setText(progress * 100 + " %");
-
-            System.out.println("Uploaded " + progress + " bytes");
-        } else {
-            this.progressBar.setProgress(0);
-            this.progressLabel.setText("");
-            this.enableButtons();
-            this.addButton.setDisable(false);
-            this.cancelButton.setDisable(false);
+        switch (buttonName) {
+            case "sur":
+                removeTask.setUrls(new ArrayList<String>() {{
+                    add(lesion.getPhotoSur());
+                }});
+                this.photoSurLabel.setText("Aucun");
+                break;
+            case "hors":
+                removeTask.setUrls(new ArrayList<String>() {{
+                    add(lesion.getPhotoHors());
+                }});
+                this.lesion.setPhotoHors("Aucun");
+                break;
+            case "fixe":
+                removeTask.setUrls(new ArrayList<String>() {{
+                    add(lesion.getPhotoFixe());
+                }});
+                this.lesion.setPhotoFixe("Aucun");
+                break;
+            case "diag":
+                removeTask.setUrls(new ArrayList<String>() {{
+                    add(lesion.getFileDiag());
+                }});
+                this.diagBox.setValue(null);
+                this.diagBox.setDisable(false);
+                this.lesion.setFileDiag("Aucun");
+                break;
+            case "moyFile":
+                removeTask.setUrls(new ArrayList<String>() {{
+                    add(lesion.getFichierMoy());
+                }});
+                this.lesion.setFichierMoy("Aucun");
+                break;
         }
+
+        removeTask.setOnSucceeded(e -> {
+            button.setText("Ajouter");
+            label.setText("Aucun");
+        });
+
+        removeTask.setOnFailed(e -> {
+            button.setText("Ajouter");
+            label.setText("Aucun");
+        });
+
+        new Thread(removeTask).start();
+    }
+
+    private void startUpload(String buttonName, Button button, Label label) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, FileManager.getLesionFilesDirectoryName(this.idLesion));
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), button, label));
+
+        FileManager.openFileChooser(this.stage, uploadTask);
+
+        new Thread(uploadTask).start();
+    }
+
+    private void endUpload(String buttonName, String addedFileName, Button button, Label label) {
+        if (addedFileName != null) {
+            button.setText("Supprimer");
+            label.setText(addedFileName);
+            String url = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + addedFileName;
+
+            switch (buttonName) {
+                case "sur":
+                    this.lesion.setPhotoSur(url);
+                    break;
+                case "hors":
+                    this.lesion.setPhotoHors(url);
+                    break;
+                case "fixe":
+                    this.lesion.setPhotoFixe(url);
+                    break;
+                case "diag":
+                    this.lesion.setFileDiag(url);
+                    this.diagBox.setValue(Diag.FICHIER);
+                    this.diagBox.setDisable(true);
+                    break;
+                case "moyFile":
+                    this.lesion.setFichierMoy(url);
+                    break;
+            }
+        }
+
+        this.enableButtons(true, true);
     }
 }

@@ -9,8 +9,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import src.daoImpl.LesionDaoImpl;
-import src.daoImpl.SiteCutaneDaompl;
-import src.daoImpl.TranscriptomieDaompl;
+import src.daoImpl.SiteCutaneDaoImpl;
+import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.table.TranscriptomicAnalysis;
@@ -80,7 +80,7 @@ public class TranscriptomieController implements Initializable {
 
     private Connection connection;
     private Stage transcriptomieStage;
-    private TranscriptomieDaompl transcriptomieDaompl;
+    private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private FileManager fileManager;
     private int siteId;
@@ -99,7 +99,7 @@ public class TranscriptomieController implements Initializable {
         this.display(this.transcriptomicAnalysis);
 
 
-        this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
+        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
 
     }
 
@@ -195,7 +195,7 @@ public class TranscriptomieController implements Initializable {
     private void retour() {
         this.transcriptomieStage = (Stage) retour.getScene().getWindow();
 
-        SiteCutaneDaompl siteCutaneDaompl = new SiteCutaneDaompl(connection);
+        SiteCutaneDaoImpl siteCutaneDaompl = new SiteCutaneDaoImpl(connection);
         LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
 
         Lesion lesion = lesionDaoImlp.selectById(siteCutaneDaompl.selectById(siteId).getIdLesion());
@@ -207,7 +207,7 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void updateButtonAction() {
-        this.transcriptomicAnalysis=transcriptomieDaompl.selectBySite(siteId);
+        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
 
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
@@ -221,7 +221,7 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void addButtonAction() {
-        this.transcriptomicAnalysis=transcriptomieDaompl.selectBySite(siteId);
+        this.transcriptomicAnalysis=transcriptomieDaoImpl.selectBySite(siteId);
 
         if (this.transcriptomieStage == null)
             this.transcriptomieStage = (Stage) qualityReport.getScene().getWindow();
@@ -250,7 +250,7 @@ public class TranscriptomieController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
 
-                transcriptomieDaompl.delete(this.transcriptomicAnalysis.getId());
+                transcriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
                 this.transcriptomicAnalysis = null;
                 display(transcriptomicAnalysis);
             } else {

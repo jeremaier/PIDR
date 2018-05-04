@@ -6,15 +6,65 @@ import javafx.collections.ObservableList;
 import src.dao.TranscriptomieDao;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.utils.SQLConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
-    private Connection connection;
+public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao {
+    private static Connection connection;
 
-    public TranscriptomieDaompl (Connection connection) { this.connection = connection;}
+    public TranscriptomieDaoImpl(Connection connection) {
+        TranscriptomieDaoImpl.connection = connection;
+    }
 
+    public static ArrayList<TranscriptomicAnalysis> removeLamellas(String id) {
+        ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
+            preparedStatement.setString(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                TranscriptomicAnalysis transcriptomicAnalysis = new TranscriptomicAnalysis();
+
+                transcriptomicAnalysis.setId(resultSet.getInt("ID"));
+                transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
+                transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
+
+                transcriptomicAnalyses.add(transcriptomicAnalysis);
+            }
+
+            System.out.println("SELECT ID, ID_SITE_CUTANE, FICHIER_BRUT FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return transcriptomicAnalyses;
+    }
 
     @Override
     public void insert(TranscriptomicAnalysis transcr) {
@@ -22,6 +72,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RNA, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
             preparedStatement.executeUpdate();
 
@@ -49,7 +100,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID = ? ORDER BY ID");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -90,7 +141,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ? ORDER BY ID");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("SELECT * FROM analyse_transcriptomique WHERE ID_SITE_CUTANE = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -131,7 +182,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
+            statement = TranscriptomieDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM analyse_transcriptomique ORDER BY ID");
 
             while (resultSet.next())
@@ -169,7 +220,7 @@ public class TranscriptomieDaompl extends DaoImpl implements TranscriptomieDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID = ?, ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, FICHIER_CUT = ?, RNA = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
             preparedStatement.setInt(14, id);
             preparedStatement.executeUpdate();

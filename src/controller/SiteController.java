@@ -10,8 +10,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LesionDaoImpl;
-import src.daoImpl.SiteCutaneDaompl;
-import src.daoImpl.TranscriptomieDaompl;
+import src.daoImpl.SiteCutaneDaoImpl;
+import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.CutaneousSite;
 import src.table.Inclusion;
 import src.table.Lesion;
@@ -73,7 +73,7 @@ public class SiteController implements Initializable {
 
     private Connection connection;
     private Stage siteStage;
-    private SiteCutaneDaompl siteCutaneDaompl;
+    private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
     private ObservableList<String> spectre;
     private FileManager fileManager;
@@ -81,7 +81,7 @@ public class SiteController implements Initializable {
     private String selectedSpectre;
     private Lesion lesion;
     private Integer selectedSpectreId;
-    private TranscriptomieDaompl transcriptomieDaompl;
+    private TranscriptomieDaoImpl transcriptomieDaoImpl;
 
 
     public SiteController(Connection connection, Lesion lesion, FileManager fileManager){
@@ -98,15 +98,15 @@ public class SiteController implements Initializable {
         this.Orientation.setCellValueFactory(cellData -> cellData.getValue().orientationProperty().asObject());
         this.diag.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
 
-        this.siteCutaneDaompl = new SiteCutaneDaompl(connection);
-        this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
+        this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
+        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
 
-        this.siteListe = siteCutaneDaompl.selectByLesion(this.lesion.getId());
+        this.siteListe = siteCutaneDaoImpl.selectByLesion(this.lesion.getId());
 
         this.populateSite(siteListe);
 
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
-            selectedSite = (CutaneousSite) affecteTab.getSelectionModel().getSelectedItem();
+            selectedSite = affecteTab.getSelectionModel().getSelectedItem();
 
             if(selectedSite != null) {
                 supprimer.setDisable(false);
@@ -130,14 +130,12 @@ public class SiteController implements Initializable {
             }
 
             spectreList.setItems(spectre);
-
-
         });
 
 
 
         this.spectreList.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) ->{
-            selectedSpectre = (String) spectreList.getSelectionModel().getSelectedItem();
+            selectedSpectre = spectreList.getSelectionModel().getSelectedItem();
             selectedSpectreId= spectreList.getSelectionModel().getSelectedIndex();
 
             if(selectedSpectre != null){
@@ -147,8 +145,6 @@ public class SiteController implements Initializable {
                 suprSpectre.setDisable(true);
                 downloadSpectre.setDisable(true);
             }
-
-
         } ));
     }
 
@@ -170,7 +166,6 @@ public class SiteController implements Initializable {
 
 
     public void populateSingleSite(CutaneousSite site){
-
             siteListe.add(site);
             this.affecteTab.setItems(siteListe);
     }
@@ -179,12 +174,12 @@ public class SiteController implements Initializable {
 
     @FXML
     private void retour(ActionEvent actionEvent) {
-        InclusionDaoImpl inclusionDaomlp = new InclusionDaoImpl(connection);
-        Inclusion inclusion = inclusionDaomlp.selectById(this.lesion.getIdInclusion());
+        InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
+        Inclusion inclusion = inclusionDaoImpl.selectById(this.lesion.getIdInclusion());
 
         this.siteStage = (Stage) retour.getScene().getWindow();
 
-        new LesionsView(connection, fileManager,inclusionDaomlp, inclusion);
+        new LesionsView(connection, fileManager,inclusionDaoImpl, inclusion);
 
         this.siteStage.close();
     }
@@ -226,7 +221,7 @@ public class SiteController implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
 
-                    siteCutaneDaompl.delete(this.selectedSite.getId());
+                    siteCutaneDaoImpl.delete(this.selectedSite.getId());
 
                         this.siteListe.remove(selectedSite);
                 } else {
@@ -263,7 +258,7 @@ public class SiteController implements Initializable {
             }
 
             this.selectedSite.setSpectre(newSpectre.substring(1));
-            this.siteCutaneDaompl.update(this.selectedSite, this.selectedSite.getId());
+            this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
             this.spectre.remove(this.selectedSpectre);
 
             populateSpectre(spectre);
@@ -272,9 +267,9 @@ public class SiteController implements Initializable {
 
     @FXML
     private void transcriptomieButtonAction(ActionEvent actionEvent){
-        if(transcriptomieDaompl.selectBySite(this.selectedSite.getId())!=null){
+        if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null) {
             if(this.siteStage==null){
-                new TranscriptomieView(connection,fileManager,transcriptomieDaompl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
+                new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
             }
         }else{
             if(this.siteStage==null){

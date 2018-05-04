@@ -6,14 +6,15 @@ import javafx.collections.ObservableList;
 import src.dao.PatientDao;
 import src.table.Patient;
 import src.utils.FileManager;
+import src.utils.SQLConnection;
 
 import java.sql.*;
 
 public class PatientDaoImpl extends DaoImpl implements PatientDao {
-    private Connection connection;
+    private static Connection connection;
 
     public PatientDaoImpl(Connection connection) {
-        this.connection = connection;
+        PatientDaoImpl.connection = connection;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         if (patient.getAnneeNaissance() < 1900)
             FileManager.openAlert("Annee invalide");
         else try {
-            preparedStatement = connection.prepareStatement("INSERT INTO patient (ID, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?)");
+            preparedStatement = PatientDaoImpl.connection.prepareStatement("INSERT INTO patient (ID, GENRE, ANNEE_NAISSANCE) " + "VALUES (?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 1);
             preparedStatement.executeUpdate();
 
@@ -51,7 +52,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
+            preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -93,7 +94,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
 
         try {
             if(id != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
+                preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
                 preparedStatement.setInt(1, id);
                 resultSet = preparedStatement.executeQuery();
                 this.addToObservableList(patients, resultSet);
@@ -101,7 +102,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
 
             if (genre != null) {
                 if (!genre.equals("")) {
-                    preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE GENRE = ? ORDER BY ID");
+                    preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE GENRE = ? ORDER BY ID");
                     preparedStatement.setString(1, genre);
                     resultSet = preparedStatement.executeQuery();
                     this.refreshList(patients, resultSet);
@@ -109,7 +110,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
             }
 
             if (!date.equals("")) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM patient WHERE ANNEE_NAISSANCE = ? ORDER BY ID");
+                preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE ANNEE_NAISSANCE = ? ORDER BY ID");
                 preparedStatement.setString(1, date);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(patients, resultSet);
@@ -178,7 +179,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
+            statement = PatientDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM patient ORDER BY ID");
             this.addToObservableList(patients, resultSet);
 
@@ -216,7 +217,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
         if (patient.getAnneeNaissance() < 1900)
             FileManager.openAlert("Annee invalide");
         else try {
-            preparedStatement = connection.prepareStatement("UPDATE patient SET " + "GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
+            preparedStatement = PatientDaoImpl.connection.prepareStatement("UPDATE patient SET " + "GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, patient, 0);
             preparedStatement.setInt(3, id);
             preparedStatement.executeUpdate();
@@ -261,7 +262,7 @@ public class PatientDaoImpl extends DaoImpl implements PatientDao {
     }
 
     public void delete(int id) {
-        this.delete(connection, "patient", id);
+        PatientDaoImpl.delete(SQLConnection.getConnection(), "patient", id);
     }
 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {

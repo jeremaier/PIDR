@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import src.daoImpl.SiteCutaneDaompl;
+import src.daoImpl.SiteCutaneDaoImpl;
 import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.utils.Diag;
@@ -61,7 +61,7 @@ public class AddSiteController implements Initializable {
     private FileManager fileManager;
     private CutaneousSite site;
     private Lesion lesion;
-    private SiteCutaneDaompl siteCutaneDaompl;
+    private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL,SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
     private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
     private String fichierDiagPath=null;
@@ -75,8 +75,6 @@ public class AddSiteController implements Initializable {
         this.site = site;
         this.lesion = lesion;
         this.siteController = siteController;
-
-
     }
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -104,9 +102,7 @@ public class AddSiteController implements Initializable {
         });
 
 
-
-
-        this.siteCutaneDaompl = new SiteCutaneDaompl(connection);
+        this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
     }
 
     @FXML
@@ -141,7 +137,7 @@ public class AddSiteController implements Initializable {
 
                 CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
                 this.siteController.populateSingleSite(newSite);
-                siteCutaneDaompl.insert(newSite);
+                siteCutaneDaoImpl.insert(newSite);
             } else {
                 if (siteCutane.getSelectionModel().getSelectedItem() != null) {
                     SITE = siteCutane.getSelectionModel().getSelectedItem().toString();
@@ -177,7 +173,7 @@ public class AddSiteController implements Initializable {
                     spectrePath = site.getSpectre();
 
                 CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
-                siteCutaneDaompl.update(newSite, site.getId());
+                siteCutaneDaoImpl.update(newSite, site.getId());
             }
 
             if (this.addSiteStage == null)

@@ -104,4 +104,6 @@
             </HBox.margin>
         </Button>
     </HBox>
+    <ProgressBar fx:id="progressBar" layoutX="580.0" layoutY="20.0" prefWidth="200.0" progress="0.0" visible="false"/>
+    <Label fx:id="progressLabel" layoutX="678.0" layoutY="22.0"/>
 </AnchorPane>

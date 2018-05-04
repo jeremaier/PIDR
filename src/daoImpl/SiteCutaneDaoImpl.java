@@ -6,14 +6,65 @@ import javafx.collections.ObservableList;
 import src.dao.SiteCutaneDao;
 import src.table.CutaneousSite;
 import src.utils.FileManager;
+import src.utils.SQLConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 
-public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
-    private Connection connection;
+public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
+    private static Connection connection;
 
-    public SiteCutaneDaompl(Connection connection) {
-        this.connection = connection;
+    public SiteCutaneDaoImpl(Connection connection) {
+        SiteCutaneDaoImpl.connection = connection;
+    }
+
+    public static ArrayList<CutaneousSite> removeLamellas(String id) {
+        ArrayList<CutaneousSite> siteCutanes = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_LESION, DIAGNOSTIC, FICHIER_DIAG, SPECTROSCOPIE FROM site_cutane WHERE ID_LESION = ?");
+            preparedStatement.setString(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                CutaneousSite cutaneousSite = new CutaneousSite();
+
+                cutaneousSite.setId(resultSet.getInt("ID"));
+                cutaneousSite.setIdLesion(resultSet.getInt("ID_LESION"));
+                cutaneousSite.setDiag(resultSet.getString("DIAGNOSTIC"));
+                cutaneousSite.setFichierDiag(resultSet.getString("FICHIER_DIAG"));
+                cutaneousSite.setSpectre(resultSet.getString("SPECTROSCOPIE"));
+
+                siteCutanes.add(cutaneousSite);
+            }
+
+            System.out.println("SELECT ID, ID_LESION, DIAGNOSTIC, FICHIER_DIAG, SPECTROSCOPIE FROM site_cutane WHERE ID_LESION = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return siteCutanes;
     }
 
     @Override
@@ -21,11 +72,11 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIQUE, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            System.out.println("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -49,7 +100,7 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE ID = ? ORDER BY ID");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("SELECT * FROM site_cutane WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -90,7 +141,7 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
+            statement = SiteCutaneDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM site_cutane ORDER BY ID");
             this.addToObservableList(site, resultSet);
 
@@ -128,7 +179,7 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM site_cutane WHERE ID_LESION = ? ORDER BY ID");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("SELECT * FROM site_cutane WHERE ID_LESION = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             this.addToObservableList(site, resultSet);
@@ -160,12 +211,24 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         return site;
     }
 
+    private void addToObservableList(ObservableList<CutaneousSite> site, ResultSet resultSet) {
+        try {
+            while (resultSet.next())
+                site.add(this.addToSite(resultSet));
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void update(CutaneousSite site, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
@@ -185,23 +248,6 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
                 }
             }
         }
-
-    }
-
-    private void addToObservableList(ObservableList<CutaneousSite> site, ResultSet resultSet) {
-        try {
-            while (resultSet.next())
-                site.add(this.addToSite(resultSet));
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void delete(int id) {
-        this.delete(connection, "site_cutane", id);
     }
 
     private CutaneousSite addToSite(ResultSet resultSet) throws SQLException {
@@ -234,4 +280,7 @@ public class SiteCutaneDaompl extends DaoImpl implements SiteCutaneDao {
         return preparedStatement;
     }
 
+    public void delete(int id) {
+        SiteCutaneDaoImpl.delete(SQLConnection.getConnection(), "site_cutane", id);
+    }
 }
