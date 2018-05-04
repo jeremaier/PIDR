@@ -82,7 +82,7 @@ public class SiteController extends Controller implements Initializable {
     private String[] s;
 
     public SiteController(Connection connection, Lesion lesion, FileManager fileManager){
-        this.connection=connection;
+        this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
     }
@@ -104,7 +104,7 @@ public class SiteController extends Controller implements Initializable {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
 
-            String[] s0 = this.selectedSite.getSpectre().split("|");
+            String[] s0 = this.selectedSite.getSpectre().split("~#");
 
             for (int i = 0; i < s0.length - 1; i++) {
                 String[] s1 = s0[i].split("//");
@@ -203,7 +203,7 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     private void downloadSpectreButtonAction() {
         if (this.selectedSpectre != null && this.selectedSpectreId != null) {
-            this.s = this.selectedSite.getSpectre().split("|");
+            this.s = this.selectedSite.getSpectre().split("~#");
             this.startDownload(s[this.selectedSpectreId], this.downloadSpectre);
         }
     }
@@ -211,7 +211,7 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     private void removeSpectreButtonAction() {
         if (this.selectedSpectreId != null && this.selectedSite != null) {
-            this.s = this.selectedSite.getSpectre().split("|");
+            this.s = this.selectedSite.getSpectre().split("~#");
 
             RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.supprimer);
             removeTask.setUrls(new ArrayList<String>() {{
@@ -257,7 +257,7 @@ public class SiteController extends Controller implements Initializable {
 
         for (int i = 0; i < s.length - 1; i++)
             if (i != selectedSpectreId)
-                newSpectre.append("|").append(s[i]);
+                newSpectre.append("~#").append(s[i]);
 
         this.selectedSite.setSpectre(newSpectre.substring(1));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
