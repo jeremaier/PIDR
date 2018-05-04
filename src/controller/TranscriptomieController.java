@@ -97,72 +97,31 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     }
 
-    public void display(TranscriptomicAnalysis transcriptomicAnalysis) {
+    private void display(TranscriptomicAnalysis transcriptomicAnalysis) {
         if (transcriptomicAnalysis != null) {
-
             this.ID.setText(Integer.toString(transcriptomicAnalysis.getId()));
-        } else {
-            this.ID.setText("");
-        }
-
-        if (transcriptomicAnalysis != null) {
             this.emplacement.setText(Integer.toString(transcriptomicAnalysis.getLamellaLocation()));
-        } else {
-            this.emplacement.setText("");
-
-        }
-
-        if (transcriptomicAnalysis != null) {
             this.numSerie.setText(Integer.toString(transcriptomicAnalysis.getSerialNumber()));
-        } else {
-            this.numSerie.setText("");
-
-        }
-
-        if (transcriptomicAnalysis != null) {
             this.cy3.setText(Double.toString(transcriptomicAnalysis.getCyanine()));
-        } else {
-            this.cy3.setText("");
-
-        }
-
-        if (transcriptomicAnalysis != null) {
             this.rendement.setText(Double.toString(transcriptomicAnalysis.getYield()));
-        } else {
-            this.rendement.setText("");
-        }
-
-
-        if (transcriptomicAnalysis != null) {
             this.concentration.setText(Double.toString(transcriptomicAnalysis.getConcentration()));
-        } else {
-            this.concentration.setText("");
-        }
-
-
-        if (transcriptomicAnalysis != null) {
             this.critExclusion.setText(transcriptomicAnalysis.getExclusionCriteria());
-        } else {
-            this.critExclusion.setText("");
-        }
-        if (transcriptomicAnalysis != null) {
             this.activitesSpec.setText(transcriptomicAnalysis.getSpecificActivity());
-        } else {
-            this.activitesSpec.setText("");
-        }
-
-
-        if (transcriptomicAnalysis != null) {
             this.ARNc.setText(Double.toString(transcriptomicAnalysis.getARNC()));
-        } else {
-            this.ARNc.setText("");
-        }
-
-        if (transcriptomicAnalysis != null) {
             this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
         } else {
+            this.ID.setText("");
+            this.emplacement.setText("");
+            this.numSerie.setText("");
+            this.cy3.setText("");
+            this.rendement.setText("");
+            this.concentration.setText("");
+            this.critExclusion.setText("");
+            this.activitesSpec.setText("");
+            this.ARNc.setText("");
             this.RIN.setText("");
         }
+
 
     }
 
@@ -180,8 +139,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void retour() {
-        this.transcriptomieStage = (Stage) retour.getScene().getWindow();
-
+        this.setStage(this.retour);
         SiteCutaneDaoImpl siteCutaneDaompl = new SiteCutaneDaoImpl(connection);
         LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
 
@@ -226,7 +184,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void dellButtonAction() {
-        this.transcriptomicAnalysis=transcriptomieDaompl.selectBySite(siteId);
+        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
         if (this.transcriptomicAnalysis != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmer la suppresion");
@@ -235,10 +193,9 @@ public class TranscriptomieController extends Controller implements Initializabl
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-
                 TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
                 this.transcriptomicAnalysis = null;
-                display(transcriptomicAnalysis);
+                display(null);
             } else {
                 alert.close();
             }
@@ -251,7 +208,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         }}, button);
     }
 
-    private void endDownload() {
+    protected void endDownload() {
         this.enableButtons(true, true);
         this.progressBar.setVisible(false);
     }

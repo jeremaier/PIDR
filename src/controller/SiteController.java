@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
@@ -13,16 +12,18 @@ import src.table.CutaneousSite;
 import src.table.Inclusion;
 import src.table.Lesion;
 import src.utils.FileManager;
+import src.utils.RemoveTask;
 import src.view.AddSiteView;
 import src.view.LesionsView;
 import src.view.TranscriptomieView;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class SiteController implements Initializable {
+public class SiteController extends Controller implements Initializable {
     @FXML
     Button retour;
 
@@ -69,7 +70,6 @@ public class SiteController implements Initializable {
      TableColumn<CutaneousSite, String> diagSain;
 
     private Connection connection;
-    private Stage siteStage;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
     private ObservableList<String> spectre;
@@ -79,15 +79,13 @@ public class SiteController implements Initializable {
     private Lesion lesion;
     private Integer selectedSpectreId;
     private TranscriptomieDaoImpl transcriptomieDaoImpl;
-
+    private String[] s;
 
     public SiteController(Connection connection, Lesion lesion, FileManager fileManager){
         this.connection=connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -105,22 +103,13 @@ public class SiteController implements Initializable {
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
 
-            if(selectedSite != null) {
-                supprimer.setDisable(false);
-                fichierMoy.setDisable(false);
-                modifier.setDisable(false);
-                transcriptomique.setDisable(false);
-            } else {
-                supprimer.setDisable(true);
-                fichierMoy.setDisable(true);
-                modifier.setDisable(true);
-                transcriptomique.setDisable(true);
-            }
+            if (selectedSite != null)
+                this.enableButtons(true, false);
+            else this.enableButtons(false, false);
 
             String[] s0 = this.selectedSite.getSpectre().split("|");
 
-
-            for(int i = 0; i<s0.length-1; i++ ){
+            for (int i = 0; i < s0.length - 1; i++) {
                 String[] s1 = s0[i].split("//");
 
                 this.spectre.add("mesure_"+ Integer.toString(s1[2].charAt(0)) );
@@ -162,48 +151,37 @@ public class SiteController implements Initializable {
     }
 
 
-    public void populateSingleSite(CutaneousSite site){
+    void populateSingleSite(CutaneousSite site) {
             siteListe.add(site);
             this.affecteTab.setItems(siteListe);
     }
-
-
 
     @FXML
     private void retour() {
         InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
         Inclusion inclusion = inclusionDaoImpl.selectById(this.lesion.getIdInclusion());
 
-        this.siteStage = (Stage) retour.getScene().getWindow();
+        this.setStage(this.retour);
+        new LesionsView(connection, fileManager, inclusion);
 
-        new LesionsView(connection, fileManager,inclusionDaoImpl, inclusion);
-
-        this.siteStage.close();
+        this.stage.close();
     }
 
 
     @FXML
     private void fichierMoyAction() {
-        if ( this.siteStage== null) {
-            this.siteStage = (Stage) fichierMoy.getScene().getWindow();
-        }
-
-        this.fileManager.downloadFromUrl(siteStage, this.lesion.getFichierMoy(), null, true, true);
+        this.startDownload(this.lesion.getFichierMoy(), this.fichierMoy);
     }
 
     @FXML
     private void addButtonAction() {
-        if(this.siteStage == null)
-            this.siteStage = (Stage) ajouter.getScene().getWindow();
-
+        this.setStage(this.retour);
         new AddSiteView(this, null, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML
     private void updateButtonAction() {
-        if(this.siteStage == null)
-            this.siteStage = (Stage) ajouter.getScene().getWindow();
-
+        this.setStage(this.retour);
         new AddSiteView(this, this.selectedSite, this.connection, this.fileManager, this.lesion);
     }
 
@@ -217,10 +195,8 @@ public class SiteController implements Initializable {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
-
                     siteCutaneDaoImpl.delete(this.selectedSite.getId());
-
-                        this.siteListe.remove(selectedSite);
+                    this.siteListe.remove(selectedSite);
                 } else {
                     alert.close();
                 }
@@ -229,50 +205,69 @@ public class SiteController implements Initializable {
 
     @FXML
     private void downloadSpectreButtonAction() {
-        if(this.selectedSpectre!=null && this.selectedSpectreId!=null){
-            String[] s = this.selectedSite.getSpectre().split("|");
-
-
-           this.fileManager.downloadFromUrl(siteStage,s[selectedSpectreId],null,true,true);
-
+        if (this.selectedSpectre != null && this.selectedSpectreId != null) {
+            this.s = this.selectedSite.getSpectre().split("|");
+            this.startDownload(s[this.selectedSpectreId], this.downloadSpectre);
         }
     }
 
     @FXML
     private void removeSpectreButtonAction() {
-        if(this.selectedSpectreId!=null && this.selectedSite!=null){
-            String[] s = this.selectedSite.getSpectre().split("|");
+        if (this.selectedSpectreId != null && this.selectedSite != null) {
+            this.s = this.selectedSite.getSpectre().split("|");
 
-            //openFTPConnection();
-            this.fileManager.removeFile(s[selectedSpectreId]);
-
-            String newSpectre ="";
-
-            for(int i=0; i<s.length-1; i++){
-                if(i!=selectedSpectreId) {
-                    newSpectre = newSpectre + "|" +s[i];
-                }
-            }
-
-            this.selectedSite.setSpectre(newSpectre.substring(1));
-            this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
-            this.spectre.remove(this.selectedSpectre);
-
-            populateSpectre(spectre);
+            RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.supprimer);
+            removeTask.setUrls(new ArrayList<String>() {{
+                add(s[selectedSpectreId]);
+            }});
+            new Thread(removeTask).start();
         }
     }
 
     @FXML
     private void transcriptomieButtonAction() {
-        if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null) {
-            if(this.siteStage==null){
+        if (this.stage == null) {
+            if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null)
                 new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
-            }
-        }else{
-            if(this.siteStage==null){
-                new TranscriptomieView(connection,fileManager,null,this.selectedSite.getId());
-            }
+            else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
         }
+    }
+
+    private void startDownload(String url, Button button) {
+        this.startDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button);
+    }
+
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+        supprimer.setDisable(!enable);
+        fichierMoy.setDisable(!enable);
+        modifier.setDisable(!enable);
+        transcriptomique.setDisable(!enable);
+    }
+
+    @Override
+    protected void endDownload() {
+        this.enableButtons(true, true);
+        this.progressBar.setVisible(false);
+    }
+
+    @Override
+    public void endRemove() {
+        this.endDownload();
+        StringBuilder newSpectre = new StringBuilder();
+
+        for (int i = 0; i < s.length - 1; i++)
+            if (i != selectedSpectreId)
+                newSpectre.append("|").append(s[i]);
+
+        this.selectedSite.setSpectre(newSpectre.substring(1));
+        this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
+        this.spectre.remove(this.selectedSpectre);
+
+        populateSpectre(spectre);
+        this.endDownload();
     }
 }
 
