@@ -7,83 +7,63 @@ import src.dao.InclusionDao;
 import src.table.Inclusion;
 import src.utils.Diag;
 import src.utils.FileManager;
+import src.utils.SQLConnection;
 
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
-    private Connection connection;
+    private static Connection connection;
 
     public InclusionDaoImpl(Connection connection) {
-        this.connection = connection;
+        InclusionDaoImpl.connection = connection;
     }
 
-    @Override
-    public void insert(Inclusion inclusion) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 1);
-            preparedStatement.executeUpdate();
-
-            System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if(preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    @Override
-    public Inclusion selectById(int id) {
-        Inclusion inclusion = null;
+    public static String selectDiag(int id) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        String diagQuery = null;
 
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
+            preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT DIAG FROM inclusion WHERE ID = ?");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next())
-                inclusion = this.addToInclusion(resultSet);
+                diagQuery = resultSet.getString("DIAG");
 
-            System.out.println("SELECT * FROM inclusion WHERE ID ORDER BY ID");
+            System.out.println("SELECT DIAG FROM inclusion WHERE ID = ?");
+
+            return diagQuery;
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(resultSet != null) {
+            if (resultSet != null) {
                 try {
                     resultSet.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if(preparedStatement != null) {
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        return inclusion;
+        return null;
+    }
+
+    public static void delete(int id) {
+        InclusionDaoImpl.delete(SQLConnection.getConnection(), "inclusion", id);
     }
 
     public static java.sql.Date stringToDate(String date) {
@@ -125,6 +105,120 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         }
     }
 
+    public static void removeDiag(Diag diag, int id) {
+        if (diag != null) {
+            if (!diag.toString().equals("")) {
+                PreparedStatement preparedStatement = null;
+
+                try {
+                    String diagQuery = InclusionDaoImpl.selectDiag(id);
+                    String newDiag = "";
+
+                    if (diagQuery != null) {
+                        if (!diagQuery.equals("")) {
+                            String[] diagSplit = diagQuery.split(" - ");
+
+                            for (String diags : diagSplit) {
+                                if (!diags.equals(diag.toString()))
+                                    newDiag.concat(diags).concat(" - ");
+                            }
+                        }
+                    }
+
+                    if (newDiag.length() > 0)
+                        newDiag = newDiag.substring(0, newDiag.length() - 3);
+
+                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
+                    preparedStatement.setString(1, newDiag);
+                    preparedStatement.setInt(2, id);
+
+                    preparedStatement.executeUpdate();
+                    System.out.println("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
+                } catch (MySQLNonTransientConnectionException e) {
+                    FileManager.openAlert("La connection avec le serveur est interrompue");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (preparedStatement != null) {
+                        try {
+                            preparedStatement.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void insert(Inclusion inclusion) {
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = InclusionDaoImpl.connection.prepareStatement("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
+            preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 1);
+            preparedStatement.executeUpdate();
+
+            System.out.println("INSERT INTO inclusion (ID, ID_PATIENT, REFERENCE1, REFERENCE2, DATE_INCLUSION, NUM_ANAPATH)" + "VALUES (?, ?, ?, ?, ?, ?)");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch(SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public Inclusion selectById(int id) {
+        Inclusion inclusion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next())
+                inclusion = this.addToInclusion(resultSet);
+
+            System.out.println("SELECT * FROM inclusion WHERE ID ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return inclusion;
+    }
+
     @Override
     public ObservableList<Inclusion> selectAll() {
         ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
@@ -132,7 +226,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
+            statement = InclusionDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM inclusion ORDER BY ID");
             this.addToObservableList(inclusions, resultSet);
 
@@ -140,7 +234,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (resultSet != null) {
@@ -163,12 +257,38 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         return inclusions;
     }
 
+    private void addToObservableList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
+        try {
+            while(resultSet.next())
+                inclusions.add(this.addToInclusion(resultSet));
+
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Inclusion addToInclusion(ResultSet resultSet) throws SQLException {
+        Inclusion inclusion = new Inclusion();
+
+        inclusion.setId(resultSet.getInt("ID"));
+        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
+        inclusion.setReference1(resultSet.getString("REFERENCE1"));
+        inclusion.setReference2(resultSet.getString("REFERENCE2"));
+        inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
+        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
+
+        return inclusion;
+    }
+
     @Override
     public void update(Inclusion inclusion, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, REFERENCE1 = ?, REFERENCE2 = ?, DATE_INCLUSION = ?, NUM_ANAPATH = ? WHERE ID = ?");
+            preparedStatement = InclusionDaoImpl.connection.prepareStatement("UPDATE inclusion SET " + "ID_PATIENT = ?, REFERENCE1 = ?, REFERENCE2 = ?, DATE_INCLUSION = ?, NUM_ANAPATH = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, inclusion, 0);
             preparedStatement.setInt(6, id);
 
@@ -177,17 +297,30 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(preparedStatement != null) {
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
+        if(indexDebut == 1)
+            preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
+
+        preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
+        preparedStatement.setString(indexDebut + 2, ((Inclusion) object).getReference1());
+        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference2());
+        preparedStatement.setDate(indexDebut + 4, InclusionDaoImpl.stringToDate(((Inclusion) object).getDateInclusion()));
+        preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
+
+        return preparedStatement;
     }
 
     @Override
@@ -198,28 +331,28 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
         try {
             if (id != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE ID = ? ORDER BY ID");
                 preparedStatement.setInt(1, id);
                 resultSet = preparedStatement.executeQuery();
                 this.addToObservableList(inclusions, resultSet);
             }
 
             if (dateInclusion != null) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? ORDER BY ID");
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE DATE_INCLUSION = ? ORDER BY ID");
                 preparedStatement.setDate(1, dateInclusion);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
             }
 
             if (numAnaPat != 0) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? ORDER BY ID");
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? ORDER BY ID");
                 preparedStatement.setInt(1, numAnaPat);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
             }
 
             if (!idPatient.equals("")) {
-                preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN patient WHERE ID_PATIENT = ? ORDER BY inclusion.ID");
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN patient WHERE ID_PATIENT = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, idPatient);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
@@ -227,7 +360,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
             if (diag != null) {
                 if (!diag.equals(Diag.NULL)) {
-                    preparedStatement = connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
+                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
                     preparedStatement.setString(1, diag.toString());
                     resultSet = preparedStatement.executeQuery();
                     this.refreshList(inclusions, resultSet);
@@ -262,178 +395,5 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         }
 
         return inclusions;
-    }
-
-    private String selectDiag(int id) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        String diagQuery = null;
-
-        try {
-            preparedStatement = connection.prepareStatement("SELECT DIAG FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, id);
-            resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next())
-                diagQuery = resultSet.getString("DIAG");
-
-            System.out.println("SELECT DIAG FROM inclusion WHERE ID = ?");
-
-            return diagQuery;
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private void addToObservableList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
-        try {
-            while(resultSet.next())
-                inclusions.add(this.addToInclusion(resultSet));
-
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Inclusion addToInclusion(ResultSet resultSet) throws SQLException {
-        Inclusion inclusion = new Inclusion();
-
-        inclusion.setId(resultSet.getInt("ID"));
-        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
-        inclusion.setReference1(resultSet.getString("REFERENCE1"));
-        inclusion.setReference2(resultSet.getString("REFERENCE2"));
-        inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
-
-        return inclusion;
-    }
-
-    public void delete(int id) {
-        this.delete(connection, "inclusion", id);
-    }
-
-    @Override
-    public void updateDiag(String diag, int id) {
-        PreparedStatement preparedStatement = null;
-
-        try {
-            String diagQuery = this.selectDiag(id);
-            boolean diagPresent = false;
-
-            if (diagQuery != null) {
-                if (!diagQuery.equals("")) {
-                    for (String diags : diagQuery.split(" - ")) {
-                        if (diags.equals(diag))
-                            diagPresent = true;
-                    }
-                }
-            } else diagQuery = "";
-
-            if (!diagPresent) {
-                preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-                preparedStatement.setString(1, diagQuery.concat(" - ").concat(diag));
-                preparedStatement.setInt(2, id);
-
-                preparedStatement.executeUpdate();
-                System.out.println("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-            }
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
-        if(indexDebut == 1)
-            preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
-
-        preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
-        preparedStatement.setString(indexDebut + 2, ((Inclusion) object).getReference1());
-        preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference2());
-        preparedStatement.setDate(indexDebut + 4, InclusionDaoImpl.stringToDate(((Inclusion) object).getDateInclusion()));
-        preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
-
-        return preparedStatement;
-    }
-
-    public void removeDiag(Diag diag, int id) {
-        if (diag != null) {
-            if (!diag.toString().equals("")) {
-                PreparedStatement preparedStatement = null;
-
-                try {
-                    String diagQuery = this.selectDiag(id);
-                    String newDiag = "";
-
-                    if (diagQuery != null) {
-                        if (!diagQuery.equals("")) {
-                            String[] diagSplit = diagQuery.split(" - ");
-
-                            for (String diags : diagSplit) {
-                                if (!diags.equals(diag.toString()))
-                                    newDiag.concat(diags).concat(" - ");
-                            }
-                        }
-                    }
-
-                    if (newDiag.length() > 0)
-                        newDiag = newDiag.substring(0, newDiag.length() - 3);
-
-                    preparedStatement = connection.prepareStatement("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-                    preparedStatement.setString(1, newDiag);
-                    preparedStatement.setInt(2, id);
-
-                    preparedStatement.executeUpdate();
-                    System.out.println("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-                } catch (MySQLNonTransientConnectionException e) {
-                    FileManager.openAlert("La connection avec le serveur est interrompue");
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (preparedStatement != null) {
-                        try {
-                            preparedStatement.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
     }
 }

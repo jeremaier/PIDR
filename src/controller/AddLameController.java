@@ -4,12 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import src.dao.LameHistologiqueDao;
-import src.daoImpl.LameHistologiqueDaompl;
+import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
@@ -49,7 +47,7 @@ public class AddLameController implements Initializable {
 
     private Connection connection;
     private Stage addLameStage;
-    private LameHistologiqueDaompl lameHistologiqueDaompl;
+    private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
     private FileManager fileManager;
     private Lesion lesion;
     private int numAnapat;
@@ -76,7 +74,7 @@ public class AddLameController implements Initializable {
                 }
             });
         }
-        this.lameHistologiqueDaompl = new LameHistologiqueDaompl(connection);
+        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
 
 
     }
@@ -104,7 +102,7 @@ public class AddLameController implements Initializable {
             coloration=this.coloration.getText();
 
             HistologicLamella newLame = new HistologicLamella(Id, lesion.getId(), cut,vert,noir, coloration, photoPath);
-            this.lameHistologiqueDaompl.insert(newLame);
+            this.lameHistologiqueDaoImpl.insert(newLame);
 
             if(this.addLameStage==null)
                 this.addLameStage = (Stage) addButton.getScene().getWindow();
@@ -145,7 +143,7 @@ public class AddLameController implements Initializable {
                 photoPath=this.histologicLamella.getPhoto();
 
             HistologicLamella newLame = new HistologicLamella(Id, lesion.getId(), cut,vert,noir, coloration, photoPath);
-            this.lameHistologiqueDaompl.update(newLame, this.histologicLamella.getId());
+            this.lameHistologiqueDaoImpl.update(newLame, this.histologicLamella.getId());
 
             if(this.addLameStage==null)
                 this.addLameStage = (Stage) addButton.getScene().getWindow();

@@ -12,6 +12,7 @@ import src.view.InclusionsView;
 
 import java.io.*;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -61,11 +62,12 @@ public class LoginController implements Initializable {
         if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
-            SQLConnection connection = new SQLConnection(user.getText(), password.getText());
+            SQLConnection sqlConnection = new SQLConnection(user.getText(), password.getText());
             FileManager fileManager = new FileManager(user.getText(), password.getText());
-
+            Connection connection = SQLConnection.getConnection();
+            
             /*TODO empecher co quand ftp marche pas*/
-            if (connection.getConnection() != null && fileManager.openFTPConnection()) {
+            if (connection != null && fileManager.openFTPConnection()) {
                 if (this.saveLogin.isSelected())
                     this.saveLoginInFile();
                 else this.deleteLoginFile();
@@ -74,7 +76,7 @@ public class LoginController implements Initializable {
 
                 Stage stage = (Stage) connectButton.getScene().getWindow();
                 stage.close();
-                new InclusionsView(connection.getConnection(), fileManager);
+                new InclusionsView(connection, fileManager);
             } else {
                 alert.setTitle("Erreur d'identification");
                 alert.setHeaderText(null);
@@ -83,9 +85,9 @@ public class LoginController implements Initializable {
                 this.password.clear();
                 this.connectButton.setDisable(false);
 
-                if(connection.getConnection() != null) {
+                if (connection != null) {
                     try {
-                        connection.closeConnection();
+                        sqlConnection.closeConnection();
                     } catch(SQLException e) {
                         e.printStackTrace();
                     }

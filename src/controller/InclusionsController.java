@@ -6,21 +6,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 import src.daoImpl.InclusionDaoImpl;
+import src.daoImpl.LesionDaoImpl;
 import src.table.Inclusion;
-import src.utils.Diag;
-import src.utils.FileManager;
+import src.table.Lesion;
+import src.utils.*;
 import src.view.AddInclusionsView;
 import src.view.LesionsView;
 
-import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class InclusionsController implements Initializable {
+public class InclusionsController extends Controller implements Initializable {
     @FXML
     TextField idInclusionField;
     @FXML
@@ -36,13 +36,11 @@ public class InclusionsController implements Initializable {
     @FXML
     Button searchButton;
     @FXML
-    Button displayAllButton;
+    Button searchAllButton;
     @FXML
     Button refDownloadButton;
     @FXML
     Button addButton;
-    @FXML
-    Button removeButton;
     @FXML
     Button editButton;
     @FXML
@@ -78,7 +76,6 @@ public class InclusionsController implements Initializable {
 
     private Connection connection;
     private FileManager fileManager;
-    private Stage inclusionsStage;
     private InclusionDaoImpl inclusionDaoImpl;
     private ObservableList<Inclusion> inclusionsList;
     private ObservableList<String> procObservableList;
@@ -89,6 +86,75 @@ public class InclusionsController implements Initializable {
     public InclusionsController(Connection connection, FileManager fileManager) {
         this.connection = connection;
         this.fileManager = fileManager;
+    }
+
+    private static void remove(RemoveTask removeTask, Inclusion inclusion) {
+        InclusionsController.removeFTP(removeTask, inclusion);
+        InclusionsController.removeSQL(inclusion);
+    }
+
+    private static void removeSQL(Inclusion inclusion) {
+        LesionDaoImpl.delete(Integer.parseInt(inclusion.getId()));
+    }
+
+    private static void removeFTP(RemoveTask removeTask, Inclusion inclusion) {
+        ArrayList<String> urls = new ArrayList<>();
+        String reference1Url, reference2Url;
+
+        if (!(reference1Url = inclusion.getReference1()).equals("Aucun"))
+            urls.add(reference1Url);
+
+        if (!(reference2Url = inclusion.getReference2()).equals("Aucun"))
+            urls.add(reference2Url);
+
+        removeTask.setUrls(urls);
+        new Thread(removeTask).start();
+    }
+
+    private void displayRemoveDownloadButtons() {
+        if (this.resList.getSelectionModel().getSelectedItem() != null || this.procList.getSelectionModel().getSelectedItem() != null) {
+            this.removeDocButton.setDisable(false);
+            this.docDownloadButton.setDisable(false);
+        } else {
+            this.removeDocButton.setDisable(true);
+            this.docDownloadButton.setDisable(true);
+        }
+    }
+
+    void refreshInclusions() {
+        this.inclusionsList = this.inclusionDaoImpl.selectAll();
+
+        if (!this.inclusionsList.isEmpty())
+            this.inclusionsTable.setItems(this.inclusionsList);
+        else this.inclusionsTable.setItems(FXCollections.observableArrayList());
+    }
+
+    void populateInclusion(Inclusion inclusion) {
+        this.inclusionsList.add(inclusion);
+        this.inclusionsTable.setItems(this.inclusionsList);
+    }
+
+    private void populateInclusions() {
+        if (!this.inclusionsList.isEmpty())
+            this.inclusionsTable.setItems(this.inclusionsList);
+        else this.inclusionsTable.setItems(FXCollections.observableArrayList());
+    }
+
+    @FXML
+    private void searchAction() {
+        this.inclusionsList = this.inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
+                this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
+                this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
+                this.idPatientField.getText(),
+                this.diagnosticChoiceBox.getValue());
+
+        this.populateInclusions();
+    }
+
+    @FXML
+    private void searchAllAction() {
+        this.inclusionsList = this.inclusionDaoImpl.selectAll();
+        this.populateInclusions();
     }
 
     @Override
@@ -147,115 +213,74 @@ public class InclusionsController implements Initializable {
 
         this.inclusionsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             this.selectedInclusion = this.inclusionsTable.getSelectionModel().getSelectedItem();
-
-            if (this.selectedInclusion == null) {
-                this.removeButton.setDisable(true);
-                this.editButton.setDisable(true);
-                this.lesionsButton.setDisable(true);
-                this.refDownloadButton.setDisable(true);
-            } else {
-                this.removeButton.setDisable(false);
-                this.editButton.setDisable(false);
-                this.lesionsButton.setDisable(false);
-
-                if (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun"))
-                    this.refDownloadButton.setDisable(false);
-            }
+            this.enableButtons(this.selectedInclusion == null, false);
         });
 
         this.procList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());
         this.resList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());
     }
 
-    private void displayRemoveDownloadButtons() {
-        if (this.resList.getSelectionModel().getSelectedItem() != null || this.procList.getSelectionModel().getSelectedItem() != null) {
-            this.removeDocButton.setDisable(false);
-            this.docDownloadButton.setDisable(false);
-        } else {
-            this.removeDocButton.setDisable(true);
-            this.docDownloadButton.setDisable(true);
+    public void enableButtons(boolean enable, boolean all) {
+        this.removeButton.setDisable(!enable);
+        this.editButton.setDisable(!enable);
+        this.lesionsButton.setDisable(!enable);
+
+        if (this.selectedInclusion != null && (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun")))
+            this.refDownloadButton.setDisable(!enable);
+        else this.refDownloadButton.setDisable(!enable);
+
+        if (all) {
+            this.addButton.setDisable(!enable);
+            this.searchButton.setDisable(!enable);
+            this.searchAllButton.setDisable(!enable);
+            this.searchDocButton.setDisable(!enable);
+            this.docDownloadButton.setDisable(!enable);
+            this.removeDocButton.setDisable(!enable);
+            this.importProcButton.setDisable(!enable);
+            this.importResultButton.setDisable(!enable);
+            this.selectAllDocsButton.setDisable(!enable);
         }
-    }
-
-    void refreshInclusions() {
-        this.inclusionsList = this.inclusionDaoImpl.selectAll();
-
-        if (!this.inclusionsList.isEmpty())
-            this.inclusionsTable.setItems(this.inclusionsList);
-        else this.inclusionsTable.setItems(FXCollections.observableArrayList());
-    }
-
-    void populateInclusion(Inclusion inclusion) {
-        this.inclusionsList.add(inclusion);
-        this.inclusionsTable.setItems(this.inclusionsList);
-    }
-
-    private void populateInclusions() {
-        if (!this.inclusionsList.isEmpty())
-            this.inclusionsTable.setItems(this.inclusionsList);
-        else this.inclusionsTable.setItems(FXCollections.observableArrayList());
-    }
-
-    @FXML
-    private void searchAction() {
-        this.inclusionsList = this.inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
-                this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
-                this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
-                this.idPatientField.getText(),
-                this.diagnosticChoiceBox.getValue());
-
-        this.populateInclusions();
-    }
-
-    @FXML
-    private void searchAllAction() {
-        this.inclusionsList = this.inclusionDaoImpl.selectAll();
-        this.populateInclusions();
     }
 
     @FXML
     private void removeAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
-        alert.setHeaderText("Vous allez supprimer l'inclusion et les documents attachés");
+        alert.setHeaderText("Vous allez supprimer l'inclusion et ce qui y est attaché");
         alert.setContentText("Confirmer?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            this.removeFiles();
-            this.inclusionDaoImpl.delete(Integer.parseInt(this.selectedInclusion.getId()));
+            this.enableButtons(true, true);
+            this.remove();
             this.inclusionsList.remove(this.selectedInclusion);
             this.inclusionsTable.getSelectionModel().clearSelection();
+            this.enableButtons(false, true);
         } else alert.close();
     }
 
-    private void removeFiles() {
-        String reference1Url = this.selectedInclusion.getReference1();
-        String reference2Url = this.selectedInclusion.getReference2();
+    private void remove() {
+        ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
+        RemoveTask task = new RemoveTask(this.fileManager).setParameters(this.removeButton);
 
-        if (!reference1Url.equals("Aucun"))
-            this.fileManager.removeFile(reference1Url);
-        if (!reference2Url.equals("Aucun"))
-            this.fileManager.removeFile(reference2Url);
+        if (lesionsToRemove.size() != 0)
+            LesionsController.remove(task, this.selectedInclusion, lesionsToRemove);
+
+        InclusionsController.remove(task, this.selectedInclusion);
+        InclusionDaoImpl.delete(Integer.parseInt(this.selectedInclusion.getId()));
     }
 
     @FXML
     private void refDownloadAction() {
-        String ref1Url = this.selectedInclusion.getReference1();
-        String ref2Url = this.selectedInclusion.getReference2();
-        File choosenDirectory = null;
+        ArrayList<String> refs = new ArrayList<>();
+        String ref1Url, ref2Url;
 
-        this.fileManager.openFTPConnection();
+        if (!(ref1Url = this.selectedInclusion.getReference1()).equals("Aucun"))
+            refs.add(ref1Url);
 
-        if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.refDownloadButton.getScene().getWindow();
+        if (!(ref2Url = this.selectedInclusion.getReference2()).equals("Aucun"))
+            refs.add(ref2Url);
 
-        if (!ref1Url.equals("Aucun"))
-            choosenDirectory = this.fileManager.downloadFromUrl(this.inclusionsStage, ref1Url, null, false, false);
-
-        if (!ref2Url.equals("Aucun"))
-            this.fileManager.downloadFromUrl(this.inclusionsStage, ref2Url, choosenDirectory, false, false);
-
-        this.fileManager.closeFTPConnection();
+        this.startDownload(refs, this.refDownloadButton);
     }
 
     private void populateDocs(ObservableList<String> res, ObservableList<String> proc) {
@@ -280,45 +305,42 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void importProcAction() {
-        if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.importProcButton.getScene().getWindow();
-
-        String addedFileName = this.fileManager.uploadToURL(this.inclusionsStage, FileManager.getProcDirectoryName(), null);
-
-        if (addedFileName != null)
-            this.populateProcDoc(addedFileName);
+        this.startUpload("proc", this.importProcButton, FileManager.getProcDirectoryName());
     }
 
     @FXML
     private void importResultAction() {
-        if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.importResultButton.getScene().getWindow();
-
-        String addedFileName = this.fileManager.uploadToURL(this.inclusionsStage, FileManager.getResDirectoryName(), null);
-
-        if (addedFileName != null)
-            this.populateResDoc(addedFileName);
+        this.startUpload("res", this.importResultButton, FileManager.getResDirectoryName());
     }
 
     @FXML
     private void docDownloadAction() {
-        if (this.selectedDoc != null) {
-            if (this.inclusionsStage == null)
-                this.inclusionsStage = (Stage) this.docDownloadButton.getScene().getWindow();
-
-            this.fileManager.downloadFromUrl(this.inclusionsStage, this.selectedDoc, null, true, true);
-        }
+        if (this.selectedDoc != null)
+            this.startDownload(this.selectedDoc, this.docDownloadButton);
     }
 
     @FXML
     private void removeDocAction() {
         if (this.selectedDoc != null) {
-            if (this.fileManager.removeFile(this.selectedDoc)) {
+            RemoveTask removeTask = new RemoveTask(this.fileManager).setParameters(this.removeDocButton);
+
+            removeTask.setUrls(new ArrayList<String>() {{
+                add(selectedDoc);
+            }});
+
+            removeTask.setOnSucceeded(e -> {
                 this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
                 this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
-            }
+                this.populateDocs(this.resObservableList, this.procObservableList);
+            });
 
-            this.populateDocs(this.resObservableList, this.procObservableList);
+            removeTask.setOnFailed(e -> {
+                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), true, false);
+                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
+                this.populateDocs(this.resObservableList, this.procObservableList);
+            });
+
+            new Thread(removeTask).start();
         }
     }
 
@@ -341,27 +363,81 @@ public class InclusionsController implements Initializable {
 
     @FXML
     private void editAction() {
-        if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.editButton.getScene().getWindow();
+        this.setStage(this.editButton);
 
         new AddInclusionsView(this, this.inclusionsList, this.selectedInclusion, this.inclusionDaoImpl, this.connection, this.fileManager);
     }
 
     @FXML
     private void addAction() {
-        if (this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.addButton.getScene().getWindow();
+        this.setStage(this.addButton);
 
         new AddInclusionsView(this, this.inclusionsList, null, this.inclusionDaoImpl, this.connection, this.fileManager);
     }
 
     @FXML
     private void lesionsAction() {
-        if(this.inclusionsStage == null)
-            this.inclusionsStage = (Stage) this.lesionsButton.getScene().getWindow();
+        this.setStage(this.lesionsButton);
 
-        new LesionsView(this.connection, this.fileManager, this.inclusionDaoImpl, this.selectedInclusion);
+        new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
 
-        this.inclusionsStage.close();
+        this.stage.close();
+    }
+
+    private void startDownload(String url, Button button) {
+        this.startDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button);
+    }
+
+    private void startDownload(ArrayList<String> urls, Button button) {
+        DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.refDownloadButton.setVisible(false);
+        this.progressBar.setVisible(true);
+        this.progressBar.progressProperty().bind(downloadTask.progressProperty());
+        this.progressLabel.textProperty().bind(downloadTask.messageProperty());
+        downloadTask.setOnSucceeded(e -> this.endDownload());
+        downloadTask.setOnFailed(e -> this.endDownload());
+        downloadTask.setSelectedDirectory(FileManager.openDirectoryChooser(this.stage));
+
+        new Thread(downloadTask).start();
+    }
+
+    private void endDownload() {
+        this.enableButtons(true, true);
+        this.progressBar.setVisible(false);
+        this.refDownloadButton.setVisible(true);
+    }
+
+    private void startUpload(String buttonName, Button button, String directory) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory);
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName()));
+        uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName()));
+
+        FileManager.openFileChooser(this.stage, uploadTask);
+
+        new Thread(uploadTask).start();
+    }
+
+    private void endUpload(String listName, String addedFileName) {
+        if (addedFileName != null) {
+            switch (listName) {
+                case "proc":
+                    this.populateProcDoc(addedFileName);
+                    break;
+                case "res":
+                    this.populateResDoc(addedFileName);
+                    break;
+            }
+        }
+
+        this.enableButtons(true, true);
     }
 }

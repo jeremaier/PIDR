@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import src.daoImpl.TranscriptomieDaompl;
+import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 import src.view.AddTranscriptomieView;
@@ -75,7 +75,7 @@ public class TranscriptomieController implements Initializable {
 
     private Connection connection;
     private Stage transcriptomieStage;
-    private TranscriptomieDaompl transcriptomieDaompl;
+    private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private TranscriptomicAnalysis transcriptomicAnalysis;
     private FileManager fileManager;
     private int siteId;
@@ -162,8 +162,7 @@ public class TranscriptomieController implements Initializable {
         );
 
 
-
-        this.transcriptomieDaompl = new TranscriptomieDaompl(connection);
+        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
 
     }
 
@@ -212,7 +211,7 @@ public class TranscriptomieController implements Initializable {
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView( connection, fileManager, null, siteId);
         } else {
-            JOptionPane.showMessageDialog(null, "Il y a déjà une analyse trascriptomique");
+            JOptionPane.showMessageDialog(null, "Il y a dï¿½jï¿½ une analyse trascriptomique");
 
         }
     }
@@ -228,7 +227,7 @@ public class TranscriptomieController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
 
-                transcriptomieDaompl.delete(this.transcriptomicAnalysis.getId());
+                TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
                 this.transcriptomicAnalysis=null;
 
             } else {
@@ -239,6 +238,6 @@ public class TranscriptomieController implements Initializable {
 
     @FXML
     private void refresh(ActionEvent actionEvent){
-        this.transcriptomicAnalysis=transcriptomieDaompl.selectById(siteId);
+        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectById(siteId);
     }
 }

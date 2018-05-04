@@ -1,11 +1,5 @@
 package src.controller;
 
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.sql.Connection;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,13 +7,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import src.daoImpl.LameHistologiqueDaompl;
+import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
 import src.view.AddLameView;
 
 import javax.swing.*;
+import java.net.URL;
+import java.sql.Connection;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class LameController implements Initializable {
 
@@ -58,7 +56,7 @@ public class LameController implements Initializable {
 
     private Connection connection;
     private Stage lameStage;
-    private LameHistologiqueDaompl lameHistologiqueDaompl;
+    private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
     private ObservableList<HistologicLamella> lameList;
     private FileManager fileManager;
     private HistologicLamella selectedHistologicLamella;
@@ -82,9 +80,9 @@ public class LameController implements Initializable {
         this.orientationColeurNoire.setCellValueFactory(cellData -> cellData.getValue().orientationNoirProperty().asObject());
         this.Coloration.setCellValueFactory(cellData -> cellData.getValue().colorationProperty());
 
-        this.lameHistologiqueDaompl = new LameHistologiqueDaompl(connection);
+        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
 
-        this.lameList = lameHistologiqueDaompl.selectByLesion(this.lesion.getId());
+        this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
         this.populate();
 
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
@@ -150,7 +148,7 @@ public class LameController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
 
-                lameHistologiqueDaompl.delete(this.selectedHistologicLamella.getId());
+                lameHistologiqueDaoImpl.delete(this.selectedHistologicLamella.getId());
                 this.lameList.remove(selectedHistologicLamella);
 
                 populate();

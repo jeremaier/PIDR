@@ -1,17 +1,15 @@
 package src.controller;
 
-import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import src.daoImpl.TranscriptomieDaompl;
-import src.table.CutaneousSite;
+import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
-
 
 import java.net.URL;
 import java.sql.Connection;
@@ -71,7 +69,7 @@ public class AddTransciptomieController implements Initializable {
     private Stage addTranscriptomieStage;
     private FileManager fileManager;
     private TranscriptomicAnalysis transcriptomicAnalysis;
-    private TranscriptomieDaompl transcriptomieDaompl;
+    private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private int siteId;
     private String fichierBrutPath;
     private String qualityReportPath;
@@ -107,7 +105,7 @@ public class AddTransciptomieController implements Initializable {
                 }
             });
         }
-        this.transcriptomieDaompl=new TranscriptomieDaompl(connection);
+        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
 
     @FXML
@@ -136,7 +134,7 @@ public class AddTransciptomieController implements Initializable {
             Rin = Integer.parseInt(RIN.getText());
 
             TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
-            transcriptomieDaompl.insert(newTranscr);
+            transcriptomieDaoImpl.insert(newTranscr);
 
             if (this.addTranscriptomieStage == null)
                 this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
@@ -208,7 +206,7 @@ public class AddTransciptomieController implements Initializable {
             }
 
             TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis( transcriptomicAnalysis.getId(), siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
-            transcriptomieDaompl.update(newTranscr,transcriptomicAnalysis.getId());
+            transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
 
             if (this.addTranscriptomieStage == null)
                 this.addTranscriptomieStage = (Stage) accepte.getScene().getWindow();
