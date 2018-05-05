@@ -77,45 +77,29 @@ public class AddTransciptomieController extends Controller implements Initializa
         this.transcriptomicAnalysis = transcriptomicAnalysis;
         this.siteId = siteId;
         this.transcriptomieController = transcriptomieController;
-
-
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (transcriptomicAnalysis == null) {
-
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.intValue() == 0) {
-                    accepte.setDisable(true);
-                    fichierBrut.setDisable(true);
-                    qualityReport.setDisable(true);
+                    this.enableButtons(false, false);
                     fichierBrutPath = null;
                     qualityReportPath = null;
-
-                } else {
-                    accepte.setDisable(false);
-                    fichierBrut.setDisable(false);
-                    qualityReport.setDisable(false);
-
-                }
+                } else this.enableButtons(false, false);
             });
         }
+
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
 
     @FXML
     private void accepteButton() {
-        int Id;
-        int Emplacement;
-        int NumSerie;
-        Double Cy3;
-        Double Rendement;
-        Double Concentration;
-        String Crit;
-        String Activ;
-        Double Arnc;
-        int Rin;
+        TranscriptomicAnalysis newTranscr;
+        int Id, Emplacement, NumSerie, Rin;
+        Double Cy3, Rendement, Concentration, Arnc;
+        String Crit, Activ;
 
         if (transcriptomicAnalysis == null) {
             if(id.getText().length()>0)
@@ -153,7 +137,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             Rin = Integer.parseInt(RIN.getText());
             else Rin=0;
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.insert(newTranscr);
             transcriptomieController.display(newTranscr);
 
@@ -162,65 +146,16 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.stage.close();
 
         } else {
-            if (id.getText().length() > 0) {
-                Id = Integer.parseInt(id.getText());
-            } else {
-                Id = transcriptomicAnalysis.getId();
-            }
-
-            if (emplacement.getText().length() > 0) {
-                Emplacement = Integer.parseInt(emplacement.getText());
-            } else {
-                Emplacement = transcriptomicAnalysis.getLamellaLocation();
-            }
-
-            if (numeroSerie.getText().length() > 0) {
-                NumSerie = Integer.parseInt(numeroSerie.getText());
-            } else {
-                NumSerie = transcriptomicAnalysis.getSerialNumber();
-            }
-
-            if (cy3.getText().length() > 0) {
-                Cy3 = Double.parseDouble(cy3.getText());
-            } else {
-                Cy3 = transcriptomicAnalysis.getCyanine();
-            }
-
-            if (rendement.getText().length() > 0) {
-                Rendement = Double.parseDouble(rendement.getText());
-            } else {
-                Rendement = transcriptomicAnalysis.getYield();
-            }
-
-            if (concentration.getText().length() > 0) {
-                Concentration = Double.parseDouble(concentration.getText());
-            } else {
-                Concentration = transcriptomicAnalysis.getConcentration();
-            }
-
-            if (critere.getText().length() > 0) {
-                Crit = critere.getText();
-            } else {
-                Crit = transcriptomicAnalysis.getExclusionCriteria();
-            }
-
-            if (activiteSpecifique.getText().length() > 0) {
-                Activ = activiteSpecifique.getText();
-            } else {
-                Activ = transcriptomicAnalysis.getSpecificActivity();
-            }
-
-            if (ARNc.getText().length() > 0) {
-                Arnc = Double.parseDouble(ARNc.getText());
-            } else {
-                Arnc = transcriptomicAnalysis.getARNC();
-            }
-
-            if (RIN.getText().length() > 0) {
-                Rin = Integer.parseInt(RIN.getText());
-            } else {
-                Rin = transcriptomicAnalysis.getRIN();
-            }
+            Id = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : transcriptomicAnalysis.getId();
+            Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : transcriptomicAnalysis.getLamellaLocation();
+            NumSerie = numeroSerie.getText().length() > 0 ? Integer.parseInt(numeroSerie.getText()) : transcriptomicAnalysis.getSerialNumber();
+            Cy3 = cy3.getText().length() > 0 ? Double.parseDouble(cy3.getText()) : transcriptomicAnalysis.getCyanine();
+            Rendement = rendement.getText().length() > 0 ? Double.parseDouble(rendement.getText()) : transcriptomicAnalysis.getYield();
+            Concentration = concentration.getText().length() > 0 ? Double.parseDouble(concentration.getText()) : transcriptomicAnalysis.getConcentration();
+            Crit = critere.getText().length() > 0 ? critere.getText() : transcriptomicAnalysis.getExclusionCriteria();
+            Activ = activiteSpecifique.getText().length() > 0 ? activiteSpecifique.getText() : transcriptomicAnalysis.getSpecificActivity();
+            Arnc = ARNc.getText().length() > 0 ? Double.parseDouble(ARNc.getText()) : transcriptomicAnalysis.getARNC();
+            Rin = RIN.getText().length() > 0 ? Integer.parseInt(RIN.getText()) : transcriptomicAnalysis.getRIN();
 
             if (fichierBrutPath == null) {
                 if (this.transcriptomicAnalysis.getFichierBrut() == null) {
@@ -285,22 +220,21 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     private void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
-            if (num == 1) {
+            if (num == 1)
                 this.fichierBrutPath = directory + addedFileName;
+            else this.qualityReportPath = directory + addedFileName;
 
-            } else {
-                this.qualityReportPath = directory + addedFileName;
-            }
             label.setText(addedFileName);
-
             this.enableButtons(true, true);
         }
     }
 
-        @Override
-        public void enableButtons ( boolean enable, boolean all){
-
-        }
+    @Override
+    public void enableButtons(boolean enable, boolean all) {
+        this.accepte.setDisable(!enable);
+        this.fichierBrut.setDisable(!enable);
+        this.qualityReport.setDisable(!enable);
     }
+}
 
 

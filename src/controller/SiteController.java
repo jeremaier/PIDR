@@ -171,13 +171,13 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     private void addButtonAction() {
         this.setStage(this.retour);
-        new AddSiteView(this, null, this.connection, this.fileManager, this.lesion);
+        new AddSiteView(this.stage, this, null, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML
     private void updateButtonAction() {
         this.setStage(this.retour);
-        new AddSiteView(this, this.selectedSite, this.connection, this.fileManager, this.lesion);
+        new AddSiteView(this.stage, this, this.selectedSite, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML
@@ -212,7 +212,7 @@ public class SiteController extends Controller implements Initializable {
             this.s = this.selectedSite.getSpectre().split("~#");
 
             RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer);
-            removeTask.setUrls(new ArrayList<String>() {{
+            removeTask.addUrls(new ArrayList<String>() {{
                 add(s[selectedSpectreId]);
             }});
             new Thread(removeTask).start();
@@ -226,9 +226,7 @@ public class SiteController extends Controller implements Initializable {
                 new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
             else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
 
-
         this.stage.close();
-
     }
 
     @Override
@@ -237,12 +235,6 @@ public class SiteController extends Controller implements Initializable {
         fichierMoy.setDisable(!enable);
         modifier.setDisable(!enable);
         transcriptomique.setDisable(!enable);
-    }
-
-    @Override
-    protected void endDownload() {
-        this.enableButtons(true, true);
-        this.progressBar.setVisible(false);
     }
 
     @Override
@@ -259,7 +251,6 @@ public class SiteController extends Controller implements Initializable {
         this.spectre.remove(this.selectedSpectre);
 
         populateSpectre(spectre);
-        this.endDownload();
     }
 }
 

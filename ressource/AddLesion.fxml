@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="465.0" maxWidth="560.0" minHeight="465.0" prefHeight="465.0"
-            prefWidth="560.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8"
+            prefWidth="560.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121"
             fx:controller="src.controller.AddLesionController">
     <children>
         <GridPane prefHeight="375.0" prefWidth="560.0" AnchorPane.bottomAnchor="90.0" AnchorPane.topAnchor="0.0">
@@ -181,7 +181,8 @@
                         <Insets left="10.0" right="15.0"/>
                     </GridPane.margin>
                 </Button>
-                <ProgressBar fx:id="progressBar" disable="true" prefHeight="30.0" prefWidth="200.0" progress="0.0">
+                <ProgressBar fx:id="progressBar" disable="true" prefHeight="30.0" prefWidth="200.0" progress="0.0"
+                             visible="false">
                     <GridPane.margin>
                         <Insets left="20.0" right="10.0"/>
                     </GridPane.margin>

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class RemoveTask extends Task<Void> {
     private Controller controller;
     private FileManager fileManager;
-    private ArrayList<String> urls;
+    private ArrayList<String> urls = new ArrayList<>();
 
     public RemoveTask(Controller controller, FileManager fileManager) {
         this.controller = controller;
@@ -23,17 +23,16 @@ public class RemoveTask extends Task<Void> {
         return null;
     }
 
-    void updateProgressBar() {
-        this.updateProgress(-1, -1);
-        this.updateMessage("Suppression...");
+    void updateProgressBar(double value, String message) {
+        this.updateProgress(value, value);
+        this.updateMessage(message);
     }
 
-    public void setUrls(ArrayList<String> urls) {
-        this.urls = urls;
+    public void addUrls(ArrayList<String> urls) {
+        this.urls.addAll(urls);
     }
 
     public RemoveTask setParameters(Button button) {
-        System.out.println(controller);
         this.controller.setStage(button);
         this.controller.enableButtons(false, true);
         this.controller.progressBar.setVisible(true);

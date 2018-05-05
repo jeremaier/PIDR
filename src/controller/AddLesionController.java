@@ -207,15 +207,15 @@ public class AddLesionController extends Controller implements Initializable {
                 files.add(moyFile);
         }
 
-        removeTask.setUrls(files);
-        removeTask.setOnSucceeded(e -> this.stage.close());
+        removeTask.addUrls(files);
 
         new Thread(removeTask).start();
+        this.stage.close();
     }
 
     public void otherDiagAction() {
         this.setStage(this.otherDiagButton);
-        new AddDiagView(this, this.lesion);
+        new AddDiagView(this.stage, this, this.lesion);
     }
 
     public void addPhotoSurAction() {
@@ -253,35 +253,40 @@ public class AddLesionController extends Controller implements Initializable {
 
         switch (buttonName) {
             case "sur":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoSur());
                 }});
+
                 this.photoSurLabel.setText("Aucun");
                 break;
             case "hors":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoHors());
                 }});
+
                 this.lesion.setPhotoHors("Aucun");
                 break;
             case "fixe":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoFixe());
                 }});
+
                 this.lesion.setPhotoFixe("Aucun");
                 break;
             case "diag":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getFileDiag());
                 }});
+
                 this.diagBox.setValue(null);
                 this.diagBox.setDisable(false);
                 this.lesion.setFileDiag("Aucun");
                 break;
             case "moyFile":
-                removeTask.setUrls(new ArrayList<String>() {{
+                removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getFichierMoy());
                 }});
+
                 this.lesion.setFichierMoy("Aucun");
                 break;
         }
@@ -289,13 +294,16 @@ public class AddLesionController extends Controller implements Initializable {
         removeTask.setOnSucceeded(e -> {
             button.setText("Ajouter");
             label.setText("Aucun");
+            this.enableButtons(true, true);
         });
 
         removeTask.setOnFailed(e -> {
             button.setText("Ajouter");
             label.setText("Aucun");
+            this.enableButtons(true, true);
         });
 
+        this.lesionDaoImpl.update(lesion, lesion.getId());
         new Thread(removeTask).start();
     }
 

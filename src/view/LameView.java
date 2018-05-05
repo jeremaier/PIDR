@@ -17,10 +17,11 @@ public class LameView {
     public LameView(Connection connection, FileManager fileManager, Lesion lesion, int numanapat) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
-        Stage stage = new Stage();
+        Stage lameStage = new Stage();
 
-        stage.setTitle("Lame histologique");
-        viewLoader.setLocation(getClass().getResource("/ressource/Lames.fxml"));
+        lameStage.setTitle("Lame histologique");
+        lameStage.setX(lameStage.getX() - 25);
+        viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
         viewLoader.setControllerFactory(iC -> new LameController(connection,lesion,fileManager, numanapat));
 
         try {
@@ -29,11 +30,11 @@ public class LameView {
             e.printStackTrace();
         }
 
-        stage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        lameStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        stage.setResizable(false);
-        stage.setScene(new Scene(rootLog));
-        stage.show();
+        lameStage.setResizable(false);
+        lameStage.setScene(new Scene(rootLog));
+        lameStage.show();
     }
 }

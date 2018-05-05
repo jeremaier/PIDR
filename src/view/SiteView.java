@@ -20,6 +20,7 @@ public class SiteView {
         FXMLLoader viewLoader = new FXMLLoader();
 
         siteStage.setTitle("Vision d'un site");
+        siteStage.setX(siteStage.getX() - 25);
         viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));
         viewLoader.setControllerFactory(iC -> new SiteController(connection, lesion, fileManager));
 

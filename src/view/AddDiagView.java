@@ -11,12 +11,14 @@ import src.table.Lesion;
 import java.io.IOException;
 
 public class AddDiagView {
-    public AddDiagView(AddLesionController addLesionController, Lesion lesion) {
+    public AddDiagView(Stage parentStage, AddLesionController addLesionController, Lesion lesion) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage diagStage = new Stage();
 
-        diagStage.setTitle("Ajout d'un diagnostic");
+        diagStage.setX(parentStage.getX() + parentStage.getWidth());
+        diagStage.setY(parentStage.getY());
+        diagStage.setTitle(lesion.getAutreDiag().equals("") ? "Ajout d'un diagnostic" : "Modification d'un diagnostic");
         viewLoader.setLocation(getClass().getResource("/ressource/AddDiag.fxml"));
         viewLoader.setControllerFactory(iC -> new AddDiagController(addLesionController, lesion));
 

@@ -142,7 +142,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.setStage(this.modifier);
 
         if (this.transcriptomicAnalysis != null)
-            new AddTranscriptomieView(this, connection, fileManager, this.transcriptomicAnalysis, siteId);
+            new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
         else JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
     }
 
@@ -152,8 +152,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.setStage(this.ajouter);
 
         if (this.transcriptomicAnalysis == null) {
-            new AddTranscriptomieView(this, connection, fileManager, null, siteId);
-            this.stage.close();
+            new AddTranscriptomieView(this.stage, this, connection, fileManager, null, siteId);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");

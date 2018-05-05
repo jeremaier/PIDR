@@ -17,8 +17,7 @@ public class PatientsView {
         Stage patientStage = new Stage();
 
         patientStage.setTitle("Patients");
-        patientStage.setResizable(false);
-
+        patientStage.setX(patientStage.getX() - 25);
         viewLoader.setLocation(getClass().getResource("/ressource/Patients.fxml"));
         viewLoader.setControllerFactory(iC -> new PatientsController(addInclusionController, patientDaoImpl));
 
