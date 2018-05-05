@@ -45,8 +45,6 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     Button suprSpectre;
 
-    @FXML
-    Button fichierMoy;
 
     @FXML
     Button transcriptomique;
@@ -63,11 +61,6 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     TableColumn<CutaneousSite, String> diag;
 
-    @FXML
-    TableColumn<CutaneousSite, String> siteSain;
-
-    @FXML
-     TableColumn<CutaneousSite, String> diagSain;
 
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
@@ -163,10 +156,6 @@ public class SiteController extends Controller implements Initializable {
     }
 
 
-    @FXML
-    private void fichierMoyAction() {
-        this.startDownload(this.lesion.getFichierMoy(), this.fichierMoy);
-    }
 
     @FXML
     private void addButtonAction() {
@@ -232,7 +221,6 @@ public class SiteController extends Controller implements Initializable {
     @Override
     public void enableButtons(boolean enable, boolean all) {
         supprimer.setDisable(!enable);
-        fichierMoy.setDisable(!enable);
         modifier.setDisable(!enable);
         transcriptomique.setDisable(!enable);
     }
