@@ -115,7 +115,7 @@ public class LameHistologiqueDaoImpl extends DaoImpl implements LameHistologique
 
         try {
             preparedStatement = LameHistologiqueDaoImpl.connection.prepareStatement("INSERT INTO lame_histologique (ID, ID_LESION, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lame, 1);
+            preparedStatement = this.setPreparedStatement(preparedStatement, lame, 0);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lame_histoloqique (ID, ID_SITE_CUTANE, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");

@@ -87,7 +87,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                     this.enableButtons(false, false);
                     fichierBrutPath = null;
                     qualityReportPath = null;
-                } else this.enableButtons(false, false);
+                } else this.enableButtons(true, false);
             });
         }
 
@@ -173,7 +173,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 }
             }
 
-            TranscriptomicAnalysis newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
             transcriptomieController.display(newTranscr);
 
