@@ -5,11 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LameHistologiqueDaoImpl;
+import src.daoImpl.LesionDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
 import src.view.AddLameView;
+import src.view.LesionsView;
 import src.view.SiteView;
 
 import javax.swing.*;
@@ -94,11 +97,18 @@ public class LameController extends Controller implements Initializable {
         }
     }
 
+    void populateSingleLame(HistologicLamella lamella){
+        this.lameList.add(lamella);
+        this.tab.setItems(this.lameList);
+    }
+
     @FXML
     public void cancelButtonEvent() {
         this.setStage(this.retour);
+        InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
 
-        new SiteView(this.lesion, this.connection, this.fileManager);
+
+        new LesionsView(connection,fileManager,inclusionDaoImpl.selectById(lesion.getIdInclusion()));
 
         this.stage.close();
     }
@@ -106,7 +116,7 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void ajoutButtonAction() {
         this.setStage(this.ajouter);
-        new AddLameView(null, connection,fileManager,lesion,numAnapat);
+        new AddLameView(this,null, connection,fileManager,lesion,numAnapat);
 
 
     }
@@ -116,7 +126,7 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.modifier);
 
         if (selectedHistologicLamella != null) {
-            new AddLameView(null, connection, fileManager, lesion, numAnapat);
+            new AddLameView(this,selectedHistologicLamella, connection, fileManager, lesion, numAnapat);
         } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
@@ -158,5 +168,13 @@ public class LameController extends Controller implements Initializable {
     public void enableButtons(boolean enable, boolean all) {
         photo.setDisable(!enable);
         supprimer.setDisable(!enable);
+    }
+
+    void refreshLesions() {
+        this.lameList = this.lameHistologiqueDaoImpl.selectAll();
+
+        if (!this.lameList.isEmpty())
+            this.tab.setItems(this.lameList);
+        else this.tab.setItems(FXCollections.observableArrayList());
     }
 }

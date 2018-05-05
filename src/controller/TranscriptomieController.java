@@ -153,6 +153,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView(this, connection, fileManager, null, siteId);
+            this.stage.close();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");

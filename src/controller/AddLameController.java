@@ -48,13 +48,15 @@ public class AddLameController extends Controller implements Initializable {
     private int numAnapat;
     private HistologicLamella histologicLamella;
     private String photoPath;
+    private LameController lameController;
 
-    public AddLameController(Connection connection, FileManager fileManager, Lesion lesion, HistologicLamella histologicLamella, int numAnapat) {
+    public AddLameController(LameController lameController, Connection connection, FileManager fileManager, Lesion lesion, HistologicLamella histologicLamella, int numAnapat) {
         this.connection = connection;
         this.fileManager = fileManager;
         this.lesion = lesion;
         this.histologicLamella = histologicLamella;
         this.numAnapat = numAnapat;
+        this.lameController=lameController;
     }
 
     @Override
@@ -73,18 +75,26 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     private void accepteButtonAction() {
-        int id, vert, noir;
+        Integer id, vert, noir;
         String cut, coloration;
 
-        if (this.histologicLamella != null) {
+        if (this.histologicLamella == null) {
             id = Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText());
-            cut=this.cutArea.getText();
-            vert=Integer.parseInt(this.greenOrientation.getText());
-            noir=Integer.parseInt(this.blackOrientation.getText());
-            coloration=this.coloration.getText();
+            cut = this.cutArea.getText();
 
-            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, vert, noir, coloration, photoPath);
+            if(greenOrientation.getText().length()>0)
+            vert = Integer.parseInt(this.greenOrientation.getText());
+            else vert=0;
+
+            if(blackOrientation.getText().length()>0)
+            noir = Integer.parseInt(this.blackOrientation.getText());
+            else noir=0;
+
+            coloration = this.coloration.getText();
+
+            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, noir, vert, coloration, photoPath);
             this.lameHistologiqueDaoImpl.insert(newLame);
+            this.lameController.populateSingleLame(newLame);
         } else {
             id = this.lamellaNum.getText().length() > 0 ? Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText()) : this.histologicLamella.getId();
             cut = this.cutArea.getText().length() > 0 ? this.cutArea.getText() : this.histologicLamella.getSiteCoupe();
@@ -92,11 +102,16 @@ public class AddLameController extends Controller implements Initializable {
             noir = this.blackOrientation.getText().length() > 0 ? Integer.parseInt(this.blackOrientation.getText()) : this.histologicLamella.getOrientationNoir();
             coloration = this.coloration.getText().length() > 0 ? this.coloration.getText() : this.histologicLamella.getColoration();
 
-            if(photoPath==null)
-                photoPath=this.histologicLamella.getPhoto();
+            if (photoPath == null) {
+                if (this.histologicLamella.getPhoto() != null)
+                    photoPath = this.histologicLamella.getPhoto();
+                else
+                    photoPath = null;
+            }
 
-            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, vert, noir, coloration, photoPath);
+            HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, noir, vert, coloration, photoPath);
             this.lameHistologiqueDaoImpl.update(newLame, this.histologicLamella.getId());
+            this.lameController.refreshLesions();
         }
 
         this.setStage(this.addButton);

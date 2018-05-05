@@ -20,7 +20,7 @@ public class LameView {
         Stage stage = new Stage();
 
         stage.setTitle("Lame histologique");
-        viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Lames.fxml"));
         viewLoader.setControllerFactory(iC -> new LameController(connection,lesion,fileManager, numanapat));
 
         try {
