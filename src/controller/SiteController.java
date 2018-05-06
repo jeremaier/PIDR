@@ -72,7 +72,7 @@ public class SiteController extends Controller implements Initializable {
 
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
-    private ObservableList<String> spectre;
+    private ObservableList<String> spectre = FXCollections.observableArrayList() ;
     private CutaneousSite selectedSite;
     private String selectedSpectre;
     private Lesion lesion;
@@ -105,17 +105,24 @@ public class SiteController extends Controller implements Initializable {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
 
+
+            spectre.clear();
             if (selectedSite.getSpectre()!=null) {
+
                 System.out.println(selectedSite.getSpectre());
                 String[] s0 = this.selectedSite.getSpectre().split("~#");
                 System.out.println(s0[0]);
-                for (int i = 0; i < s0.length - 1; i++) {
+                for (int i = 0; i < s0.length; i++) {
                     String[] s1 = s0[i].split("//");
 
-                    this.spectre.add("mesure_" + Integer.toString(s1[1].charAt(0)));
+                    System.out.println(s1[0]);
+                    System.out.println(s1[1]);
+                    System.out.println(s1[2]);
+                    System.out.println(s1[2].charAt(0));
+                    this.spectre.add("mesure_" + s1[2].charAt(0));
                 }
 
-                spectreList.setItems(spectre);
+                populateSpectre(spectre);
             }
         });
 
@@ -158,6 +165,8 @@ public class SiteController extends Controller implements Initializable {
         else affecteTab.setItems(FXCollections.observableArrayList());
 
     }
+
+
 
     private void populateSpectre(ObservableList<String> spectre ) {
         if (!spectre.isEmpty()){
@@ -316,7 +325,7 @@ public class SiteController extends Controller implements Initializable {
             if (i != selectedSpectreId)
                 newSpectre.append("~#").append(s[i]);
 
-        this.selectedSite.setSpectre(newSpectre.substring(1));
+        this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
         this.spectre.remove(this.selectedSpectre);
 

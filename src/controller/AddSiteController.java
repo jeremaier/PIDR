@@ -153,8 +153,9 @@ public class AddSiteController extends Controller implements Initializable {
                     spectrePath = site.getSpectre();
                 else
                     spectrePath = null;
-            else if (this.site.getSpectre() != null)
-                spectrePath = spectrePath + "~#" +  numMesur.getText() + "="+ site.getSpectre();
+            else
+                if (this.site.getSpectre() != null)
+                    spectrePath = spectrePath + "~#"  + site.getSpectre();
 
             System.out.println(spectrePath);
             CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
@@ -214,8 +215,8 @@ public class AddSiteController extends Controller implements Initializable {
                 this.fichierDiagPath = directory + addedFileName;
             else
 
-            this.spectrePath = directory + addedFileName;
-            System.out.println("ccoucou "+spectrePath);
+                this.spectrePath = directory + numMesur.getText() + "="+ addedFileName;
+            System.out.println("ccoucou " + spectrePath);
 
 
             label.setText(addedFileName);
