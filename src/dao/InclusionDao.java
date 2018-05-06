@@ -1,5 +1,6 @@
 package src.dao;
 
+import javafx.collections.ObservableList;
 import src.table.Inclusion;
 import src.utils.Diag;
 
@@ -13,7 +14,7 @@ public interface InclusionDao {
 
     List<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initiales, Diag diag);
 
-    List<Inclusion> selectAll();
+    ObservableList<Inclusion> selectAll();
 
     void update(Inclusion inclusion, int id);
 

@@ -7,14 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LameHistologiqueDaoImpl;
-import src.daoImpl.LesionDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
 import src.utils.RemoveTask;
 import src.view.AddLameView;
 import src.view.LesionsView;
-import src.view.SiteView;
 
 import javax.swing.*;
 import java.net.URL;
@@ -62,12 +60,14 @@ public class LameController extends Controller implements Initializable {
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
     private int numAnapat;
+    private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
 
     public LameController(Connection connection, Lesion lesion, FileManager fileManager, int numAnapat) {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
         this.numAnapat = numAnapat;
+        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
     }
 
 

@@ -12,7 +12,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class LameHistologiqueDaoImpl extends DaoImpl implements LameHistologiqueDao {
+public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements LameHistologiqueDao {
     private static Connection connection;
 
     public LameHistologiqueDaoImpl(Connection connection) {
@@ -189,7 +189,7 @@ public class LameHistologiqueDaoImpl extends DaoImpl implements LameHistologique
         }
     }
 
-    public void delete(int id) {
+    public static void delete(int id) {
         LameHistologiqueDaoImpl.delete(SQLConnection.getConnection(), "lame_histologique", id);
     }
 

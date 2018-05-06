@@ -312,16 +312,15 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         }
     }
 
-    public void setDiags(ObservableList<Inclusion> inclusions) {
+    private void setDiags(ObservableList<Inclusion> inclusions) {
         ArrayList<String> diags = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        int diagsNumber;
 
         try {
             for (Inclusion inclusion : inclusions) {
                 preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
-                preparedStatement.setInt(1, Integer.getInteger(inclusion.getId()));
+                preparedStatement.setInt(1, Integer.parseInt(inclusion.getId()));
                 resultSet = preparedStatement.executeQuery();
 
                 while (resultSet.next()) {
@@ -331,13 +330,14 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                         diags.add(diag);
                 }
 
+                int diagsNumber;
+
                 if ((diagsNumber = diags.size()) > 0) {
-                    if (diagsNumber > 1) {
+                    if (diags.size() > 1) {
                         StringBuilder concatDiags = new StringBuilder(diags.get(0));
 
-                        for (int i = 1; i < diagsNumber; i++) {
-                            concatDiags.append(" | ").append(diags.get(i));
-                        }
+                        for (int i = 1; i < diagsNumber; i++)
+                            concatDiags.append("\n").append(diags.get(i));
 
                         inclusion.setDiag(concatDiags.toString());
                     } else inclusion.setDiag(diags.get(0));
@@ -419,8 +419,8 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
             if (diag != null) {
                 if (!diag.equals(Diag.NULL)) {
-                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC = ? ORDER BY inclusion.ID");
-                    preparedStatement.setString(1, diag.toString());
+                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC LIKE ? ORDER BY inclusion.ID");
+                    preparedStatement.setString(1, "%" + diag.toString() + "%");
                     resultSet = preparedStatement.executeQuery();
                     this.refreshList(inclusions, resultSet);
                 }
