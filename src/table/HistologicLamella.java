@@ -84,7 +84,7 @@ public class HistologicLamella {
     }
 
     public String getPhoto() {
-        return this.coloration.get();
+        return this.photo.get();
     }
 
     public void setPhoto(String photo) {this.photo.set(photo);}
@@ -113,5 +113,7 @@ public class HistologicLamella {
         return this.coloration;
     }
 
-    public StringProperty photoPrpoerty() { return this.photo; }
+    public StringProperty photoProperty() {
+        return this.photo;
+    }
 }

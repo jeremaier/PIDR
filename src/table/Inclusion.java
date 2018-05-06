@@ -16,6 +16,7 @@ public class Inclusion {
     private String reference2 = "Aucun";
     private StringProperty dateInclusion;
     private IntegerProperty numAnaPath;
+    //private ObservableList<String> diag;
     private StringProperty diag;
 
     public Inclusion() {
@@ -23,18 +24,8 @@ public class Inclusion {
         this.idPatient = new SimpleIntegerProperty(-1);
         this.dateInclusion = new SimpleStringProperty();
         this.numAnaPath = new SimpleIntegerProperty();
+        //this.diag = FXCollections.observableArrayList();
         this.diag = new SimpleStringProperty();
-    }
-
-    public Inclusion(int id, int idPatient, String reference1, String reference2, Date dateInclusion, int numAnaPath, String diag) {
-        this();
-        this.setId(id);
-        this.setIdPatient(idPatient);
-        this.reference1 = reference1;
-        this.reference2 = reference2;
-        this.setDateInclusion(dateInclusion);
-        this.setNumAnaPath(numAnaPath);
-        this.setDiag(diag);
     }
 
     public String getId() {
@@ -102,15 +93,21 @@ public class Inclusion {
         this.numAnaPath.set(numAnaPath);
     }
 
+    //public ObservableList<String> getDiag() { return this.diag; }
+
+    /*public void addDiag(String diag) {
+        this.diag.add(diag);
+    }*/
+
     public String getDiag() {
-        return diag.get();
+        return this.diag.get();
+    }
+
+    public void setDiag(String s) {
+        this.diag.set(s);
     }
 
     public StringProperty diagProperty() {
-        return diag;
-    }
-
-    public void setDiag(String diag) {
-        this.diag.set(diag);
+        return this.diag;
     }
 }

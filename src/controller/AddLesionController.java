@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import src.dao.InclusionDao;
 import src.daoImpl.LesionDaoImpl;
 import src.table.Lesion;
 import src.utils.Diag;
@@ -151,7 +150,7 @@ public class AddLesionController extends Controller implements Initializable {
         Diag diagValue = this.diagBox.getValue();
 
         if (diagValue != null) {
-            InclusionDao.updateDiag(diagValue.toString(), idInclusion);
+            //InclusionDao.updateDiag(diagValue.toString(), idInclusion);
             this.lesion.setDiag(diagValue.toString());
         }
 
