@@ -93,6 +93,7 @@ public class AddLameController extends Controller implements Initializable {
             coloration = this.coloration.getText();
 
             HistologicLamella newLame = new HistologicLamella(id, lesion.getId(), cut, noir, vert, coloration, photoPath);
+
             this.lameHistologiqueDaoImpl.insert(newLame);
             this.lameController.populateSingleLame(newLame);
         } else {

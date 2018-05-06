@@ -86,7 +86,7 @@ public class LameController extends Controller implements Initializable {
         }
     }
 
-    void populateSingleLame(HistologicLamella lamella){
+    void populateSingleLame(HistologicLamella lamella) {
         this.lameList.add(lamella);
         this.tab.setItems(this.lameList);
     }
@@ -97,7 +97,7 @@ public class LameController extends Controller implements Initializable {
         InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
 
 
-        new LesionsView(connection,fileManager,inclusionDaoImpl.selectById(lesion.getIdInclusion()));
+        new LesionsView(connection, fileManager, inclusionDaoImpl.selectById(lesion.getIdInclusion()));
 
         this.stage.close();
     }
@@ -105,7 +105,7 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void ajoutButtonAction() {
         this.setStage(this.ajouter);
-        new AddLameView(this.stage,this, null, connection, fileManager, lesion, numAnapat);
+        new AddLameView(this.stage, this, null, connection, fileManager, lesion, numAnapat);
     }
 
     @FXML
@@ -113,7 +113,7 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.modifier);
 
         if (selectedHistologicLamella != null) {
-            new AddLameView(this.stage, this,selectedHistologicLamella, connection, fileManager, lesion, numAnapat);
+            new AddLameView(this.stage, this, selectedHistologicLamella, connection, fileManager, lesion, numAnapat);
         } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
@@ -135,7 +135,7 @@ public class LameController extends Controller implements Initializable {
         for (HistologicLamella histologicLamella : histologicLamellas) {
             String photo;
 
-            if (!(photo = histologicLamella.getPhoto()).equals("Aucun"))
+            if ((photo = histologicLamella.getPhoto()) != null)
                 urls.add(photo);
         }
 
@@ -172,7 +172,7 @@ public class LameController extends Controller implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedHistologicLamella);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedHistologicLamella);
                 this.lameList.remove(this.selectedHistologicLamella);
                 this.tab.getSelectionModel().clearSelection();
                 populate(); //????
@@ -180,7 +180,7 @@ public class LameController extends Controller implements Initializable {
             } else {
                 alert.close();
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
     }
@@ -193,10 +193,15 @@ public class LameController extends Controller implements Initializable {
 
     @FXML
     public void photoButtonAction() {
-        if(this.selectedHistologicLamella.getPhoto() != null){
-            this.startDownload(this.selectedHistologicLamella.getPhoto(), this.photo);
-        }else{
-            JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
+        if (this.selectedHistologicLamella != null) {
+            if (this.selectedHistologicLamella.getPhoto() != null) {
+                this.startDownload(this.selectedHistologicLamella.getPhoto(), this.photo);
+            } else {
+                JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
     }
 

@@ -55,7 +55,7 @@ public class AddSiteController extends Controller implements Initializable {
     private CutaneousSite site;
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
-    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL,SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
+    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL, SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
     private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
     private String fichierDiagPath = null;
     private String spectrePath = null;
@@ -79,7 +79,7 @@ public class AddSiteController extends Controller implements Initializable {
             else this.enableButtons(true, false);
         });
 
-        numMesur.lengthProperty().addListener((observable, oldValue, newValue)->{
+        numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (numMesur.getText().length() > 0)
                 addFichierSpectre.setDisable(false);
             else addFichierSpectre.setDisable(true);
@@ -92,71 +92,85 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void cancelButtonAction() {
         this.setStage(this.annuler);
-        new SiteView(this.lesion,connection,fileManager);
+        new SiteView(this.lesion, connection, fileManager);
 
         this.stage.close();
     }
 
     @FXML
     private void accepteButtonAction() {
-        String SITE;
+        String SITE=SiteCutane.NULL.toString();
         Integer Orientation = 0;
-        String diagnostique = SiteCutane.NULL.toString();
+        String diagnostique = Diag.NULL.toString();
         String AutreDiag;
 
         if (site == null) {
-            if (siteCutane.getValue() != null) {
+            if (siteCutane.getValue() != null)
                 SITE = siteCutane.getValue().toString();
 
-                if (orientation.getText().length() > 0)
-                    Orientation = Integer.parseInt(orientation.getText());
+            if (orientation.getText().length() > 0)
+                Orientation = Integer.parseInt(orientation.getText());
 
-                if (siteCutane.getValue() != null)
-                    diagnostique = diag.getValue().toString();
+            if (siteCutane.getValue() != null)
+                diagnostique = diag.getValue().toString();
 
-                AutreDiag = autreDiag.getText();
+            AutreDiag = autreDiag.getText();
 
-                CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
-                this.siteController.populateSingleSite(newSite);
-                siteCutaneDaoImpl.insert(newSite);
+            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+            this.siteController.populateSingleSite(newSite);
+            siteCutaneDaoImpl.insert(newSite);
+        } else {
+            SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite();
+
+            if (orientation.getText().length() > 0) {
+                Orientation = Integer.parseInt(orientation.getText());
             } else {
-                SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite();
-
-                if (orientation.getText().length() > 0) {
-                    Orientation = Integer.parseInt(orientation.getText());
-                } else {
-                    Orientation = site.getOrientation();
-                }
-
-                if (diag.getSelectionModel().getSelectedItem() != null) {
-                    diagnostique = diag.getSelectionModel().getSelectedItem().toString();
-                } else {
-                    diagnostique = site.getDiag();
-                }
-
-                if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null) {
-                    AutreDiag = autreDiag.getText();
-                } else if (autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null) {
-                    AutreDiag = null;
-                } else {
-                    AutreDiag = site.getAutreDiag();
-                }
-
-                if (fichierDiagPath == null)
-                    fichierDiagPath = site.getFichierDiag();
-
-
-                if (spectrePath == null)
-                    spectrePath = site.getSpectre();
-
-                CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
-                siteCutaneDaoImpl.update(newSite, site.getId());
+                Orientation = site.getOrientation();
             }
 
-            this.setStage(this.ajouter);
-            this.stage.close();
+            if (diag.getSelectionModel().getSelectedItem() != null) {
+                diagnostique = diag.getSelectionModel().getSelectedItem().toString();
+            } else {
+                diagnostique = site.getDiag();
+            }
+
+            if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null) {
+                AutreDiag = autreDiag.getText();
+            } else if (autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null) {
+                AutreDiag = null;
+            } else {
+                AutreDiag = site.getAutreDiag();
+            }
+
+            if (fichierDiagPath == null)
+                if(this.site.getFichierDiag()!=null)
+                    fichierDiagPath = site.getFichierDiag();
+                else
+                    fichierDiagPath = null;
+
+
+            if (spectrePath == null)
+                if(this.site.getSpectre()!=null)
+                    spectrePath = site.getSpectre();
+                else
+                    spectrePath= null;
+            else
+                if(this.site.getSpectre()!=null)
+                    spectrePath = site.getSpectre()+"|"+ spectrePath;
+
+            System.out.println(fichierDiagPath);
+            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+            newSite.setFichierDiag(fichierDiagPath);
+
+            siteCutaneDaoImpl.update(newSite, site.getId());
+            this.siteController.refreshSite();
         }
+
+        this.setStage(this.ajouter);
+        this.stage.close();
     }
+
+
 
     @FXML
     private void fichierDiag() {
@@ -165,8 +179,8 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void spectreButtonAction() {
-        if(numMesur.getText().length()>0) {
-            this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", numMesur.getText());
+        if (numMesur.getText().length() > 0) {
+            this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//", numMesur.getText());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");
@@ -175,6 +189,8 @@ public class AddSiteController extends Controller implements Initializable {
             alert.showAndWait();
         }
     }
+
+
 
     @Override
     public void enableButtons(boolean enable, boolean all) {
@@ -197,8 +213,9 @@ public class AddSiteController extends Controller implements Initializable {
 
     private void endUpload(String addedFileName, String directory, Label label) {
         if (addedFileName != null) {
-            //button.setText("Supprimer");
+            System.out.println("ccoucou");
             this.fichierDiagPath = directory + addedFileName;
+            System.out.println( fichierDiagPath);
             label.setText(addedFileName);
         }
 

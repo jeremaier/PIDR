@@ -72,11 +72,11 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO site_cutane ( ID_LESION, SAIN, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            System.out.println("INSERT INTO site_cutane ( ID_LESION, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, SPECTROSCOPIE)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -230,7 +230,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         try {
             preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
-            preparedStatement.setInt(9, id);
+            preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, FICHIER_DIAG=?, SPECTROSCOPIE = ? WHERE ID = ?");
@@ -269,6 +269,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         if (indexDebut == 1)
             preparedStatement.setInt(indexDebut, ((CutaneousSite) object).getId());
 
+        //preparedStatement.setInt(indexDebut+1((CutaneousSite)object).getId());
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getIdLesion());
         preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite());
         preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getOrientation());

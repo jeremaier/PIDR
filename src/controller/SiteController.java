@@ -2,6 +2,7 @@ package src.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -18,6 +19,7 @@ import src.view.AddSiteView;
 import src.view.LesionsView;
 import src.view.TranscriptomieView;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     Button suprSpectre;
 
+    @FXML
+    Button fichierDiag;
+
 
     @FXML
     Button transcriptomique;
@@ -61,6 +66,9 @@ public class SiteController extends Controller implements Initializable {
 
     @FXML
     TableColumn<CutaneousSite, String> diag;
+
+    @FXML
+    TableColumn<CutaneousSite, String> autreDiag;
 
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
@@ -83,6 +91,8 @@ public class SiteController extends Controller implements Initializable {
         this.siteCutane.setCellValueFactory(cellData -> cellData.getValue().siteProperty());
         this.Orientation.setCellValueFactory(cellData -> cellData.getValue().orientationProperty().asObject());
         this.diag.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
+        this.autreDiag.setCellValueFactory(cellDate -> cellDate.getValue().autreDiagProperty());
+
 
         this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
@@ -94,17 +104,20 @@ public class SiteController extends Controller implements Initializable {
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
+            System.out.println();
+           /** if (selectedSite.getSpectre()!=null) {
+                String[] s0 = this.selectedSite.getSpectre().split("~#");
 
-            String[] s0 = this.selectedSite.getSpectre().split("~#");
+                for (int i = 0; i < s0.length - 1; i++) {
+                    String[] s1 = s0[i].split("//");
 
-            for (int i = 0; i < s0.length - 1; i++) {
-                String[] s1 = s0[i].split("//");
+                    this.spectre.add("mesure_" + Integer.toString(s1[2].charAt(0)));
+                }
 
-                this.spectre.add("mesure_"+ Integer.toString(s1[2].charAt(0)) );
-            }
-
-            spectreList.setItems(spectre);
+                spectreList.setItems(spectre);
+            }**/
         });
+
 
 
 
@@ -120,6 +133,20 @@ public class SiteController extends Controller implements Initializable {
                 downloadSpectre.setDisable(true);
             }
         } ));
+    }
+
+    @FXML
+    public void fichierDiagButtonAction(ActionEvent actionEvent) {
+        if (this.selectedSite != null) {
+            if (this.selectedSite.getFichierDiag() != null) {
+                this.startDownload(this.selectedSite.getFichierDiag(), this.fichierDiag);
+            } else {
+                JOptionPane.showMessageDialog(null, "Pas de fichier de diagnostic specifié pour ce site");
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Veuillez selectionner un site cutané");
+        }
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
@@ -182,7 +209,7 @@ public class SiteController extends Controller implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedSite);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedSite);
                 this.siteListe.remove(selectedSite);
                 this.affecteTab.getSelectionModel().clearSelection();
                 this.enableButtons(true, true);
@@ -230,11 +257,10 @@ public class SiteController extends Controller implements Initializable {
             String spectres, fichierDiag;
 
             /*TODO enlever tous les spectres*/
-
-            if (!(spectres = cutaneousSite.getSpectre()).equals("Aucun"))
+            if ((spectres = cutaneousSite.getSpectre())!=null)
                 urls.add(spectres);
 
-            if (!(fichierDiag = cutaneousSite.getFichierDiag()).equals("Aucun"))
+            if ((fichierDiag = cutaneousSite.getFichierDiag())!=null)
                 urls.add(fichierDiag);
         }
 
@@ -277,6 +303,7 @@ public class SiteController extends Controller implements Initializable {
         this.supprimer.setDisable(!enable);
         this.modifier.setDisable(!enable);
         this.transcriptomique.setDisable(!enable);
+        this.fichierDiag.setDisable(!enable);
     }
 
     @Override
@@ -293,6 +320,15 @@ public class SiteController extends Controller implements Initializable {
         this.spectre.remove(this.selectedSpectre);
 
         populateSpectre(spectre);
+    }
+
+    public void refreshSite() {
+        this.siteListe = this.siteCutaneDaoImpl.selectAll();
+        System.out.println("ddddddddddd");
+        if (!this.siteListe.isEmpty())
+            this.affecteTab.setItems(this.siteListe);
+
+        else this.affecteTab.setItems(FXCollections.observableArrayList());
     }
 }
 
