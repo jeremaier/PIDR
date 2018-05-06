@@ -232,6 +232,9 @@ public class InclusionsController extends Controller implements Initializable {
         this.editButton.setDisable(!enable);
         this.lesionsButton.setDisable(!enable);
 
+        System.out.println(this.selectedInclusion.getReference1());
+        System.out.println(this.selectedInclusion.getReference2());
+
         if (this.selectedInclusion != null && (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun")))
             this.refDownloadButton.setDisable(!enable);
         else this.refDownloadButton.setDisable(!enable);

@@ -1083,3 +1083,7 @@
     -fx-border-radius: 3;
     -fx-border-color: grey;
 }
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}

@@ -107,7 +107,8 @@ public class AddInclusionController extends Controller implements Initializable 
 
     private void setInclusionInformations() {
         this.inclusionIDField.setText(this.inclusion.getId());
-        Date dateInclusion = InclusionDaoImpl.stringToDate(this.inclusion.getDateInclusion());
+        String date = this.inclusion.getDateInclusion();
+        Date dateInclusion = date == null ? null : InclusionDaoImpl.stringToDate(date);
         int numAna = this.inclusion.getNumAnaPat();
 
         if (this.inclusion.getIdPatient() != 0) {

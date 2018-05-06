@@ -21,7 +21,7 @@ public class Inclusion {
 
     public Inclusion() {
         this.id = new SimpleStringProperty();
-        this.idPatient = new SimpleIntegerProperty(-1);
+        this.idPatient = new SimpleIntegerProperty();
         this.dateInclusion = new SimpleStringProperty();
         this.numAnaPath = new SimpleIntegerProperty();
         //this.diag = FXCollections.observableArrayList();
@@ -65,8 +65,10 @@ public class Inclusion {
     }
 
     public void setDateInclusion(Date dateInclusion) {
-        DateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
-        this.dateInclusion.set(fmt.format(dateInclusion));
+        if(dateInclusion != null) {
+            DateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+            this.dateInclusion.set(fmt.format(dateInclusion));
+        }
     }
 
     public int getNumAnaPat() {

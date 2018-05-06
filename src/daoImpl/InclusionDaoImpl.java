@@ -70,11 +70,13 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     public static java.sql.Date stringToDate(String date) {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-        try {
-            java.util.Date parsed = format.parse(date);
-            return new java.sql.Date(parsed.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(date != null) {
+            try {
+                java.util.Date parsed = format.parse(date);
+                return new java.sql.Date(parsed.getTime());
+            } catch(ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
