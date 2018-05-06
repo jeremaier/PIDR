@@ -21,7 +21,7 @@ public class LameView {
 
         lameStage.setTitle("Lame histologique");
         lameStage.setX(lameStage.getX() - 25);
-        viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));
+        viewLoader.setLocation(getClass().getResource("/ressource/Lames.fxml"));
         viewLoader.setControllerFactory(iC -> new LameController(connection,lesion,fileManager, numanapat));
 
         try {

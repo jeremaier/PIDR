@@ -141,9 +141,10 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
         this.setStage(this.modifier);
 
-        if (this.transcriptomicAnalysis != null)
+        if (this.transcriptomicAnalysis != null) {
             new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
-        else JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
+            this.stage.close();
+        }else{ JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");}
     }
 
     @FXML
@@ -153,6 +154,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView(this.stage, this, connection, fileManager, null, siteId);
+            this.stage.close();
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");

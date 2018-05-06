@@ -46,8 +46,6 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     Button suprSpectre;
 
-    @FXML
-    Button fichierMoy;
 
     @FXML
     Button transcriptomique;
@@ -63,12 +61,6 @@ public class SiteController extends Controller implements Initializable {
 
     @FXML
     TableColumn<CutaneousSite, String> diag;
-
-    @FXML
-    TableColumn<CutaneousSite, String> siteSain;
-
-    @FXML
-     TableColumn<CutaneousSite, String> diagSain;
 
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
@@ -164,10 +156,6 @@ public class SiteController extends Controller implements Initializable {
     }
 
 
-    @FXML
-    private void fichierMoyAction() {
-        this.startDownload(this.lesion.getFichierMoy(), this.fichierMoy);
-    }
 
     @FXML
     private void addButtonAction() {
@@ -179,6 +167,33 @@ public class SiteController extends Controller implements Initializable {
     private void updateButtonAction() {
         this.setStage(this.retour);
         new AddSiteView(this.stage, this, this.selectedSite, this.connection, this.fileManager, this.lesion);
+    }
+
+    @FXML
+    private void delButtonAction() {
+        if (this.selectedSite != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmer la suppresion");
+            alert.setHeaderText("Vous allez supprimer un site cutané");
+            alert.setContentText("Confirmer?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                this.enableButtons(false, true);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedSite);
+                this.siteListe.remove(selectedSite);
+                this.affecteTab.getSelectionModel().clearSelection();
+                this.enableButtons(true, true);
+            } else {
+                alert.close();
+            }
+        }
+    }
+
+    private void remove(RemoveTask removeTask, CutaneousSite cutaneousSite) {
+        SiteController.remove(removeTask, new ArrayList<CutaneousSite>() {{
+            add(cutaneousSite);
+        }});
     }
 
     static void remove(RemoveTask task, ArrayList<CutaneousSite> cutaneousSites) {
@@ -225,33 +240,6 @@ public class SiteController extends Controller implements Initializable {
     }
 
     @FXML
-    private void delButtonAction() {
-        if (this.selectedSite != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmer la suppresion");
-            alert.setHeaderText("Vous allez supprimer un site cutané");
-            alert.setContentText("Confirmer?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
-                this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedSite);
-                this.siteListe.remove(selectedSite);
-                this.affecteTab.getSelectionModel().clearSelection();
-                this.enableButtons(true, true);
-            } else {
-                alert.close();
-            }
-        }
-    }
-
-    private void remove(RemoveTask removeTask, CutaneousSite cutaneousSite) {
-        SiteController.remove(removeTask, new ArrayList<CutaneousSite>() {{
-            add(cutaneousSite);
-        }});
-    }
-
-    @FXML
     private void downloadSpectreButtonAction() {
         if (this.selectedSpectre != null && this.selectedSpectreId != null) {
             this.s = this.selectedSite.getSpectre().split("~#");
@@ -285,7 +273,6 @@ public class SiteController extends Controller implements Initializable {
     @Override
     public void enableButtons(boolean enable, boolean all) {
         this.supprimer.setDisable(!enable);
-        this.fichierMoy.setDisable(!enable);
         this.modifier.setDisable(!enable);
         this.transcriptomique.setDisable(!enable);
     }

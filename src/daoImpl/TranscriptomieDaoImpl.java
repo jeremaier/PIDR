@@ -26,7 +26,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 1);
+            preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
