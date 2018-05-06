@@ -71,7 +71,7 @@ public class InclusionsController extends Controller implements Initializable {
     @FXML
     TableColumn<Inclusion, String>  inclDate;
     @FXML
-    TableColumn<Inclusion, Integer> inclAnapath;
+    TableColumn<Inclusion, String> inclAnapath;
     @FXML
     TableColumn<Inclusion, String> inclIDPatient;
     @FXML
@@ -123,7 +123,7 @@ public class InclusionsController extends Controller implements Initializable {
     private void searchAction() {
         this.inclusionsList = this.inclusionDaoImpl.selectByFilters(this.idInclusionField.getText().equals("") ? 0 : Integer.parseInt(this.idInclusionField.getText()),
                 this.inclusionDatePicker.getValue() == null ? null : Date.valueOf(this.inclusionDatePicker.getValue()),
-                this.idAnapathField.getText().equals("") ? 0 : Integer.parseInt(this.idAnapathField.getText()),
+                this.idAnapathField.getText(),
                 this.idPatientField.getText(),
                 this.diagnosticChoiceBox.getValue());
 
@@ -140,8 +140,8 @@ public class InclusionsController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.inclID.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         this.inclDate.setCellValueFactory(cellData -> cellData.getValue().dateInclusionProperty());
-        this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty().asObject());
-        this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty().asString());
+        this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty());
+        this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty());
         //this.inclDiagnostic.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDiag()));
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.NULL, Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
@@ -232,12 +232,13 @@ public class InclusionsController extends Controller implements Initializable {
         this.editButton.setDisable(!enable);
         this.lesionsButton.setDisable(!enable);
 
-        System.out.println(this.selectedInclusion.getReference1());
-        System.out.println(this.selectedInclusion.getReference2());
-
-        if (this.selectedInclusion != null && (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun")))
-            this.refDownloadButton.setDisable(!enable);
-        else this.refDownloadButton.setDisable(!enable);
+        if (this.selectedInclusion != null) {
+            System.out.println(this.selectedInclusion.getReference1());
+            System.out.println(this.selectedInclusion.getReference2());
+            if (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun"))
+                this.refDownloadButton.setDisable(!enable);
+            this.refDownloadButton.setDisable(true);
+        }
 
         if (all) {
             this.addButton.setDisable(!enable);

@@ -11,19 +11,19 @@ import java.text.SimpleDateFormat;
 
 public class Inclusion {
     private StringProperty id;
-    private IntegerProperty idPatient;
+    private StringProperty idPatient;
     private String reference1 = "Aucun";
     private String reference2 = "Aucun";
     private StringProperty dateInclusion;
-    private IntegerProperty numAnaPath;
+    private StringProperty numAnaPath;
     //private ObservableList<String> diag;
     private StringProperty diag;
 
     public Inclusion() {
         this.id = new SimpleStringProperty();
-        this.idPatient = new SimpleIntegerProperty();
+        this.idPatient = new SimpleStringProperty();
         this.dateInclusion = new SimpleStringProperty();
-        this.numAnaPath = new SimpleIntegerProperty();
+        this.numAnaPath = new SimpleStringProperty();
         //this.diag = FXCollections.observableArrayList();
         this.diag = new SimpleStringProperty();
     }
@@ -36,11 +36,11 @@ public class Inclusion {
         this.id.set(String.format("%03d", id));
     }
 
-    public int getIdPatient() {
+    public String getIdPatient() {
         return idPatient.get();
     }
 
-    public void setIdPatient(int idPatient) {
+    public void setIdPatient(String idPatient) {
         this.idPatient.set(idPatient);
     }
 
@@ -71,7 +71,7 @@ public class Inclusion {
         }
     }
 
-    public int getNumAnaPat() {
+    public String getNumAnaPat() {
         return numAnaPath.get();
     }
 
@@ -79,7 +79,7 @@ public class Inclusion {
         return this.id;
     }
 
-    public IntegerProperty idPatientProperty() {
+    public StringProperty idPatientProperty() {
         return this.idPatient;
     }
 
@@ -87,11 +87,11 @@ public class Inclusion {
         return this.dateInclusion;
     }
 
-    public IntegerProperty numAnaPathProperty() {
+    public StringProperty numAnaPathProperty() {
         return this.numAnaPath;
     }
 
-    public void setNumAnaPath(int numAnaPath) {
+    public void setNumAnaPath(String numAnaPath) {
         this.numAnaPath.set(numAnaPath);
     }
 

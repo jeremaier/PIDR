@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class LameView {
-    public LameView(Connection connection, FileManager fileManager, Lesion lesion, int numanapat) {
+    public LameView(Connection connection, FileManager fileManager, Lesion lesion, String numanapat) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage lameStage = new Stage();

@@ -45,12 +45,12 @@ public class AddLameController extends Controller implements Initializable {
 
     private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
     private Lesion lesion;
-    private int numAnapat;
+    private String numAnapat;
     private HistologicLamella histologicLamella;
     private String photoPath;
     private LameController lameController;
 
-    public AddLameController(LameController lameController, Connection connection, FileManager fileManager, Lesion lesion, HistologicLamella histologicLamella, int numAnapat) {
+    public AddLameController(LameController lameController, Connection connection, FileManager fileManager, Lesion lesion, HistologicLamella histologicLamella, String numAnapat) {
         this.connection = connection;
         this.fileManager = fileManager;
         this.lesion = lesion;
@@ -79,7 +79,7 @@ public class AddLameController extends Controller implements Initializable {
         String cut, coloration;
 
         if (this.histologicLamella == null) {
-            id = Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText());
+            id = Integer.parseInt(numAnapat + lamellaNum.getText());
             cut = this.cutArea.getText();
 
             if(greenOrientation.getText().length()>0)
@@ -97,7 +97,7 @@ public class AddLameController extends Controller implements Initializable {
             this.lameHistologiqueDaoImpl.insert(newLame);
             this.lameController.populateSingleLame(newLame);
         } else {
-            id = this.lamellaNum.getText().length() > 0 ? Integer.parseInt(Integer.toString(numAnapat) + lamellaNum.getText()) : this.histologicLamella.getId();
+            id = this.lamellaNum.getText().length() > 0 ? Integer.parseInt(numAnapat + lamellaNum.getText()) : this.histologicLamella.getId();
             cut = this.cutArea.getText().length() > 0 ? this.cutArea.getText() : this.histologicLamella.getSiteCoupe();
             vert = this.greenOrientation.getText().length() > 0 ? Integer.parseInt(this.greenOrientation.getText()) : this.histologicLamella.getOrientationVert();
             noir = this.blackOrientation.getText().length() > 0 ? Integer.parseInt(this.blackOrientation.getText()) : this.histologicLamella.getOrientationNoir();
@@ -139,7 +139,7 @@ public class AddLameController extends Controller implements Initializable {
 
     private void endUpload(String addedFileName, String directory, Label label) {
         if (addedFileName != null) {
-            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : Integer.toString(numAnapat) + lamellaNum.getText();
+            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : numAnapat + lamellaNum.getText();
 
             this.photoPath = directory + path + addedFileName;
             label.setText(addedFileName);

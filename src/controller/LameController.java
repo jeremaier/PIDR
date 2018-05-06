@@ -59,10 +59,10 @@ public class LameController extends Controller implements Initializable {
     private ObservableList<HistologicLamella> lameList;
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
-    private int numAnapat;
+    private String numAnapat;
     private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
 
-    public LameController(Connection connection, Lesion lesion, FileManager fileManager, int numAnapat) {
+    public LameController(Connection connection, Lesion lesion, FileManager fileManager, String numAnapat) {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;

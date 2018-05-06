@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class AddLameView {
-    public AddLameView(Stage parentStage, LameController lameController, HistologicLamella lame, Connection connection, FileManager fileManager, Lesion lesion, int numAnapat) {
+    public AddLameView(Stage parentStage, LameController lameController, HistologicLamella lame, Connection connection, FileManager fileManager, Lesion lesion, String numAnapat) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addLameStage = new Stage();

@@ -12,7 +12,7 @@ public interface InclusionDao {
 
     Inclusion selectById(int id);
 
-    List<Inclusion> selectByFilters(int id, Date dateInclusion, int numAnaPat, String initiales, Diag diag);
+    List<Inclusion> selectByFilters(int id, Date dateInclusion, String numAnaPat, String initiales, Diag diag);
 
     ObservableList<Inclusion> selectAll();
 

@@ -281,7 +281,7 @@ public class PatientsController implements Initializable {
         if (this.patientsStage == null)
             this.patientsStage = (Stage) this.chooseButton.getScene().getWindow();
 
-        this.addInclusionController.setPatientInformations(Integer.parseInt(this.idField.getText()));
+        this.addInclusionController.setPatientInformations(this.idField.getText());
         this.patientsStage.close();
     }
 }

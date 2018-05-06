@@ -50,7 +50,7 @@ public class AddInclusionController extends Controller implements Initializable 
     private InclusionsController inclusionsController;
     private InclusionDaoImpl inclusionDaoImpl;
     private PatientDaoImpl patientDaoImpl;
-    private int patientId;
+    private String patientId;
 
     public AddInclusionController(InclusionsController inclusionsController, ObservableList<Inclusion> inclusionsList, Inclusion inclusion, InclusionDaoImpl inclusionDaoImpl, Connection connection, FileManager fileManager) {
         this.inclusionsController = inclusionsController;
@@ -109,10 +109,10 @@ public class AddInclusionController extends Controller implements Initializable 
         this.inclusionIDField.setText(this.inclusion.getId());
         String date = this.inclusion.getDateInclusion();
         Date dateInclusion = date == null ? null : InclusionDaoImpl.stringToDate(date);
-        int numAna = this.inclusion.getNumAnaPat();
+        String numAna = this.inclusion.getNumAnaPat();
 
-        if (this.inclusion.getIdPatient() != 0) {
-            this.patientLabel.setText("ID : " + Integer.toString(this.inclusion.getIdPatient()));
+        if (this.inclusion.getIdPatient() != null) {
+            this.patientLabel.setText("ID : " + this.inclusion.getIdPatient());
             this.addPatientButton.setText("Supprimer");
             this.patientId = this.inclusion.getIdPatient();
         }
@@ -130,8 +130,8 @@ public class AddInclusionController extends Controller implements Initializable 
         if (dateInclusion != null)
             this.inclusionDatePicker.setValue(dateInclusion.toLocalDate());
 
-        if (numAna != 0)
-            this.idAnapathField.setText(Integer.toString(numAna));
+        if (numAna != null)
+            this.idAnapathField.setText(numAna);
 
         this.addButton.setDisable(false);
         this.reference1FileButton.setDisable(false);
@@ -139,9 +139,9 @@ public class AddInclusionController extends Controller implements Initializable 
         this.inclusionIDField.setDisable(true);
     }
 
-    void setPatientInformations(int patientId) {
+    void setPatientInformations(String patientId) {
         this.patientId = patientId;
-        this.patientLabel.setText("ID : " + Integer.toString(this.patientId));
+        this.patientLabel.setText("ID : " + this.patientId);
         this.addPatientButton.setText("Supprimer");
     }
 
@@ -151,7 +151,7 @@ public class AddInclusionController extends Controller implements Initializable 
         boolean newInclusion = this.inclusion.getId() == null;
         this.inclusion.setId(Integer.parseInt(id));
 
-        if (this.patientId != 0)
+        if (this.patientId != null)
             this.inclusion.setIdPatient(this.patientId);
 
         if (!this.reference1FileLabel.getText().equals("Aucun"))
@@ -163,7 +163,7 @@ public class AddInclusionController extends Controller implements Initializable 
         if (this.inclusionDatePicker.getValue() != null)
             this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
 
-        this.inclusion.setNumAnaPath(!this.idAnapathField.getText().equals("") ? Integer.parseInt(this.idAnapathField.getText()) : 0);
+        this.inclusion.setNumAnaPath(!this.idAnapathField.getText().equals("") ? this.idAnapathField.getText() : null);
 
         if (newInclusion) {
             this.inclusionDaoImpl.insert(this.inclusion);
@@ -180,7 +180,7 @@ public class AddInclusionController extends Controller implements Initializable 
     @FXML
     private void addPatientAction() {
         if (this.addPatientButton.getText().equals("Supprimer")) {
-            this.patientId = 0;
+            this.patientId = "";
             this.patientLabel.setText("Aucun");
             this.addPatientButton.setText("Ajouter");
             this.inclusion.setIdPatient(this.patientId);

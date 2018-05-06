@@ -278,11 +278,11 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         Inclusion inclusion = new Inclusion();
 
         inclusion.setId(resultSet.getInt("ID"));
-        inclusion.setIdPatient(resultSet.getInt("ID_PATIENT"));
+        inclusion.setIdPatient(resultSet.getString("ID_PATIENT"));
         inclusion.setReference1(resultSet.getString("REFERENCE1"));
         inclusion.setReference2(resultSet.getString("REFERENCE2"));
         inclusion.setDateInclusion(resultSet.getDate("DATE_INCLUSION"));
-        inclusion.setNumAnaPath(resultSet.getInt("NUM_ANAPATH"));
+        inclusion.setNumAnaPath(resultSet.getString("NUM_ANAPATH"));
 
         return inclusion;
     }
@@ -375,17 +375,17 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         if(indexDebut == 1)
             preparedStatement.setInt(indexDebut, Integer.parseInt(((Inclusion) object).getId()));
 
-        preparedStatement.setInt(indexDebut + 1, ((Inclusion) object).getIdPatient());
+        preparedStatement.setString(indexDebut + 1, ((Inclusion) object).getIdPatient());
         preparedStatement.setString(indexDebut + 2, ((Inclusion) object).getReference1());
         preparedStatement.setString(indexDebut + 3, ((Inclusion) object).getReference2());
         preparedStatement.setDate(indexDebut + 4, InclusionDaoImpl.stringToDate(((Inclusion) object).getDateInclusion()));
-        preparedStatement.setInt(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
+        preparedStatement.setString(indexDebut + 5, ((Inclusion) object).getNumAnaPat());
 
         return preparedStatement;
     }
 
     @Override
-    public ObservableList<Inclusion> selectByFilters(int id, java.sql.Date dateInclusion, int numAnaPat, String idPatient, Diag diag) {
+    public ObservableList<Inclusion> selectByFilters(int id, java.sql.Date dateInclusion, String numAnaPat, String idPatient, Diag diag) {
         ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -405,14 +405,14 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (numAnaPat != 0) {
+            if (numAnaPat != null) {
                 preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? ORDER BY ID");
-                preparedStatement.setInt(1, numAnaPat);
+                preparedStatement.setString(1, numAnaPat);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (!idPatient.equals("")) {
+            if (idPatient != null) {
                 preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN patient WHERE ID_PATIENT = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, idPatient);
                 resultSet = preparedStatement.executeQuery();
