@@ -85,6 +85,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private void refreshList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
         ObservableList<Inclusion> inclusions1 = FXCollections.observableArrayList();
 
+        System.out.println(inclusions.size());
         if (!inclusions.isEmpty()) {
             this.addToObservableList(inclusions1, resultSet);
             this.retainAllById(inclusions, inclusions1);
@@ -265,7 +266,6 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         try {
             while(resultSet.next())
                 inclusions.add(this.addToInclusion(resultSet));
-
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -277,6 +277,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private Inclusion addToInclusion(ResultSet resultSet) throws SQLException {
         Inclusion inclusion = new Inclusion();
 
+        System.out.println(resultSet.getInt("ID"));
         inclusion.setId(resultSet.getInt("ID"));
         inclusion.setIdPatient(resultSet.getString("ID_PATIENT"));
         inclusion.setReference1(resultSet.getString("REFERENCE1"));
@@ -315,7 +316,6 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     }
 
     private void setDiags(ObservableList<Inclusion> inclusions) {
-        ArrayList<String> diags = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
@@ -324,6 +324,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
                 preparedStatement.setInt(1, Integer.parseInt(inclusion.getId()));
                 resultSet = preparedStatement.executeQuery();
+                ArrayList<String> diags = new ArrayList<>();
 
                 while (resultSet.next()) {
                     String diag;
@@ -405,15 +406,15 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (numAnaPat != null) {
+            if (!numAnaPat.equals("")) {
                 preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE NUM_ANAPATH = ? ORDER BY ID");
                 preparedStatement.setString(1, numAnaPat);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
             }
 
-            if (idPatient != null) {
-                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN patient WHERE ID_PATIENT = ? ORDER BY inclusion.ID");
+            if (!idPatient.equals("")) {
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion WHERE ID_PATIENT = ? ORDER BY inclusion.ID");
                 preparedStatement.setString(1, idPatient);
                 resultSet = preparedStatement.executeQuery();
                 this.refreshList(inclusions, resultSet);
@@ -421,7 +422,8 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
             if (diag != null) {
                 if (!diag.equals(Diag.NULL)) {
-                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion JOIN lesion ON inclusion.ID = lesion.ID_INCLUSION WHERE DIAGNOSTIC LIKE ? ORDER BY inclusion.ID");
+                    //preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion I JOIN lesion L ON I.ID = L.ID_INCLUSION WHERE DIAGNOSTIC LIKE ?");
+                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT * FROM inclusion I JOIN lesion L ON I.ID = L.ID_INCLUSION JOIN site_cutane S ON S.ID_LESION = L.ID WHERE S.DIAGNOSTIC LIKE ?");
                     preparedStatement.setString(1, "%" + diag.toString() + "%");
                     resultSet = preparedStatement.executeQuery();
                     this.refreshList(inclusions, resultSet);
@@ -430,6 +432,8 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
             if (resultSet == null)
                 return this.selectAll();
+
+            this.setDiags(inclusions);
 
             System.out.println("SELECT * FROM inclusion WHERE ID ^ DATE_INCLUSION ^ NUM_ANAPATH ^ INITIALES ^ DIAG ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {

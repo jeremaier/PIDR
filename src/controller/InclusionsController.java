@@ -114,6 +114,8 @@ public class InclusionsController extends Controller implements Initializable {
     }
 
     private void populateInclusions() {
+        this.enableButtons(false, false);
+
         if (!this.inclusionsList.isEmpty())
             this.inclusionsTable.setItems(this.inclusionsList);
         else this.inclusionsTable.setItems(FXCollections.observableArrayList());
@@ -233,11 +235,9 @@ public class InclusionsController extends Controller implements Initializable {
         this.lesionsButton.setDisable(!enable);
 
         if (this.selectedInclusion != null) {
-            System.out.println(this.selectedInclusion.getReference1());
-            System.out.println(this.selectedInclusion.getReference2());
             if (!this.selectedInclusion.getReference1().equals("Aucun") || !this.selectedInclusion.getReference2().equals("Aucun"))
                 this.refDownloadButton.setDisable(!enable);
-            this.refDownloadButton.setDisable(true);
+            else this.refDownloadButton.setDisable(true);
         }
 
         if (all) {
@@ -320,6 +320,7 @@ public class InclusionsController extends Controller implements Initializable {
         if (!res.isEmpty())
             this.resList.setItems(this.resObservableList);
         else this.resList.setItems(FXCollections.observableArrayList());
+        this.resList.refresh();
 
         if (!proc.isEmpty())
             this.procList.setItems(this.procObservableList);
