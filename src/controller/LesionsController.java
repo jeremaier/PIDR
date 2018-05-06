@@ -7,13 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import src.daoImpl.InclusionDaoImpl;
 import src.daoImpl.LameHistologiqueDaoImpl;
 import src.daoImpl.LesionDaoImpl;
+import src.daoImpl.SiteCutaneDaoImpl;
+import src.table.CutaneousSite;
 import src.table.HistologicLamella;
 import src.table.Inclusion;
 import src.table.Lesion;
-import src.utils.Diag;
 import src.utils.FileManager;
 import src.utils.RemoveTask;
 import src.view.AddLesionView;
@@ -60,19 +60,6 @@ public class LesionsController extends Controller implements Initializable {
         this.connection = connection;
         this.fileManager = fileManager;
         this.inclusion = inclusion;
-    }
-
-    static void remove(RemoveTask task, Inclusion inclusion, ArrayList<Lesion> lesions) {
-        ArrayList<HistologicLamella> lamesToRemove = new ArrayList<>();
-
-        for (Lesion lesion : lesions)
-            lamesToRemove.addAll(LameHistologiqueDaoImpl.removeLamellas(Integer.toString(lesion.getId())));
-
-        LesionsController.removeFTPSQL(task, inclusion, lesions);
-
-        /*if (lamesToRemove.size() != 0)
-            LameController.remove(task, lamesToRemove);
-        else new Thread(task).start();*/
     }
 
     void populateLesions(Lesion lesion) {
@@ -157,17 +144,58 @@ public class LesionsController extends Controller implements Initializable {
         this.startDownload(this.selectedLesion.getFichierMoy(), this.fileDiagButton);
     }
 
-    private static void removeFTPSQL(RemoveTask removeTask, Inclusion inclusion, ArrayList<Lesion> lesions) {
-        LesionsController.removeFTP(removeTask, lesions);
-        LesionsController.removeSQL(inclusion, lesions);
+    void refreshLesions() {
+        this.lesionsList = this.lesionDaoImpl.selectAllByInclusion(Integer.parseInt(this.inclusion.getId()));
+
+        if (!this.lesionsList.isEmpty())
+            this.lesionsTable.setItems(this.lesionsList);
+        else this.lesionsTable.setItems(FXCollections.observableArrayList());
     }
 
-    private static void removeSQL(Inclusion inclusion, ArrayList<Lesion> lesions) {
+    public void addAction() {
+        this.setStage(this.addButton);
+
+        new AddLesionView(this.stage, this, null, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+    }
+
+    public void editAction() {
+        this.setStage(this.editButton);
+
+        new AddLesionView(this.stage, this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
+    }
+
+    static void remove(RemoveTask task, ArrayList<Lesion> lesions) {
+        ArrayList<HistologicLamella> lamesToRemove = new ArrayList<>();
+        ArrayList<CutaneousSite> sitesToRemove = new ArrayList<>();
+
         for (Lesion lesion : lesions) {
-            Diag diag = lesion.getDiag();
+            lamesToRemove.addAll(LameHistologiqueDaoImpl.removeLamellas(Integer.toString(lesion.getId())));
+            sitesToRemove.addAll(SiteCutaneDaoImpl.removeSites(Integer.toString(lesion.getId())));
+        }
+
+        LesionsController.removeFTPSQL(task, lesions);
+
+        if (lamesToRemove.size() != 0 && sitesToRemove.size() != 0) {
+            LameController.remove(task, lamesToRemove, false);
+            SiteController.remove(task, sitesToRemove);
+        } else if (lamesToRemove.size() != 0)
+            LameController.remove(task, lamesToRemove, true);
+        else if (sitesToRemove.size() != 0)
+            SiteController.remove(task, sitesToRemove);
+        else new Thread(task).start();
+    }
+
+    private static void removeFTPSQL(RemoveTask removeTask, ArrayList<Lesion> lesions) {
+        LesionsController.removeFTP(removeTask, lesions);
+        LesionsController.removeSQL(lesions);
+    }
+
+    private static void removeSQL(ArrayList<Lesion> lesions) {
+        for (Lesion lesion : lesions) {
+            /*Diag diag = lesion.getDiag();
 
             if (!LesionDaoImpl.moreThanOneDiag(diag))
-                InclusionDaoImpl.removeDiag(diag, Integer.parseInt(inclusion.getId()));
+                InclusionDaoImpl.removeDiag(diag, Integer.parseInt(inclusion.getId()));*/
 
             LesionDaoImpl.delete(lesion.getId());
         }
@@ -198,26 +226,6 @@ public class LesionsController extends Controller implements Initializable {
         removeTask.addUrls(urls);
     }
 
-    void refreshLesions() {
-        this.lesionsList = this.lesionDaoImpl.selectAllByInclusion(Integer.parseInt(this.inclusion.getId()));
-
-        if (!this.lesionsList.isEmpty())
-            this.lesionsTable.setItems(this.lesionsList);
-        else this.lesionsTable.setItems(FXCollections.observableArrayList());
-    }
-
-    public void addAction() {
-        this.setStage(this.addButton);
-
-        new AddLesionView(this.stage, this, null, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
-    }
-
-    public void editAction() {
-        this.setStage(this.editButton);
-
-        new AddLesionView(this.stage, this, this.selectedLesion, Integer.parseInt(this.inclusion.getId()), this.lesionDaoImpl, this.fileManager);
-    }
-
     public void removeAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
@@ -226,7 +234,7 @@ public class LesionsController extends Controller implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             this.enableButtons(false, true);
-            this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.inclusion, this.selectedLesion);
+            this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton)/*, this.inclusion*/, this.selectedLesion);
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
             this.selectedIdLesion = -1;
@@ -234,8 +242,8 @@ public class LesionsController extends Controller implements Initializable {
         } else alert.close();
     }
 
-    private void remove(RemoveTask removeTask, Inclusion inclusion, Lesion lesion) {
-        LesionsController.removeFTPSQL(removeTask, inclusion, new ArrayList<Lesion>() {{
+    private void remove(RemoveTask removeTask, Lesion lesion) {
+        LesionsController.remove(removeTask, new ArrayList<Lesion>() {{
             add(lesion);
         }});
     }

@@ -236,6 +236,16 @@ public class InclusionsController extends Controller implements Initializable {
         } else alert.close();
     }
 
+    private void remove() {
+        ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
+        InclusionsController.removeFTPSQL(removeTask, this.selectedInclusion);
+
+        if (lesionsToRemove.size() != 0)
+            LesionsController.remove(removeTask/*, this.selectedInclusion*/, lesionsToRemove);
+        else new Thread(removeTask).start();
+    }
+
     private static void removeFTPSQL(RemoveTask removeTask, Inclusion inclusion) {
         InclusionsController.removeFTP(removeTask, inclusion);
         InclusionsController.removeSQL(inclusion);
@@ -256,16 +266,6 @@ public class InclusionsController extends Controller implements Initializable {
             urls.add(reference2Url);
 
         removeTask.addUrls(urls);
-    }
-
-    private void remove() {
-        ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
-        InclusionsController.removeFTPSQL(removeTask, this.selectedInclusion);
-
-        if (lesionsToRemove.size() != 0)
-            LesionsController.remove(removeTask, this.selectedInclusion, lesionsToRemove);
-        else new Thread(removeTask).start();
     }
 
     @FXML
@@ -381,6 +381,7 @@ public class InclusionsController extends Controller implements Initializable {
     private void lesionsAction() {
         new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
 
+        this.setStage(this.lesionsButton);
         this.stage.close();
     }
 

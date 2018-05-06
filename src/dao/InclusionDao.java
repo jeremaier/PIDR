@@ -1,15 +1,9 @@
 package src.dao;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
-import src.daoImpl.InclusionDaoImpl;
 import src.table.Inclusion;
 import src.utils.Diag;
-import src.utils.FileManager;
-import src.utils.SQLConnection;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface InclusionDao {
@@ -23,7 +17,7 @@ public interface InclusionDao {
 
     void update(Inclusion inclusion, int id);
 
-    static void updateDiag(String diag, int id) {
+    /*static void updateDiag(String diag, int id) {
         PreparedStatement preparedStatement = null;
 
         try {
@@ -61,5 +55,5 @@ public interface InclusionDao {
                 }
             }
         }
-    }
+    }*/
 }

@@ -12,6 +12,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private static Connection connection;
@@ -20,7 +21,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         InclusionDaoImpl.connection = connection;
     }
 
-    public static String selectDiag(int id) {
+    /*public static String selectDiag(int id) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String diagQuery = null;
@@ -60,7 +61,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         }
 
         return null;
-    }
+    }*/
 
     public static void delete(int id) {
         InclusionDaoImpl.delete(SQLConnection.getConnection(), "inclusion", id);
@@ -105,7 +106,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         }
     }
 
-    public static void removeDiag(Diag diag, int id) {
+    /*public static void removeDiag(Diag diag, int id) {
         if (diag != null) {
             if (!diag.toString().equals("")) {
                 PreparedStatement preparedStatement = null;
@@ -150,7 +151,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public void insert(Inclusion inclusion) {
@@ -229,6 +230,7 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
             statement = InclusionDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM inclusion ORDER BY ID");
             this.addToObservableList(inclusions, resultSet);
+            this.setDiags(inclusions);
 
             System.out.println("SELECT * FROM inclusion ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
@@ -300,6 +302,63 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void setDiags(ObservableList<Inclusion> inclusions) {
+        ArrayList<String> diags = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int diagsNumber;
+
+        try {
+            for (Inclusion inclusion : inclusions) {
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
+                preparedStatement.setInt(1, Integer.getInteger(inclusion.getId()));
+                resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    String diag;
+
+                    if (!diags.contains(diag = resultSet.getString("DIAGNOSTIC")))
+                        diags.add(diag);
+                }
+
+                if ((diagsNumber = diags.size()) > 0) {
+                    if (diagsNumber > 1) {
+                        StringBuilder concatDiags = new StringBuilder(diags.get(0));
+
+                        for (int i = 1; i < diagsNumber; i++) {
+                            concatDiags.append(" | ").append(diags.get(i));
+                        }
+
+                        inclusion.setDiag(concatDiags.toString());
+                    } else inclusion.setDiag(diags.get(0));
+                }
+            }
+
+            System.out.println("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();

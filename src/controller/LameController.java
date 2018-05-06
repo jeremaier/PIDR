@@ -9,12 +9,14 @@ import src.daoImpl.LameHistologiqueDaoImpl;
 import src.table.HistologicLamella;
 import src.table.Lesion;
 import src.utils.FileManager;
+import src.utils.RemoveTask;
 import src.view.AddLameView;
 import src.view.SiteView;
 
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -53,7 +55,6 @@ public class LameController extends Controller implements Initializable {
     @FXML
     Button supprimer;
 
-    private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
     private ObservableList<HistologicLamella> lameList;
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
@@ -67,23 +68,11 @@ public class LameController extends Controller implements Initializable {
     }
 
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.numeroLame.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-        this.siteCoupe.setCellValueFactory(cellData -> cellData.getValue().siteCoupeProperty());
-        this.orientationColeurVert.setCellValueFactory(cellData -> cellData.getValue().orientationVertProperty().asObject());
-        this.orientationColeurNoire.setCellValueFactory(cellData -> cellData.getValue().orientationNoirProperty().asObject());
-        this.Coloration.setCellValueFactory(cellData -> cellData.getValue().colorationProperty());
+    static void remove(RemoveTask task, ArrayList<HistologicLamella> histologicLamellas, boolean start) {
+        LameController.removeFTPSQL(task, histologicLamellas);
 
-        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
-        this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
-        this.populate();
-
-        this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
-            selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
-            this.enableButtons(selectedHistologicLamella != null, false);
-        });
-
+        if (start)
+            new Thread(task).start();
     }
 
     private void populate() {
@@ -119,6 +108,48 @@ public class LameController extends Controller implements Initializable {
         }
     }
 
+    private static void removeFTPSQL(RemoveTask removeTask, ArrayList<HistologicLamella> histologicLamellas) {
+        LameController.removeFTP(removeTask, histologicLamellas);
+        LameController.removeSQL(histologicLamellas);
+    }
+
+    private static void removeSQL(ArrayList<HistologicLamella> histologicLamellas) {
+        for (HistologicLamella histologicLamella : histologicLamellas)
+            LameHistologiqueDaoImpl.delete(histologicLamella.getId());
+    }
+
+    private static void removeFTP(RemoveTask removeTask, ArrayList<HistologicLamella> histologicLamellas) {
+        ArrayList<String> urls = new ArrayList<>();
+
+        for (HistologicLamella histologicLamella : histologicLamellas) {
+            String photo;
+
+            if (!(photo = histologicLamella.getPhoto()).equals("Aucun"))
+                urls.add(photo);
+        }
+
+        removeTask.addUrls(urls);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.numeroLame.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+        this.siteCoupe.setCellValueFactory(cellData -> cellData.getValue().siteCoupeProperty());
+        this.orientationColeurVert.setCellValueFactory(cellData -> cellData.getValue().orientationVertProperty().asObject());
+        this.orientationColeurNoire.setCellValueFactory(cellData -> cellData.getValue().orientationNoirProperty().asObject());
+        this.Coloration.setCellValueFactory(cellData -> cellData.getValue().colorationProperty());
+
+        LameHistologiqueDaoImpl lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
+        this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
+        this.populate();
+
+        this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
+            selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
+            this.enableButtons(selectedHistologicLamella != null, false);
+        });
+
+    }
+
     @FXML
     public void removeButtonAction() {
         if (this.selectedHistologicLamella != null) {
@@ -129,17 +160,24 @@ public class LameController extends Controller implements Initializable {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-
-                lameHistologiqueDaoImpl.delete(this.selectedHistologicLamella.getId());
-                this.lameList.remove(selectedHistologicLamella);
-
-                populate();
+                this.enableButtons(false, true);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedHistologicLamella);
+                this.lameList.remove(this.selectedHistologicLamella);
+                this.tab.getSelectionModel().clearSelection();
+                populate(); //????
+                this.enableButtons(true, true);
             } else {
                 alert.close();
             }
         }else{
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }
+    }
+
+    private void remove(RemoveTask removeTask, HistologicLamella histologicLamella) {
+        LameController.remove(removeTask, new ArrayList<HistologicLamella>() {{
+            add(histologicLamella);
+        }}, true);
     }
 
     @FXML

@@ -5,13 +5,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import src.dao.LesionDao;
 import src.table.Lesion;
-import src.utils.Diag;
 import src.utils.FileManager;
 import src.utils.SQLConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
     private static Connection connection;
@@ -24,7 +22,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         LesionDaoImpl.delete(SQLConnection.getConnection(), "lesion", id);
     }
 
-    public static boolean moreThanOneDiag(Diag diag) {
+    /*public static boolean moreThanOneDiag(Diag diag) {
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -64,7 +62,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         }
 
         return false;
-    }
+    }*/
 
     public static ArrayList<Lesion> removeLesions(String id) {
         ArrayList<Lesion> lesions = new ArrayList<>();

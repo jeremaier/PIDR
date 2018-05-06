@@ -11,6 +11,7 @@ import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.CutaneousSite;
 import src.table.Inclusion;
 import src.table.Lesion;
+import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 import src.utils.RemoveTask;
 import src.view.AddSiteView;
@@ -180,22 +181,74 @@ public class SiteController extends Controller implements Initializable {
         new AddSiteView(this.stage, this, this.selectedSite, this.connection, this.fileManager, this.lesion);
     }
 
+    static void remove(RemoveTask task, ArrayList<CutaneousSite> cutaneousSites) {
+        ArrayList<TranscriptomicAnalysis> analysesToRemove = new ArrayList<>();
+
+        for (CutaneousSite cutaneousSite : cutaneousSites)
+            analysesToRemove.addAll(TranscriptomieDaoImpl.removeTranscriptomie(Integer.toString(cutaneousSite.getId())));
+
+        SiteController.removeFTPSQL(task, cutaneousSites);
+
+        /*
+        if(analysesToRemove.size() != 0)
+            TranscriptomieController.remove(task, analysesToRemove);
+        else new Thread(task).start();
+        //*/
+    }
+
+    private static void removeFTPSQL(RemoveTask removeTask, ArrayList<CutaneousSite> cutaneousSite) {
+        SiteController.removeFTP(removeTask, cutaneousSite);
+        SiteController.removeSQL(cutaneousSite);
+    }
+
+    private static void removeSQL(ArrayList<CutaneousSite> cutaneousSites) {
+        for (CutaneousSite cutaneousSite : cutaneousSites)
+            SiteCutaneDaoImpl.delete(cutaneousSite.getId());
+    }
+
+    private static void removeFTP(RemoveTask removeTask, ArrayList<CutaneousSite> cutaneousSites) {
+        ArrayList<String> urls = new ArrayList<>();
+
+        for (CutaneousSite cutaneousSite : cutaneousSites) {
+            String spectres, fichierDiag;
+
+            /*TODO enlever tous les spectres*/
+
+            if (!(spectres = cutaneousSite.getSpectre()).equals("Aucun"))
+                urls.add(spectres);
+
+            if (!(fichierDiag = cutaneousSite.getFichierDiag()).equals("Aucun"))
+                urls.add(fichierDiag);
+        }
+
+        removeTask.addUrls(urls);
+    }
+
     @FXML
     private void delButtonAction() {
-            if(this.selectedSite!=null){
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmer la suppresion");
-                alert.setHeaderText("Vous allez supprimer un site cutané");
-                alert.setContentText("Confirmer?");
+        if (this.selectedSite != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmer la suppresion");
+            alert.setHeaderText("Vous allez supprimer un site cutané");
+            alert.setContentText("Confirmer?");
 
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK){
-                    siteCutaneDaoImpl.delete(this.selectedSite.getId());
-                    this.siteListe.remove(selectedSite);
-                } else {
-                    alert.close();
-                }
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                this.enableButtons(false, true);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton), this.selectedSite);
+                this.siteListe.remove(selectedSite);
+                this.affecteTab.getSelectionModel().clearSelection();
+                this.enableButtons(true, true);
+            } else {
+                alert.close();
             }
+        }
+    }
+
+    private void remove(RemoveTask removeTask, CutaneousSite cutaneousSite) {
+        SiteController.remove(removeTask, new ArrayList<CutaneousSite>() {{
+            add(cutaneousSite);
+        }});
     }
 
     @FXML
@@ -231,10 +284,10 @@ public class SiteController extends Controller implements Initializable {
 
     @Override
     public void enableButtons(boolean enable, boolean all) {
-        supprimer.setDisable(!enable);
-        fichierMoy.setDisable(!enable);
-        modifier.setDisable(!enable);
-        transcriptomique.setDisable(!enable);
+        this.supprimer.setDisable(!enable);
+        this.fichierMoy.setDisable(!enable);
+        this.modifier.setDisable(!enable);
+        this.transcriptomique.setDisable(!enable);
     }
 
     @Override

@@ -175,7 +175,7 @@ public class LameHistologiqueDaoImpl extends DaoImpl implements LameHistologique
         return lame;
     }
 
-    public void delete(int id) {
+    public static void delete(int id) {
         LameHistologiqueDaoImpl.delete(SQLConnection.getConnection(), "lame_histologique", id);
     }
 
