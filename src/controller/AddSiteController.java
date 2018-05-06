@@ -92,14 +92,13 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void cancelButtonAction() {
         this.setStage(this.annuler);
-        new SiteView(this.lesion, connection, fileManager);
 
         this.stage.close();
     }
 
     @FXML
     private void accepteButtonAction() {
-        String SITE=SiteCutane.NULL.toString();
+        String SITE = SiteCutane.NULL.toString();
         Integer Orientation = 0;
         String diagnostique = Diag.NULL.toString();
         String AutreDiag;
@@ -143,24 +142,24 @@ public class AddSiteController extends Controller implements Initializable {
             }
 
             if (fichierDiagPath == null)
-                if(this.site.getFichierDiag()!=null)
+                if (this.site.getFichierDiag() != null)
                     fichierDiagPath = site.getFichierDiag();
                 else
                     fichierDiagPath = null;
 
 
             if (spectrePath == null)
-                if(this.site.getSpectre()!=null)
+                if (this.site.getSpectre() != null)
                     spectrePath = site.getSpectre();
                 else
-                    spectrePath= null;
-            else
-                if(this.site.getSpectre()!=null)
-                    spectrePath = site.getSpectre()+"|"+ spectrePath;
+                    spectrePath = null;
+            else if (this.site.getSpectre() != null)
+                spectrePath = site.getSpectre() + "|" + spectrePath;
 
-            System.out.println(fichierDiagPath);
+            System.out.println(spectrePath);
             CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
             newSite.setFichierDiag(fichierDiagPath);
+            newSite.setSpectre(spectrePath);
 
             siteCutaneDaoImpl.update(newSite, site.getId());
             this.siteController.refreshSite();
@@ -171,16 +170,15 @@ public class AddSiteController extends Controller implements Initializable {
     }
 
 
-
     @FXML
     private void fichierDiag() {
-        this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", null);
+        this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", null, 1);
     }
 
     @FXML
     private void spectreButtonAction() {
         if (numMesur.getText().length() > 0) {
-            this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//", numMesur.getText());
+            this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//", numMesur.getText(), 2);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");
@@ -191,31 +189,35 @@ public class AddSiteController extends Controller implements Initializable {
     }
 
 
-
     @Override
     public void enableButtons(boolean enable, boolean all) {
         this.siteCutane.setDisable(!enable);
         this.orientation.setDisable(!enable);
     }
 
-    private void startUpload(Button button, Label label, String directory, String mesure) {
+    private void startUpload(Button button, Label label, String directory, String mesure, int num) {
         UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
 
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label));
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
 
         FileManager.openFileChooser(this.stage, uploadTask);
 
         new Thread(uploadTask).start();
     }
 
-    private void endUpload(String addedFileName, String directory, Label label) {
+    private void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
-            System.out.println("ccoucou");
-            this.fichierDiagPath = directory + addedFileName;
-            System.out.println( fichierDiagPath);
+            if (num == 1)
+                this.fichierDiagPath = directory + addedFileName;
+            else
+
+            this.spectrePath = directory + addedFileName;
+            System.out.println("ccoucou "+spectrePath);
+
+
             label.setText(addedFileName);
         }
 

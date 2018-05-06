@@ -282,7 +282,7 @@ public class FileManager extends Observable {
 
             try {
                 this.makeDirectories(dossier);
-
+                System.out.println(mesure);
                 if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
                     fileName = null;
             } catch (IOException e) {

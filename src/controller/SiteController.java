@@ -104,18 +104,19 @@ public class SiteController extends Controller implements Initializable {
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
             selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
-            System.out.println();
-           /** if (selectedSite.getSpectre()!=null) {
-                String[] s0 = this.selectedSite.getSpectre().split("~#");
 
+            if (selectedSite.getSpectre()!=null) {
+                System.out.println(selectedSite.getSpectre());
+                String[] s0 = this.selectedSite.getSpectre().split("~#");
+                System.out.println(s0[0]);
                 for (int i = 0; i < s0.length - 1; i++) {
                     String[] s1 = s0[i].split("//");
 
-                    this.spectre.add("mesure_" + Integer.toString(s1[2].charAt(0)));
+                    this.spectre.add("mesure_" + Integer.toString(s1[1].charAt(0)));
                 }
 
                 spectreList.setItems(spectre);
-            }**/
+            }
         });
 
 
@@ -324,7 +325,6 @@ public class SiteController extends Controller implements Initializable {
 
     public void refreshSite() {
         this.siteListe = this.siteCutaneDaoImpl.selectAll();
-        System.out.println("ddddddddddd");
         if (!this.siteListe.isEmpty())
             this.affecteTab.setItems(this.siteListe);
 
