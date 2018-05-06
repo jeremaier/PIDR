@@ -33,6 +33,6 @@
     <Button fx:id="ajouter" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" onAction="#ajoutButtonAction" prefHeight="48.0" prefWidth="130.0" text="Ajouter +" />
     <Button fx:id="supprimer" layoutX="656.0" layoutY="540.0" mnemonicParsing="false" onAction="#removeButtonAction" prefHeight="48.0" prefWidth="130.0" text="Supprimer -" />
     <Button fx:id="modifier" layoutX="335.0" layoutY="540.0" mnemonicParsing="false" onAction="#modifActionButton" prefHeight="48.0" prefWidth="130.0" text="Modifier" />
-   <ProgressBar fx:id="progressBar" layoutX="170.0" layoutY="555.0" opacity="0.0" prefHeight="18.0" prefWidth="153.0" progress="0.0" />
+   <ProgressBar fx:id="progressBar" layoutX="170.0" layoutY="555.0" opacity="0.0" prefHeight="18.0" prefWidth="153.0" progress="0.0" visible="false" />
    <Label fx:id="progressLabel" layoutX="233.0" layoutY="556.0" />
 </AnchorPane>

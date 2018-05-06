@@ -176,7 +176,7 @@
                 <Font size="20.0" />
             </font>
         </Button>
-      <ProgressBar fx:id="progressBar" layoutX="45.0" layoutY="519.0" opacity="0.0" prefHeight="27.0" prefWidth="234.0" progress="0.0" />
+      <ProgressBar fx:id="progressBar" layoutX="45.0" layoutY="519.0" opacity="0.0" prefHeight="27.0" prefWidth="234.0" progress="0.0" visible="false" />
       <Label fx:id="progressLabel" layoutX="154.0" layoutY="524.0" prefHeight="17.0" prefWidth="16.0" />
     </children>
 </AnchorPane>
