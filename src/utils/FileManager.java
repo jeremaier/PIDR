@@ -227,41 +227,6 @@ public class FileManager extends Observable {
         }
     }
 
-    /*public final String uploadToURL(Stage stage, String dossier, String mesure) {
-        String fileName = null;
-
-        if(selectedFile != null) {
-            InputStream input = null;
-
-            this.openFTPConnection();
-            this.setSize(selectedFile.length());
-
-            try {
-                input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
-            }
-
-            fileName = FileManager.getFileName(selectedFile.toString(), true);
-
-            try {
-                this.makeDirectories(dossier);
-
-                if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
-                    fileName = null;
-            } catch(IOException e) {
-                e.printStackTrace();
-                FileManager.openAlert("Impossible d'upload le fichier sur le serveur");
-            }
-
-            this.setSize(-1);
-            this.closeFTPConnection();
-        }
-
-        return fileName;
-    }*/
-
     final String uploadToURL(UploadTask task, File selectedFile, String dossier, String mesure) {
         String fileName = null;
 

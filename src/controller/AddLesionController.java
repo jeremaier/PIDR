@@ -107,6 +107,10 @@ public class AddLesionController extends Controller implements Initializable {
         }
     }
 
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
+    }
+
     private void setLesionInformations() {
         Diag diag = this.lesion.getDiag();
         this.addButton.setText("Modifier");
@@ -149,10 +153,8 @@ public class AddLesionController extends Controller implements Initializable {
         this.lesion.setSiteAnatomique(this.siteAnatomiqueField.getText());
         Diag diagValue = this.diagBox.getValue();
 
-        if (diagValue != null) {
-            //InclusionDao.updateDiag(diagValue.toString(), idInclusion);
+        if (diagValue != null)
             this.lesion.setDiag(diagValue.toString());
-        }
 
         this.lesion.setIdInclusion(this.idInclusion);
 

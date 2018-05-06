@@ -11,8 +11,6 @@ import src.table.Lesion;
 import src.utils.Diag;
 import src.utils.FileManager;
 import src.utils.SiteCutane;
-import src.utils.UploadTask;
-import src.view.SiteView;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -73,18 +71,9 @@ public class AddSiteController extends Controller implements Initializable {
         siteCutane.getItems().addAll(this.siteValeur);
         diag.getItems().addAll(this.diagValeur);
 
-        siteCutane.itemsProperty().addListener(observable -> {
-            if (siteCutane.getValue().equals(SiteCutane.SAIN))
-                this.enableButtons(false, false);
-            else this.enableButtons(true, false);
-        });
+        siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!siteCutane.getValue().equals(SiteCutane.SAIN), false));
 
-        numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if (numMesur.getText().length() > 0)
-                addFichierSpectre.setDisable(false);
-            else addFichierSpectre.setDisable(true);
-        });
-
+        numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> addFichierSpectre.setDisable(numMesur.getText().length() <= 0));
 
         this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
     }
@@ -92,7 +81,6 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void cancelButtonAction() {
         this.setStage(this.annuler);
-
         this.stage.close();
     }
 
@@ -104,14 +92,13 @@ public class AddSiteController extends Controller implements Initializable {
         String AutreDiag;
 
         if (site == null) {
-            if (siteCutane.getValue() != null)
+            if (siteCutane.getValue() != null) {
                 SITE = siteCutane.getValue().toString();
+                diagnostique = diag.getValue().toString();
+            }
 
             if (orientation.getText().length() > 0)
                 Orientation = Integer.parseInt(orientation.getText());
-
-            if (siteCutane.getValue() != null)
-                diagnostique = diag.getValue().toString();
 
             AutreDiag = autreDiag.getText();
 
@@ -120,56 +107,33 @@ public class AddSiteController extends Controller implements Initializable {
             siteCutaneDaoImpl.insert(newSite);
         } else {
             SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite();
+            Orientation = orientation.getText().length() > 0 ? Integer.parseInt(orientation.getText()) : site.getOrientation();
+            diagnostique = diag.getSelectionModel().getSelectedItem() != null ? diag.getSelectionModel().getSelectedItem().toString() : site.getDiag();
 
-            if (orientation.getText().length() > 0) {
-                Orientation = Integer.parseInt(orientation.getText());
-            } else {
-                Orientation = site.getOrientation();
-            }
-
-            if (diag.getSelectionModel().getSelectedItem() != null) {
-                diagnostique = diag.getSelectionModel().getSelectedItem().toString();
-            } else {
-                diagnostique = site.getDiag();
-            }
-
-            if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null) {
+            if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null)
                 AutreDiag = autreDiag.getText();
-            } else if (autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null) {
-                AutreDiag = null;
-            } else {
-                AutreDiag = site.getAutreDiag();
-            }
+            else
+                AutreDiag = autreDiag.getText().length() == 0 && diag.getSelectionModel().getSelectedItem() != null ? null : site.getAutreDiag();
 
             if (fichierDiagPath == null)
-                if (this.site.getFichierDiag() != null)
-                    fichierDiagPath = site.getFichierDiag();
-                else
-                    fichierDiagPath = null;
-
+                fichierDiagPath = site.getFichierDiag();
 
             if (spectrePath == null)
-                if (this.site.getSpectre() != null)
-                    spectrePath = site.getSpectre();
-                else
-                    spectrePath = null;
-            else
-                if (this.site.getSpectre() != null)
-                    spectrePath = spectrePath + "~#"  + site.getSpectre();
+                spectrePath = site.getSpectre();
+            else if (this.site.getSpectre() != null)
+                spectrePath = spectrePath + "~#" + site.getSpectre();
 
-            System.out.println(spectrePath);
             CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
             newSite.setFichierDiag(fichierDiagPath);
             newSite.setSpectre(spectrePath);
 
-            siteCutaneDaoImpl.update(newSite, site.getId());
+            this.siteCutaneDaoImpl.update(newSite, site.getId());
             this.siteController.refreshSite();
         }
 
         this.setStage(this.ajouter);
         this.stage.close();
     }
-
 
     @FXML
     private void fichierDiag() {
@@ -178,13 +142,13 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void spectreButtonAction() {
-        if (numMesur.getText().length() > 0) {
+        if (numMesur.getText().length() > 0)
             this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//", numMesur.getText(), 2);
-        } else {
+        else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");
             alert.setHeaderText(null);
-            alert.setContentText("Il n'y a pas de numéro de mesure précisé");
+            alert.setContentText("Il n'y a pas de numï¿½ro de mesure prï¿½cisï¿½");
             alert.showAndWait();
         }
     }
@@ -196,28 +160,12 @@ public class AddSiteController extends Controller implements Initializable {
         this.orientation.setDisable(!enable);
     }
 
-    private void startUpload(Button button, Label label, String directory, String mesure, int num) {
-        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
-
-        this.setStage(button);
-        this.enableButtons(false, true);
-        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
-
-        FileManager.openFileChooser(this.stage, uploadTask);
-
-        new Thread(uploadTask).start();
-    }
-
-    private void endUpload(String addedFileName, String directory, Label label, int num) {
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
             if (num == 1)
                 this.fichierDiagPath = directory + addedFileName;
-            else
-
-                this.spectrePath = directory + numMesur.getText() + "="+ addedFileName;
-            System.out.println("ccoucou " + spectrePath);
-
+            else this.spectrePath = directory + numMesur.getText() + "=" + addedFileName;
 
             label.setText(addedFileName);
         }

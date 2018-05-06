@@ -76,7 +76,6 @@ public class InclusionsController extends Controller implements Initializable {
     TableColumn<Inclusion, String> inclIDPatient;
     @FXML
     TableColumn<Inclusion, String> inclDiagnostic;
-    //TableColumn<Inclusion, ObservableList<String>> inclDiagnostic;
 
     private InclusionDaoImpl inclusionDaoImpl;
     private ObservableList<Inclusion> inclusionsList;
@@ -144,37 +143,9 @@ public class InclusionsController extends Controller implements Initializable {
         this.inclDate.setCellValueFactory(cellData -> cellData.getValue().dateInclusionProperty());
         this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty());
         this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty());
-        //this.inclDiagnostic.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDiag()));
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.NULL, Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
         this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, false);
-
-        /*
-        this.inclDiagnostic.setCellFactory(column -> new TableCell<Inclusion, ObservableList<String>>() {
-            @Override
-            protected void updateItem(ObservableList<String> diags, boolean empty) {
-                super.updateItem(diags, empty);
-
-                System.out.println(diags);
-
-                if (diags == null || empty) {
-                    setGraphic(null);
-                    setText("");
-                    //this.setMaxHeight(10.0);
-                } else {
-                    VBox vbox = new VBox();
-
-                    for (String diag : diags)
-                        vbox.getChildren().add((new Label(diag)));
-
-                    vbox.getChildren().add(new Label("zfeh"));
-
-                    this.setMaxHeight(20.0 * diags.size());
-                    this.setGraphic(vbox);
-                }
-            }
-        });
-        //*/
 
         if (this.procObservableList != null)
             this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), false, true);
@@ -430,15 +401,16 @@ public class InclusionsController extends Controller implements Initializable {
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName()));
-        uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName()));
+        uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), null, 0));
+        uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), null, 0));
 
         FileManager.openFileChooser(this.stage, uploadTask);
 
         new Thread(uploadTask).start();
     }
 
-    private void endUpload(String listName, String addedFileName) {
+    @Override
+    void endUpload(String listName, String addedFileName, Label label, int num) {
         if (addedFileName != null) {
             switch (listName) {
                 case "proc":

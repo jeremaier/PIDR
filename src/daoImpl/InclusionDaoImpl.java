@@ -85,7 +85,6 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private void refreshList(ObservableList<Inclusion> inclusions, ResultSet resultSet) {
         ObservableList<Inclusion> inclusions1 = FXCollections.observableArrayList();
 
-        System.out.println(inclusions.size());
         if (!inclusions.isEmpty()) {
             this.addToObservableList(inclusions1, resultSet);
             this.retainAllById(inclusions, inclusions1);
@@ -277,7 +276,6 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private Inclusion addToInclusion(ResultSet resultSet) throws SQLException {
         Inclusion inclusion = new Inclusion();
 
-        System.out.println(resultSet.getInt("ID"));
         inclusion.setId(resultSet.getInt("ID"));
         inclusion.setIdPatient(resultSet.getString("ID_PATIENT"));
         inclusion.setReference1(resultSet.getString("REFERENCE1"));

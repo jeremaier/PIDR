@@ -36,7 +36,6 @@ public class LoginController implements Initializable {
 
     public void NewConnection() {
         this.checkLog();
-        //new Thread(this.connection).start();
     }
 
     @Override
@@ -53,7 +52,6 @@ public class LoginController implements Initializable {
             if (e.getCode() == KeyCode.ENTER)
                 this.NewConnection();
         });
-        //pi.setStyle("-fx-progress-color: #676768;");
     }
 
     private void checkLog() {
