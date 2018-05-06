@@ -239,7 +239,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         return preparedStatement;
     }
 
-    public static ArrayList<TranscriptomicAnalysis> removeLamellas(String id) {
+    public static ArrayList<TranscriptomicAnalysis> removeTranscriptomie(String id) {
         ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

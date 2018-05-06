@@ -18,7 +18,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         SiteCutaneDaoImpl.connection = connection;
     }
 
-    public static ArrayList<CutaneousSite> removeLamellas(String id) {
+    public static ArrayList<CutaneousSite> removeSite(String id) {
         ArrayList<CutaneousSite> siteCutanes = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

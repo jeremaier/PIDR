@@ -175,7 +175,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-                TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
+                TranscriptomieDaoImpl.removeTranscriptomie(Integer.toString(this.transcriptomicAnalysis.getId()));
                 this.transcriptomicAnalysis = null;
                 display(null);
             } else alert.close();

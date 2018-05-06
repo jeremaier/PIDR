@@ -37,5 +37,7 @@
        <ListView fx:id="spectreList" layoutX="22.0" layoutY="454.0" prefHeight="133.0" prefWidth="112.0" />
        <Button fx:id="downloadSpectre" disable="true" layoutX="148.0" layoutY="471.0" mnemonicParsing="false" onAction="#downloadSpectreButtonAction" text="Télécharger le spectre" />
       <Button fx:id="transcriptomique" disable="true" layoutX="582.0" layoutY="399.0" mnemonicParsing="false" onAction="#transcriptomieButtonAction" prefHeight="31.0" prefWidth="196.0" text="Transcryptomie" />
+      <ProgressBar fx:id="progressBar" layoutX="148.0" layoutY="512.0" opacity="0.0" prefHeight="18.0" prefWidth="166.0" progress="0.0" />
+      <Label fx:id="progressLabel" layoutX="225.0" layoutY="513.0" prefHeight="17.0" prefWidth="13.0" />
    </children>
 </AnchorPane>

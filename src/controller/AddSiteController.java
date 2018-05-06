@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.table.CutaneousSite;
 import src.table.Lesion;
@@ -168,7 +165,15 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void spectreButtonAction() {
-        this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", numMesur.getText());
+        if(numMesur.getText().length()>0) {
+            this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", numMesur.getText());
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Il n'y a pas de numéro de mesure précisé");
+            alert.showAndWait();
+        }
     }
 
     @Override
