@@ -64,6 +64,14 @@ public class AddLameController extends Controller implements Initializable {
         if (histologicLamella == null)
             lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, true));
 
+        if(this.histologicLamella!=null){
+            this.cutArea.setText(this.histologicLamella.getSiteCoupe());
+            this.blackOrientation.setText(Integer.toString(this.histologicLamella.getOrientationNoir()));
+            this.greenOrientation.setText(Integer.toString(this.histologicLamella.getOrientationVert()));
+
+            String photoName;
+        }
+
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
     }
 

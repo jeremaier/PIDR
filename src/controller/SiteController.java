@@ -59,7 +59,7 @@ public class SiteController extends Controller implements Initializable {
     TableView<CutaneousSite> affecteTab;
 
     @FXML
-    TableColumn<CutaneousSite, String>  siteCutane;
+    TableColumn<CutaneousSite, String> siteCutane;
 
     @FXML
     TableColumn<CutaneousSite, Integer> Orientation;
@@ -72,7 +72,7 @@ public class SiteController extends Controller implements Initializable {
 
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<CutaneousSite> siteListe;
-    private ObservableList<String> spectre = FXCollections.observableArrayList() ;
+    private ObservableList<String> spectre = FXCollections.observableArrayList();
     private CutaneousSite selectedSite;
     private String selectedSpectre;
     private Lesion lesion;
@@ -80,7 +80,7 @@ public class SiteController extends Controller implements Initializable {
     private TranscriptomieDaoImpl transcriptomieDaoImpl;
     private String[] s;
 
-    public SiteController(Connection connection, Lesion lesion, FileManager fileManager){
+    public SiteController(Connection connection, Lesion lesion, FileManager fileManager) {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
@@ -101,26 +101,27 @@ public class SiteController extends Controller implements Initializable {
 
         this.populateSite(siteListe);
 
-        this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
+        this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable -> {
             this.selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
             this.spectre.clear();
+            if (selectedSite != null) {
+                if (this.selectedSite.getSpectre()!= null && this.selectedSite.getSpectre().length()>0) {
+                    System.out.println(selectedSite.getSpectre());
+                    String[] s0 = this.selectedSite.getSpectre().split("~#");
 
-            if (this.selectedSite.getSpectre() != null) {
-                System.out.println(selectedSite.getSpectre());
-                String[] s0 = this.selectedSite.getSpectre().split("~#");
+                    for (String aS0 : s0) {
+                        String[] s1 = aS0.split("//");
 
-                for (String aS0 : s0) {
-                    String[] s1 = aS0.split("//");
+                        this.spectre.add("mesure_" + s1[2].charAt(0));
+                    }
 
-                    this.spectre.add("mesure_" + s1[2].charAt(0));
+                    populateSpectre(this.spectre);
                 }
-
-                populateSpectre(this.spectre);
             }
         });
 
-        this.spectreList.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) ->{
+        this.spectreList.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
             this.selectedSpectre = this.spectreList.getSelectionModel().getSelectedItem();
             this.selectedSpectreId = this.spectreList.getSelectionModel().getSelectedIndex();
 
@@ -131,7 +132,7 @@ public class SiteController extends Controller implements Initializable {
                 this.suprSpectre.setDisable(true);
                 this.downloadSpectre.setDisable(true);
             }
-        } ));
+        }));
     }
 
     @FXML
@@ -144,13 +145,13 @@ public class SiteController extends Controller implements Initializable {
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
-        if(!siteListe.isEmpty())
+        if (!siteListe.isEmpty())
             this.affecteTab.setItems(siteListe);
 
         else this.affecteTab.setItems(FXCollections.observableArrayList());
     }
 
-    private void populateSpectre(ObservableList<String> spectre ) {
+    private void populateSpectre(ObservableList<String> spectre) {
         this.spectreList.setItems(!spectre.isEmpty() ? spectre : FXCollections.observableArrayList());
     }
 
@@ -216,7 +217,7 @@ public class SiteController extends Controller implements Initializable {
 
         SiteController.removeFTPSQL(task, cutaneousSites);
 
-        if(analysesToRemove.size() != 0)
+        if (analysesToRemove.size() != 0)
             TranscriptomieController.remove(task, analysesToRemove);
         else new Thread(task).start();
     }
@@ -269,9 +270,9 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     private void transcriptomieButtonAction() {
         this.setStage(this.transcriptomique);
-            if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null)
-                new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
-            else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
+        if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null)
+            new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
+        else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
 
         this.stage.close();
     }

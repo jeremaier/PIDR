@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -17,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="590.0" maxWidth="530.0" minHeight="590.0" prefHeight="590.0" prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.AddSiteController">
+<AnchorPane maxHeight="590.0" maxWidth="530.0" minHeight="590.0" prefHeight="590.0" prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.AddSiteController">
     <children>
         <GridPane prefHeight="590.0" prefWidth="530.0">
             <columnConstraints>
@@ -77,7 +72,7 @@
                         <Insets left="50.0" />
                     </GridPane.margin>
                 </Button>
-                <Label fx:id="checkFichierDiag" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <Label fx:id="checkFichierDiag" prefHeight="19.0" prefWidth="64.0" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <GridPane.margin>
                         <Insets left="170.0" />
                     </GridPane.margin>
