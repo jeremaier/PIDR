@@ -114,7 +114,7 @@ public class CutaneousSite {
                 case "Fichier":
                     this.diag = Diag.FICHIER;
                     break;
-                case "Pas de malignité":
+                case "Pas de malignitÃ©":
                     this.diag = Diag.RIEN;
                     break;
             }

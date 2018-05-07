@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 public class HistologicLamella {
     private IntegerProperty id;
     private IntegerProperty idLesion;
+    private StringProperty NumLame;
     private StringProperty siteCoupe;
     private IntegerProperty orientationNoir;
     private IntegerProperty orientationVert;
@@ -17,6 +18,7 @@ public class HistologicLamella {
     public HistologicLamella() {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
+        this.NumLame=new SimpleStringProperty();
         this.siteCoupe = new SimpleStringProperty();
         this.orientationNoir = new SimpleIntegerProperty();
         this.orientationVert = new SimpleIntegerProperty();
@@ -24,10 +26,10 @@ public class HistologicLamella {
         this.photo = new SimpleStringProperty();
     }
 
-    public HistologicLamella(int id, int idLesion, String siteCoupe, int orientationNoir, int orientationVert, String coloration, String photo) {
+    public HistologicLamella( int idLesion,String numLame, String siteCoupe, int orientationNoir, int orientationVert, String coloration, String photo) {
         this();
-        this.setId(id);
         this.setIdLesion(idLesion);
+        this.setNumLame(numLame);
         this.setSiteCoupe(siteCoupe);
         this.setOrientationNoir(orientationNoir);
         this.setOrientationVert(orientationVert);
@@ -49,6 +51,14 @@ public class HistologicLamella {
 
     public void setIdLesion(int idLesion) {
         this.idLesion.set(idLesion);
+    }
+
+    public String getNumLame() {
+        return NumLame.get();
+    }
+
+    public void setNumLame(String numLame) {
+        this.NumLame.set(numLame);
     }
 
     public String getSiteCoupe() {
@@ -95,6 +105,10 @@ public class HistologicLamella {
 
     public IntegerProperty idLesionProperty() {
         return this.idLesion;
+    }
+
+    public StringProperty numLameProperty() {
+        return NumLame;
     }
 
     public StringProperty siteCoupeProperty() {
