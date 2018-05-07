@@ -2,7 +2,6 @@ package src.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -23,6 +22,7 @@ import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -102,83 +102,61 @@ public class SiteController extends Controller implements Initializable {
         this.populateSite(siteListe);
 
         this.affecteTab.getSelectionModel().selectedItemProperty().addListener(observable    -> {
-            selectedSite = affecteTab.getSelectionModel().getSelectedItem();
+            this.selectedSite = affecteTab.getSelectionModel().getSelectedItem();
             this.enableButtons(selectedSite != null, false);
+            this.spectre.clear();
 
-
-            spectre.clear();
-            if (selectedSite.getSpectre()!=null) {
-
+            if (this.selectedSite.getSpectre() != null) {
                 System.out.println(selectedSite.getSpectre());
                 String[] s0 = this.selectedSite.getSpectre().split("~#");
-                System.out.println(s0[0]);
-                for (int i = 0; i < s0.length; i++) {
-                    String[] s1 = s0[i].split("//");
 
-                    System.out.println(s1[0]);
-                    System.out.println(s1[1]);
-                    System.out.println(s1[2]);
-                    System.out.println(s1[2].charAt(0));
+                for (String aS0 : s0) {
+                    String[] s1 = aS0.split("//");
+
                     this.spectre.add("mesure_" + s1[2].charAt(0));
                 }
 
-                populateSpectre(spectre);
+                populateSpectre(this.spectre);
             }
         });
 
-
-
-
         this.spectreList.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) ->{
-            selectedSpectre = spectreList.getSelectionModel().getSelectedItem();
-            selectedSpectreId= spectreList.getSelectionModel().getSelectedIndex();
+            this.selectedSpectre = this.spectreList.getSelectionModel().getSelectedItem();
+            this.selectedSpectreId = this.spectreList.getSelectionModel().getSelectedIndex();
 
-            if(selectedSpectre != null){
-                suprSpectre.setDisable(false);
-                downloadSpectre.setDisable(false);
+            if (this.selectedSpectre != null) {
+                this.suprSpectre.setDisable(false);
+                this.downloadSpectre.setDisable(false);
             } else {
-                suprSpectre.setDisable(true);
-                downloadSpectre.setDisable(true);
+                this.suprSpectre.setDisable(true);
+                this.downloadSpectre.setDisable(true);
             }
         } ));
     }
 
     @FXML
-    public void fichierDiagButtonAction(ActionEvent actionEvent) {
+    public void fichierDiagButtonAction() {
         if (this.selectedSite != null) {
-            if (this.selectedSite.getFichierDiag() != null) {
+            if (this.selectedSite.getFichierDiag() != null)
                 this.startDownload(this.selectedSite.getFichierDiag(), this.fichierDiag);
-            } else {
-                JOptionPane.showMessageDialog(null, "Pas de fichier de diagnostic specifié pour ce site");
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Veuillez selectionner un site cutané");
-        }
+            else JOptionPane.showMessageDialog(null, "Pas de fichier de diagnostic specifié pour ce site");
+        } else JOptionPane.showMessageDialog(null, "Veuillez selectionner un site cutané");
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
         if(!siteListe.isEmpty())
-            affecteTab.setItems(siteListe);
+            this.affecteTab.setItems(siteListe);
 
-
-        else affecteTab.setItems(FXCollections.observableArrayList());
-
+        else this.affecteTab.setItems(FXCollections.observableArrayList());
     }
-
-
 
     private void populateSpectre(ObservableList<String> spectre ) {
-        if (!spectre.isEmpty()){
-            spectreList.setItems(spectre);
-        }
-        else spectreList.setItems(FXCollections.observableArrayList());
+        this.spectreList.setItems(!spectre.isEmpty() ? spectre : FXCollections.observableArrayList());
     }
 
-
     void populateSingleSite(CutaneousSite site) {
-            siteListe.add(site);
-            this.affecteTab.setItems(siteListe);
+        this.siteListe.add(site);
+        this.affecteTab.setItems(this.siteListe);
     }
 
     @FXML
@@ -187,14 +165,10 @@ public class SiteController extends Controller implements Initializable {
         Inclusion inclusion = inclusionDaoImpl.selectById(this.lesion.getIdInclusion());
 
         this.setStage(this.retour);
-        new LesionsView(connection, fileManager, inclusion);
+        new LesionsView(this.connection, this.fileManager, inclusion);
 
         this.stage.close();
     }
-
-
-
-
 
     @FXML
     private void addButtonAction() {
@@ -217,15 +191,14 @@ public class SiteController extends Controller implements Initializable {
             alert.setContentText("Confirmer?");
 
             Optional<ButtonType> result = alert.showAndWait();
+
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedSite);
                 this.siteListe.remove(selectedSite);
                 this.affecteTab.getSelectionModel().clearSelection();
                 this.enableButtons(true, true);
-            } else {
-                alert.close();
-            }
+            } else alert.close();
         }
     }
 
@@ -243,11 +216,9 @@ public class SiteController extends Controller implements Initializable {
 
         SiteController.removeFTPSQL(task, cutaneousSites);
 
-        /*
         if(analysesToRemove.size() != 0)
             TranscriptomieController.remove(task, analysesToRemove);
         else new Thread(task).start();
-        //*/
     }
 
     private static void removeFTPSQL(RemoveTask removeTask, ArrayList<CutaneousSite> cutaneousSite) {
@@ -264,13 +235,10 @@ public class SiteController extends Controller implements Initializable {
         ArrayList<String> urls = new ArrayList<>();
 
         for (CutaneousSite cutaneousSite : cutaneousSites) {
-            String spectres, fichierDiag;
+            urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
+            String fichierDiag;
 
-            /*TODO enlever tous les spectres*/
-            if ((spectres = cutaneousSite.getSpectre())!=null)
-                urls.add(spectres);
-
-            if ((fichierDiag = cutaneousSite.getFichierDiag())!=null)
+            if ((fichierDiag = cutaneousSite.getFichierDiag()) != null)
                 urls.add(fichierDiag);
         }
 
@@ -332,8 +300,13 @@ public class SiteController extends Controller implements Initializable {
         populateSpectre(spectre);
     }
 
-    public void refreshSite() {
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
+    }
+
+    void refreshSite() {
         this.siteListe = this.siteCutaneDaoImpl.selectAll();
+
         if (!this.siteListe.isEmpty())
             this.affecteTab.setItems(this.siteListe);
 

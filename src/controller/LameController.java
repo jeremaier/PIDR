@@ -70,7 +70,6 @@ public class LameController extends Controller implements Initializable {
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
     }
 
-
     static void remove(RemoveTask task, ArrayList<HistologicLamella> histologicLamellas, boolean start) {
         LameController.removeFTPSQL(task, histologicLamellas);
 
@@ -96,7 +95,6 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.retour);
         InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
 
-
         new LesionsView(connection, fileManager, inclusionDaoImpl.selectById(lesion.getIdInclusion()));
 
         this.stage.close();
@@ -112,11 +110,9 @@ public class LameController extends Controller implements Initializable {
     public void modifActionButton() {
         this.setStage(this.modifier);
 
-        if (selectedHistologicLamella != null) {
+        if (selectedHistologicLamella != null)
             new AddLameView(this.stage, this, selectedHistologicLamella, connection, fileManager, lesion, numAnapat);
-        } else {
-            JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
-        }
+        else JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
     }
 
     private static void removeFTPSQL(RemoveTask removeTask, ArrayList<HistologicLamella> histologicLamellas) {
@@ -175,7 +171,7 @@ public class LameController extends Controller implements Initializable {
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedHistologicLamella);
                 this.lameList.remove(this.selectedHistologicLamella);
                 this.tab.getSelectionModel().clearSelection();
-                populate(); //????
+                populate();
                 this.enableButtons(true, true);
             } else {
                 alert.close();
@@ -209,6 +205,10 @@ public class LameController extends Controller implements Initializable {
     public void enableButtons(boolean enable, boolean all) {
         photo.setDisable(!enable);
         supprimer.setDisable(!enable);
+    }
+
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
     }
 
     void refreshLesions() {

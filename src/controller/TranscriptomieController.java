@@ -9,15 +9,16 @@ import javafx.scene.control.Label;
 import src.daoImpl.LesionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
-import src.table.Lesion;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
+import src.utils.RemoveTask;
 import src.view.AddTranscriptomieView;
 import src.view.SiteView;
 
 import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -126,12 +127,7 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     private void retour() {
         this.setStage(this.retour);
-        SiteCutaneDaoImpl siteCutaneDaompl = new SiteCutaneDaoImpl(connection);
-        LesionDaoImpl lesionDaoImlp = new LesionDaoImpl(connection);
-
-        Lesion lesion = lesionDaoImlp.selectById(siteCutaneDaompl.selectById(siteId).getIdLesion());
-
-        new SiteView(lesion, connection, fileManager);
+        new SiteView(new LesionDaoImpl(connection).selectById(new SiteCutaneDaoImpl(connection).selectById(siteId).getIdLesion()), connection, fileManager);
 
         this.stage.close();
     }
@@ -144,7 +140,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         if (this.transcriptomicAnalysis != null) {
             new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
             this.stage.close();
-        }else{ JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");}
+        } else JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
     }
 
     @FXML
@@ -175,11 +171,51 @@ public class TranscriptomieController extends Controller implements Initializabl
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-                TranscriptomieDaoImpl.delete(this.transcriptomicAnalysis.getId());
+                this.enableButtons(false, true);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), transcriptomicAnalysis);
                 this.transcriptomicAnalysis = null;
-                display(null);
+                this.display(null);
+                this.enableButtons(true, true);
             } else alert.close();
         }
+    }
+
+    private void remove(RemoveTask removeTask, TranscriptomicAnalysis transcriptomicAnalysis) {
+        TranscriptomieController.remove(removeTask, new ArrayList<TranscriptomicAnalysis>() {{
+            add(transcriptomicAnalysis);
+        }});
+    }
+
+    static void remove(RemoveTask task, ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses) {
+        TranscriptomieController.removeFTPSQL(task, transcriptomicAnalyses);
+
+        new Thread(task).start();
+    }
+
+    private static void removeFTPSQL(RemoveTask removeTask, ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses) {
+        TranscriptomieController.removeFTP(removeTask, transcriptomicAnalyses);
+        TranscriptomieController.removeSQL(transcriptomicAnalyses);
+    }
+
+    private static void removeSQL(ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses) {
+        for (TranscriptomicAnalysis transcriptomicAnalysis : transcriptomicAnalyses)
+            TranscriptomieDaoImpl.delete(transcriptomicAnalysis.getId());
+    }
+
+    private static void removeFTP(RemoveTask removeTask, ArrayList<TranscriptomicAnalysis> transcriptomicAnalyses) {
+        ArrayList<String> urls = new ArrayList<>();
+
+        for (TranscriptomicAnalysis transcriptomicAnalysis : transcriptomicAnalyses) {
+            String fichierBrut, qualityReport;
+
+            if ((fichierBrut = transcriptomicAnalysis.getFichierBrut()) != null)
+                urls.add(fichierBrut);
+
+            if ((qualityReport = transcriptomicAnalysis.getQualityReport()) != null)
+                urls.add(qualityReport);
+        }
+
+        removeTask.addUrls(urls);
     }
 
     @Override
@@ -190,5 +226,9 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.modifier.setDisable(!enable);
         this.ajouter.setDisable(!enable);
         this.supprimer.setDisable(!enable);
+    }
+
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
     }
 }

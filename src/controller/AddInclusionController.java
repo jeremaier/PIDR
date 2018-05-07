@@ -265,6 +265,7 @@ public class AddInclusionController extends Controller implements Initializable 
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        this.progressBar.setVisible(true);
         uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), directory, button, label));
         uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), directory, button, label));
 
@@ -276,7 +277,7 @@ public class AddInclusionController extends Controller implements Initializable 
     private void endUpload(String buttonName, String addedFileName, String directory, Button button, Label label) {
         if (addedFileName != null) {
             button.setText("Supprimer");
-            label.setText(addedFileName);
+            this.endUpload(addedFileName, directory, label, 0);
             String url = directory + "//" + addedFileName;
 
             switch (buttonName) {
@@ -290,5 +291,10 @@ public class AddInclusionController extends Controller implements Initializable 
         }
 
         this.enableButtons(true, true);
+    }
+
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
+        label.setText(addedFileName);
     }
 }

@@ -1,7 +1,5 @@
 package src.table;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -16,7 +14,6 @@ public class Inclusion {
     private String reference2 = "Aucun";
     private StringProperty dateInclusion;
     private StringProperty numAnaPath;
-    //private ObservableList<String> diag;
     private StringProperty diag;
 
     public Inclusion() {
@@ -24,7 +21,6 @@ public class Inclusion {
         this.idPatient = new SimpleStringProperty();
         this.dateInclusion = new SimpleStringProperty();
         this.numAnaPath = new SimpleStringProperty();
-        //this.diag = FXCollections.observableArrayList();
         this.diag = new SimpleStringProperty();
     }
 
@@ -94,12 +90,6 @@ public class Inclusion {
     public void setNumAnaPath(String numAnaPath) {
         this.numAnaPath.set(numAnaPath);
     }
-
-    //public ObservableList<String> getDiag() { return this.diag; }
-
-    /*public void addDiag(String diag) {
-        this.diag.add(diag);
-    }*/
 
     public String getDiag() {
         return this.diag.get();

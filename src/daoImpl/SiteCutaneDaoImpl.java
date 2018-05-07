@@ -269,7 +269,6 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         if (indexDebut == 1)
             preparedStatement.setInt(indexDebut, ((CutaneousSite) object).getId());
 
-        //preparedStatement.setInt(indexDebut+1((CutaneousSite)object).getId());
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getIdLesion());
         preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite());
         preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getOrientation());

@@ -130,22 +130,12 @@ public class AddLameController extends Controller implements Initializable {
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label));
+        this.progressBar.setVisible(true);
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, 0));
 
         FileManager.openFileChooser(this.stage, uploadTask);
 
         new Thread(uploadTask).start();
-    }
-
-    private void endUpload(String addedFileName, String directory, Label label) {
-        if (addedFileName != null) {
-            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : numAnapat + lamellaNum.getText();
-
-            this.photoPath = directory + path + addedFileName;
-            label.setText(addedFileName);
-        }
-
-        this.enableButtons(true, true);
     }
 
     @Override
@@ -156,5 +146,17 @@ public class AddLameController extends Controller implements Initializable {
             addPictureButton.setDisable(!enable);
             cancelButton.setDisable(!enable);
         }
+    }
+
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
+        if (addedFileName != null) {
+            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : numAnapat + lamellaNum.getText();
+
+            this.photoPath = directory + path + addedFileName;
+            label.setText(addedFileName);
+        }
+
+        this.enableButtons(true, true);
     }
 }

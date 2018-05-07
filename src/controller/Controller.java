@@ -7,6 +7,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import src.utils.DownloadTask;
 import src.utils.FileManager;
+import src.utils.UploadTask;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -37,6 +38,20 @@ public abstract class Controller {
         }}, button);
     }
 
+    void startUpload(Button button, Label label, String directory, String mesure, int num) {
+        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        this.progressBar.setVisible(true);
+        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
+
+        FileManager.openFileChooser(this.stage, uploadTask);
+
+        new Thread(uploadTask).start();
+    }
+
     void startDownload(ArrayList<String> urls, Button button) {
         DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
 
@@ -61,4 +76,6 @@ public abstract class Controller {
     public void endRemove() {
         this.endDownload();
     }
+
+    abstract void endUpload(String addedFileName, String directory, Label label, int num);
 }

@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
-import src.utils.UploadTask;
 import src.view.TranscriptomieView;
 
 import java.net.URL;
@@ -205,20 +204,8 @@ public class AddTransciptomieController extends Controller implements Initializa
         this.stage.close();
     }
 
-    private void startUpload(Button button, Label label, String directory, String mesure, int num) {
-        UploadTask uploadTask = new UploadTask(this.fileManager, directory, mesure);
-
-        this.setStage(button);
-        this.enableButtons(false, true);
-        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
-        uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
-
-        FileManager.openFileChooser(this.stage, uploadTask);
-
-        new Thread(uploadTask).start();
-    }
-
-    private void endUpload(String addedFileName, String directory, Label label, int num) {
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
             if (num == 1)
                 this.fichierBrutPath = directory + addedFileName;
