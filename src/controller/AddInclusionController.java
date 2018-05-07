@@ -73,11 +73,6 @@ public class AddInclusionController extends Controller implements Initializable 
                 this.inclusionIDField.setText(newValue.replaceAll("[^\\d]", ""));
         });
 
-        this.idAnapathField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*"))
-                this.idAnapathField.setText(newValue.replaceAll("[^\\d]", ""));
-        });
-
         this.inclusionIDField.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(this.inclusionIDField.getText().length() >= 1 && !this.idAlreadyExistant(Integer.parseInt(this.inclusionIDField.getText())), false));
     }
 

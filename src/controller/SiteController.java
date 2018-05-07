@@ -55,7 +55,7 @@ public class SiteController extends Controller implements Initializable {
     Button transcriptomique;
 
     @FXML
-    Button fichierMoyButton;
+    Button imagesSpectresButton;
 
     @FXML
     TableView<CutaneousSite> affecteTab;
@@ -98,7 +98,7 @@ public class SiteController extends Controller implements Initializable {
             if ((fichierDiag = cutaneousSite.getFichierDiag()) != null)
                 urls.add(fichierDiag);
 
-            if ((fichierMoy = cutaneousSite.getFichierMoy()) != null)
+            if ((fichierMoy = cutaneousSite.getImagesSpectres()) != null)
                 urls.add(fichierMoy);
         }
 
@@ -121,10 +121,8 @@ public class SiteController extends Controller implements Initializable {
         this.diag.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.autreDiag.setCellValueFactory(cellDate -> cellDate.getValue().autreDiagProperty());
 
-
         this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
-
         this.siteListe = siteCutaneDaoImpl.selectByLesion(this.lesion.getId());
 
         this.populateSite(siteListe);
@@ -156,11 +154,11 @@ public class SiteController extends Controller implements Initializable {
             if (this.selectedSpectre != null) {
                 this.suprSpectre.setDisable(false);
                 this.downloadSpectre.setDisable(false);
-                this.fichierMoyButton.setDisable(false);
+                this.imagesSpectresButton.setDisable(false);
             } else {
                 this.suprSpectre.setDisable(true);
                 this.downloadSpectre.setDisable(true);
-                this.fichierMoyButton.setDisable(true);
+                this.imagesSpectresButton.setDisable(true);
             }
         }));
     }
@@ -254,8 +252,8 @@ public class SiteController extends Controller implements Initializable {
             SiteCutaneDaoImpl.delete(cutaneousSite.getId());
     }
 
-    public void fichierMoyAction() {
-        this.startDownload(this.selectedSite.getFichierMoy(), this.fichierMoyButton);
+    public void imagesSpectresAction() {
+        this.startDownload(this.selectedSite.getImagesSpectres(), this.imagesSpectresButton);
     }
 
     @FXML

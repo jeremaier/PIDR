@@ -24,7 +24,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_LESION, DIAGNOSTIC, FICHIER_DIAG, FICHIER_MOY, SPECTROSCOPIE FROM site_cutane WHERE ID_LESION = ?");
+            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_LESION, DIAGNOSTIC, FICHIER_DIAG, IMAGES_SPECTRES, SPECTROSCOPIE FROM site_cutane WHERE ID_LESION = ?");
             preparedStatement.setString(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -35,7 +35,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
                 cutaneousSite.setIdLesion(resultSet.getInt("ID_LESION"));
                 cutaneousSite.setDiag(resultSet.getString("DIAGNOSTIC"));
                 cutaneousSite.setFichierDiag(resultSet.getString("FICHIER_DIAG"));
-                cutaneousSite.setFichierMoy(resultSet.getString("FICHIER_MOY"));
+                cutaneousSite.setImagesSpectres(resultSet.getString("IMAGES_SPECTRES"));
                 cutaneousSite.setSpectre(resultSet.getString("SPECTROSCOPIE"));
 
                 siteCutanes.add(cutaneousSite);
@@ -73,7 +73,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, FICHIER_MOY, SPECTROSCOPIE)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("INSERT INTO site_cutane ( ID_LESION, SITE, ORIENTATION, DIAGNOSTIC, AUTRE_DIAG, FICHIER_DIAG, IMAGES_SPECTRES, SPECTROSCOPIE)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.executeUpdate();
 
@@ -229,7 +229,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, FICHIER_MOY = ?, SPECTROSCOPIE = ? WHERE ID = ?");
+            preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, IMAGES_SPECTRES = ?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
@@ -305,7 +305,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         site.setDiag(resultSet.getString("DIAGNOSTIC"));
         site.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
         site.setFichierDiag(resultSet.getString("FICHIER_DIAG"));
-        site.setFichierMoy(resultSet.getString("FICHIER_MOY"));
+        site.setImagesSpectres(resultSet.getString("IMAGES_SPECTRES"));
         site.setSpectre(resultSet.getString("SPECTROSCOPIE"));
 
         return site;
@@ -321,7 +321,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag().toString());
         preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getAutreDiag());
         preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getFichierDiag());
-        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getFichierMoy());
+        preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getImagesSpectres());
         preparedStatement.setString(indexDebut + 8, ((CutaneousSite) object).getSpectre());
 
         return preparedStatement;

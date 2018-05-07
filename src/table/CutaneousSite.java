@@ -21,8 +21,7 @@ public class CutaneousSite {
     private StringProperty autreDiag;
     private StringProperty fichierDiag;
     private StringProperty spectre;
-    private String fichierMoy;
-    private String fileDiag;
+    private String imagesSpectres;
 
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
@@ -33,7 +32,7 @@ public class CutaneousSite {
         this.fichierDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite(int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String fichierMoy, String spectre) {
+    public CutaneousSite(int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String imagesSpectres, String spectre) {
         this();
         this.setFichierDiag(fileDiag);
         this.setIdLesion(idLesion);
@@ -42,7 +41,7 @@ public class CutaneousSite {
         this.setDiag(diag);
         this.setAutreDiag(autreDiag);
         this.setSpectre(spectre);
-        this.setFichierMoy(fichierMoy);
+        this.setImagesSpectres(imagesSpectres);
     }
 
     public int getId() {
@@ -143,23 +142,15 @@ public class CutaneousSite {
         else return new SimpleStringProperty("");
     }
 
-    public String getFichierMoy() {
-        return this.fichierMoy;
+    public String getImagesSpectres() {
+        return this.imagesSpectres;
     }
 
-    public void setFichierMoy(String fichierMoy) {
-        this.fichierMoy = fichierMoy;
+    public void setImagesSpectres(String imagesSpectres) {
+        this.imagesSpectres = imagesSpectres;
     }
 
     public StringProperty autreDiagProperty() {
         return this.autreDiag;
-    }
-
-    public String getFileDiag() {
-        return fileDiag;
-    }
-
-    public void setFileDiag(String fileDiag) {
-        this.fileDiag = fileDiag;
     }
 }
