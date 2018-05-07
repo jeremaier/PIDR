@@ -88,6 +88,18 @@ public class AddTransciptomieController extends Controller implements Initializa
                     qualityReportPath = null;
                 } else this.enableButtons(true, false);
             });
+        }else{
+            this.id.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
+            this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
+            this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
+            this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
+            this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
+            this.cy3.setText(Double.toString(this.transcriptomicAnalysis.getCyanine()));
+            this.numeroSerie.setText(Integer.toString(this.transcriptomicAnalysis.getSerialNumber()));
+
+
+
+
         }
 
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
@@ -97,8 +109,8 @@ public class AddTransciptomieController extends Controller implements Initializa
     private void accepteButton() {
         TranscriptomicAnalysis newTranscr;
         int Id, Emplacement, NumSerie, Rin;
-        Double Cy3, Rendement, Concentration, Arnc;
-        String Crit, Activ;
+        Double Activ, Cy3, Rendement, Concentration, Arnc;
+        String Crit;
 
         if (transcriptomicAnalysis == null) {
             if(id.getText().length()>0)
@@ -114,23 +126,26 @@ public class AddTransciptomieController extends Controller implements Initializa
             else NumSerie=0;
 
             if (cy3.getText().length()>0)
-            Cy3 = Double.parseDouble(cy3.getText());
-            else Cy3=0.0;
+            Cy3 = Double.parseDouble(cy3.getText().replace(",","."));
+            else Cy3= (double) 0;
 
             if(rendement.getText().length()>0)
-            Rendement = Double.parseDouble(rendement.getText());
-            else Rendement=0.0;
+            Rendement = Double.parseDouble(rendement.getText().replace(",","."));
+            else Rendement= (double) 0;
 
             if(concentration.getText().length()>0)
-            Concentration = Double.parseDouble(concentration.getText());
-            else Concentration=0.0;
+            Concentration = Double.parseDouble(concentration.getText().replace(",","."));
+            else Concentration=(double)0;
 
             Crit = critere.getText();
-            Activ = activiteSpecifique.getText();
+
+            if(activiteSpecifique.getText().length()>0)
+            Activ = Double.parseDouble(activiteSpecifique.getText().replace(",","."));
+            else Activ = (double) 0;
 
             if(ARNc.getText().length()>0)
             Arnc = Double.parseDouble(ARNc.getText());
-            else Arnc=0.0;
+            else Arnc=(double)0;
 
             if(RIN.getText().length()>0)
             Rin = Integer.parseInt(RIN.getText());
@@ -151,7 +166,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             Rendement = rendement.getText().length() > 0 ? Double.parseDouble(rendement.getText()) : transcriptomicAnalysis.getYield();
             Concentration = concentration.getText().length() > 0 ? Double.parseDouble(concentration.getText()) : transcriptomicAnalysis.getConcentration();
             Crit = critere.getText().length() > 0 ? critere.getText() : transcriptomicAnalysis.getExclusionCriteria();
-            Activ = activiteSpecifique.getText().length() > 0 ? activiteSpecifique.getText() : transcriptomicAnalysis.getSpecificActivity();
+            Activ = activiteSpecifique.getText().length() > 0 ? Double.parseDouble(activiteSpecifique.getText()) : transcriptomicAnalysis.getSpecificActivity();
             Arnc = ARNc.getText().length() > 0 ? Double.parseDouble(ARNc.getText()) : transcriptomicAnalysis.getARNC();
             Rin = RIN.getText().length() > 0 ? Integer.parseInt(RIN.getText()) : transcriptomicAnalysis.getRIN();
 

@@ -206,7 +206,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         transcriptomicAnalysis.setConcentration(resultSet.getDouble("CONCENTRATION"));
         transcriptomicAnalysis.setARNC(resultSet.getDouble("ARNC"));
         transcriptomicAnalysis.setCyanine(resultSet.getDouble("CY3"));
-        transcriptomicAnalysis.setSpecificActivity(resultSet.getString("ACTIVITE_SPECIFIQUE"));
+        transcriptomicAnalysis.setSpecificActivity(resultSet.getDouble("ACTIVITE_SPECIFIQUE"));
         transcriptomicAnalysis.setExclusionCriteria(resultSet.getString("CRITERE_EXCLUSION"));
         transcriptomicAnalysis.setSerialNumber(resultSet.getInt("NUM_SERIE"));
         transcriptomicAnalysis.setLamellaLocation(resultSet.getInt("NUM_EMPLACEMENT"));
@@ -230,7 +230,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getARNC());
         preparedStatement.setDouble(indexDebut + 7, ((TranscriptomicAnalysis) object).getCyanine());
         preparedStatement.setDouble(indexDebut + 8, ((TranscriptomicAnalysis) object).getYield());
-        preparedStatement.setString(indexDebut + 9, ((TranscriptomicAnalysis) object).getSpecificActivity());
+        preparedStatement.setDouble(indexDebut + 9, ((TranscriptomicAnalysis) object).getSpecificActivity());
         preparedStatement.setString(indexDebut + 10, ((TranscriptomicAnalysis) object).getExclusionCriteria());
         preparedStatement.setInt(indexDebut + 11, ((TranscriptomicAnalysis) object).getSerialNumber());
         preparedStatement.setInt(indexDebut + 12, ((TranscriptomicAnalysis) object).getLamellaLocation());

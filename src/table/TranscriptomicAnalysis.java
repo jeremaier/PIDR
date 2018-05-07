@@ -11,7 +11,7 @@ public class TranscriptomicAnalysis {
     private DoubleProperty ARNC;
     private DoubleProperty cyanine;
     private DoubleProperty yield;
-    private StringProperty specificActivity;
+    private DoubleProperty specificActivity;
     private StringProperty exclusionCriteria;
     private IntegerProperty serialNumber;
     private IntegerProperty lamellaLocation;
@@ -26,14 +26,14 @@ public class TranscriptomicAnalysis {
         this.ARNC = new SimpleDoubleProperty();
         this.cyanine = new SimpleDoubleProperty();
         this.yield = new SimpleDoubleProperty();
-        this.specificActivity = new SimpleStringProperty();
+        this.specificActivity = new SimpleDoubleProperty();
         this.exclusionCriteria = new SimpleStringProperty();
         this.serialNumber = new SimpleIntegerProperty();
         this.lamellaLocation = new SimpleIntegerProperty();
         this.qualityReport = new SimpleStringProperty();
     }
 
-    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, int RIN, double concentration, double ARNC, double cyanine, double yield, String specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, int RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
         this();
         this.setId(id);
         this.setIdCutaneousSite(idCutaneousSite);
@@ -117,11 +117,11 @@ public class TranscriptomicAnalysis {
         this.yield.set(yield);
     }
 
-    public String getSpecificActivity() {
+    public double getSpecificActivity() {
         return this.specificActivity.get();
     }
 
-    public void setSpecificActivity(String specificActivity) {
+    public void setSpecificActivity(double specificActivity) {
         this.specificActivity.set(specificActivity);
     }
 
@@ -192,7 +192,7 @@ public class TranscriptomicAnalysis {
         return exclusionCriteria;
     }
 
-    public StringProperty specificActivityProperty() {
+    public DoubleProperty specificActivityProperty() {
         return specificActivity;
     }
 

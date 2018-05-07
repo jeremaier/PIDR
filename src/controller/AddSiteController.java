@@ -10,10 +10,12 @@ import src.table.CutaneousSite;
 import src.table.Lesion;
 import src.utils.Diag;
 import src.utils.FileManager;
+import src.utils.RemoveTask;
 import src.utils.SiteCutane;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AddSiteController extends Controller implements Initializable {
@@ -73,6 +75,7 @@ public class AddSiteController extends Controller implements Initializable {
 
         if (site != null) {
 
+
             this.siteCutane.getSelectionModel().select(this.site.getSite());
 
             this.orientation.setText(Integer.toString(this.site.getOrientation()));
@@ -92,6 +95,12 @@ public class AddSiteController extends Controller implements Initializable {
         siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!siteCutane.getValue().equals(SiteCutane.SAIN), false));
 
         numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> addFichierSpectre.setDisable(numMesur.getText().length() <= 0));
+
+        checkFichierDiag.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.equals("Aucun")) {
+                addFicherDiag.setText("Supprimer");
+            }
+        });
 
         this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
     }
@@ -155,10 +164,40 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void fichierDiag() {
-        if (site == null)
+        if (site != null) {
+            if (this.checkFichierDiag.equals("Aucun"))
+                this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(this.site.getId()), null, 1);
+            else {
+                this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag);
+            }
+        } else if (checkFichierDiag.getText().equals("Aucun"))
             this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(siteCutaneDaoImpl.getLastid() + 1), null, 1);
-        else
-            this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(this.site.getId()), null, 1);
+        else this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag);
+
+
+    }
+
+    private void removeFileFromFTP(Button button, Label label) {
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
+
+        removeTask.addUrls(new ArrayList<String>() {{
+            add(site.getFichierDiag());
+        }});
+
+        removeTask.setOnSucceeded(e -> {
+            button.setText("Ajouter");
+            label.setText("Aucun");
+            this.enableButtons(true, true);
+        });
+
+        removeTask.setOnFailed(e -> {
+            button.setText("Ajouter");
+            label.setText("Aucun");
+            this.enableButtons(true, true);
+        });
+
+        this.siteCutaneDaoImpl.update(site, site.getId());
+        new Thread(removeTask).start();
 
     }
 

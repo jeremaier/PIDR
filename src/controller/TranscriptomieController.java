@@ -97,7 +97,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             this.rendement.setText(Double.toString(transcriptomicAnalysis.getYield()));
             this.concentration.setText(Double.toString(transcriptomicAnalysis.getConcentration()));
             this.critExclusion.setText(transcriptomicAnalysis.getExclusionCriteria());
-            this.activitesSpec.setText(transcriptomicAnalysis.getSpecificActivity());
+            this.activitesSpec.setText(Double.toString(transcriptomicAnalysis.getSpecificActivity()));
             this.ARNc.setText(Double.toString(transcriptomicAnalysis.getARNC()));
             this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
         } else {
