@@ -120,6 +120,11 @@ public class LesionsController extends Controller implements Initializable {
         }
     }
 
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
+
+    }
+
     public void photosAction() {
         ArrayList<String> photos = new ArrayList<>();
         String photoSur, photoHors, photoFixe;
