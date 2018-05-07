@@ -8,7 +8,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import src.table.Lesion;
-import src.utils.Diag;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,12 +20,10 @@ public class AddDiagController implements Initializable {
     @FXML
     TextArea diag;
 
-    private AddLesionController addLesionController;
     private Lesion lesion;
     private Stage addDiag;
 
-    public AddDiagController(AddLesionController addLesionController, Lesion lesion) {
-        this.addLesionController = addLesionController;
+    public AddDiagController(Lesion lesion) {
         this.lesion = lesion;
     }
 
@@ -42,15 +39,9 @@ public class AddDiagController implements Initializable {
         if (this.addDiag == null)
             this.addDiag = (Stage) this.addButton.getScene().getWindow();
 
-        if (!this.diag.getText().equals("")) {
-            this.addLesionController.diagBox.setValue(Diag.AUTRE);
-            this.addLesionController.diagBox.setDisable(true);
+        if (!this.diag.getText().equals(""))
             this.lesion.setAutreDiag(this.diag.getText());
-        } else {
-            this.addLesionController.diagBox.setValue(null);
-            this.addLesionController.diagBox.setDisable(false);
-            this.lesion.setAutreDiag("Aucun");
-        }
+        else this.lesion.setAutreDiag("Aucun");
 
         this.addDiag.close();
     }

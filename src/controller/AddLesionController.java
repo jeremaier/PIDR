@@ -114,10 +114,6 @@ public class AddLesionController extends Controller implements Initializable {
         this.idLesion = Integer.toString(this.lesion.getId());
         this.enableButtons(true, false);
 
-        if (diag != null)
-            if (diag.equals(Diag.FICHIER) || diag.equals(Diag.AUTRE))
-                this.diagBox.setDisable(true);
-
         if (!this.lesion.getPhotoSur().equals("Aucun")) {
             this.photoSurLabel.setText(FileManager.getFileName(this.lesion.getPhotoSur(), false));
             this.addPhotoSurButton.setText("Supprimer");
@@ -310,8 +306,6 @@ public class AddLesionController extends Controller implements Initializable {
                     break;
                 case "diag":
                     this.lesion.setFileDiag(url);
-                    this.diagBox.setValue(Diag.FICHIER);
-                    this.diagBox.setDisable(true);
                     break;
             }
         }

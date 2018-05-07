@@ -47,6 +47,8 @@ public class LesionsController extends Controller implements Initializable {
     TableColumn<Lesion, String> lesionSite;
     @FXML
     TableColumn<Lesion, String> lesionDiag;
+    @FXML
+    TableColumn<Lesion, String> lesionAutreDiag;
 
     private Inclusion inclusion;
     private Lesion selectedLesion;
@@ -75,6 +77,7 @@ public class LesionsController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.lesionSite.setCellValueFactory(cellData -> cellData.getValue().siteAnatomiqueProperty());
         this.lesionDiag.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
+        this.lesionAutreDiag.setCellValueFactory(cellData -> cellData.getValue().autreDiagProperty());
         this.lesionDaoImpl = new LesionDaoImpl(this.connection);
         this.lesionsList = this.lesionDaoImpl.selectAllByInclusion(Integer.parseInt(this.inclusion.getId()));
         this.populateLesions();

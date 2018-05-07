@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0" stylesheets="@Style.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="src.controller.LesionsController">
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="src.controller.LesionsController">
     <children>
         <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnAction"
                 prefHeight="33.0" prefWidth="100.0" text="Retour" AnchorPane.leftAnchor="20.0"
@@ -17,10 +17,12 @@
                 <Label text="La table est vide"/>
             </placeholder>
             <columns>
-                <TableColumn fx:id="lesionSite" maxWidth="385.0" minWidth="-1.0" prefWidth="385.0" resizable="false"
+                <TableColumn fx:id="lesionSite" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0" resizable="false"
                              text="Site"/>
-                <TableColumn fx:id="lesionDiag" maxWidth="385.0" minWidth="-1.0" prefWidth="385.0" resizable="false"
+                <TableColumn fx:id="lesionDiag" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0" resizable="false"
                              text="Orientation diagnostic clinique"/>
+                <TableColumn fx:id="lesionAutreDiag" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0"
+                             resizable="false" text="Autre diagnostic"/>
             </columns>
         </TableView>
         <GridPane layoutX="20.0" layoutY="457.0" prefHeight="112.0" prefWidth="760.0" AnchorPane.bottomAnchor="20.0"
