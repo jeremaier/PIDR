@@ -6,6 +6,8 @@ import javafx.beans.property.StringProperty;
 public enum SiteCutane {
     NULL(""),
     SAIN("SAIN"),
+    MAIN("Main"),
+    POIGNET("POIGNET"),
     L("L"),
     PL("PL"),
     NL("NL");

@@ -179,17 +179,17 @@ public class AddLesionController extends Controller implements Initializable {
         String photoSur, photoHors, photoFixe, otherDiag;
 
         if (!this.addButton.getText().equals("Modifier")) {
-            if (!(photoSur = directory + this.photoSurLabel.getText()).equals("Aucun"))
-                files.add(photoSur);
+            if (!(photoSur = this.photoSurLabel.getText()).equals("Aucun"))
+                files.add(directory + photoSur);
 
-            if (!(photoHors = directory + this.photoHorsLabel.getText()).equals("Aucun"))
-                files.add(photoHors);
+            if (!(photoHors = this.photoHorsLabel.getText()).equals("Aucun"))
+                files.add(directory + photoHors);
 
-            if (!(photoFixe = directory + this.photoFixeLabel.getText()).equals("Aucun"))
-                files.add(photoFixe);
+            if (!(photoFixe = this.photoFixeLabel.getText()).equals("Aucun"))
+                files.add(directory + photoFixe);
 
-            if (!(otherDiag = directory + this.diagFileLabel.getText()).equals("Aucun"))
-                files.add(otherDiag);
+            if (!(otherDiag = this.diagFileLabel.getText()).equals("Aucun"))
+                files.add(directory + otherDiag);
         }
 
         removeTask.addUrls(files);
