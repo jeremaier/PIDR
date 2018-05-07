@@ -113,11 +113,11 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = LameHistologiqueDaoImpl.connection.prepareStatement("INSERT INTO lame_histologique (ID, ID_LESION, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = LameHistologiqueDaoImpl.connection.prepareStatement("INSERT INTO lame_histologique ( ID_LESION, NUM_LAME, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, lame);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO lame_histoloqique (ID, ID_SITE_CUTANE, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            System.out.println("INSERT INTO lame_histoloqique ( ID_SITE_CUTANE, NUM_lAME, SITE_COUPE, ORIENTATION_NOIR, ORIENTATION_VERT, COLORATION, PHOTO)" + "VALUES (?, ?, ?, ?, ?, ?, ?)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -238,6 +238,7 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
 
         lame.setId(resultSet.getInt("ID"));
         lame.setIdLesion(resultSet.getInt("ID_LESION"));
+        lame.setNumLame(resultSet.getString("NUM_LAME"));
         lame.setSiteCoupe(resultSet.getString("SITE_COUPE"));
         lame.setOrientationNoir(resultSet.getInt("ORIENTATION_NOIR"));
         lame.setOrientationVert(resultSet.getInt("ORIENTATION_VERT"));
@@ -249,8 +250,8 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
 
 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
-        preparedStatement.setInt(1,((HistologicLamella) object).getId());
-        preparedStatement.setInt(2, ((HistologicLamella) object).getIdLesion());
+        preparedStatement.setInt(1, ((HistologicLamella) object).getIdLesion());
+        preparedStatement.setString(2,((HistologicLamella) object).getNumLame());
         preparedStatement.setString(3, ((HistologicLamella) object).getSiteCoupe());
         preparedStatement.setInt(4, ((HistologicLamella) object).getOrientationNoir());
         preparedStatement.setInt(5, ((HistologicLamella) object).getOrientationVert());
@@ -265,12 +266,12 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = LameHistologiqueDaoImpl.connection.prepareStatement("UPDATE lame_histologique SET " + "ID = ?, ID_LESION =?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
+            preparedStatement = LameHistologiqueDaoImpl.connection.prepareStatement("UPDATE lame_histologique SET " + "ID_LESION =?, NUM_LAME = ?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lame);
             preparedStatement.setInt(8, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE lame SET ID=?, ID_LESION=?, SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
+            System.out.println("UPDATE lame SET ID_LESION=?,NUM_LAME=?,  SITE_COUPE = ?, ORIENTATION_NOIR = ?, ORIENTATION_VERT = ?, COLORATION = ?, PHOTO = ? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -285,5 +286,46 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
                 }
             }
         }
+    }
+
+    @Override
+    public int getLastid() {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        int lastId = 0;
+
+        try {
+            statement = LameHistologiqueDaoImpl.connection.createStatement();
+            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM lame_histologique");
+
+            if (resultSet.next())
+                lastId = resultSet.getInt("lastId");
+            else return -1;
+
+            System.out.println("SELECT last_insert_id() AS lastId FROM lame_histologique");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lastId;
     }
 }

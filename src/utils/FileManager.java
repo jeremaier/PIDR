@@ -184,9 +184,10 @@ public class FileManager extends Observable {
         try {
             task.updateProgressBar(-1, "Suppression...");
 
-            for (String url : urls)
+            for (String url : urls) {
                 ftpClient.deleteFile(url);
-
+                System.out.println(url);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de supprimer le fichier");

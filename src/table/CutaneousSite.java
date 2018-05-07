@@ -127,14 +127,6 @@ public class CutaneousSite {
 
     public void setSpectre(String spectre) { this.spectre.set(spectre);}
 
-    public IntegerProperty idProperty() {
-        return this.id;
-    }
-
-    public IntegerProperty idLesionProperty() {
-        return this.idLesion;
-    }
-
     public StringProperty siteProperty() {
         if (this.site != null)
             return this.site.getName();
@@ -162,8 +154,6 @@ public class CutaneousSite {
     public StringProperty autreDiagProperty() {
         return this.autreDiag;
     }
-
-    public StringProperty spectreProperty(){return this.spectre; }
 
     public String getFileDiag() {
         return fileDiag;

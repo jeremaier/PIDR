@@ -30,7 +30,7 @@ public class LameController extends Controller implements Initializable {
     TableView<HistologicLamella> tab;
 
     @FXML
-    TableColumn<HistologicLamella, Integer> numeroLame;
+    TableColumn<HistologicLamella, String> numeroLame;
 
     @FXML
     TableColumn<HistologicLamella, String> siteCoupe;
@@ -140,7 +140,7 @@ public class LameController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.numeroLame.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+        this.numeroLame.setCellValueFactory(cellData -> cellData.getValue().numLameProperty());
         this.siteCoupe.setCellValueFactory(cellData -> cellData.getValue().siteCoupeProperty());
         this.orientationColeurVert.setCellValueFactory(cellData -> cellData.getValue().orientationVertProperty().asObject());
         this.orientationColeurNoire.setCellValueFactory(cellData -> cellData.getValue().orientationNoirProperty().asObject());
@@ -152,8 +152,11 @@ public class LameController extends Controller implements Initializable {
 
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
             selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
+            if(this.selectedHistologicLamella!=null)
+                System.out.println(this.selectedHistologicLamella.getNumLame());
             this.enableButtons(selectedHistologicLamella != null, false);
         });
+
 
     }
 
