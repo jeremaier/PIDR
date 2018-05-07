@@ -6,7 +6,7 @@ public class TranscriptomicAnalysis {
     private IntegerProperty id;
     private IntegerProperty idCutaneousSite;
     private StringProperty fichierBrut;
-    private IntegerProperty RIN;
+    private DoubleProperty RIN;
     private DoubleProperty concentration;
     private DoubleProperty ARNC;
     private DoubleProperty cyanine;
@@ -21,7 +21,7 @@ public class TranscriptomicAnalysis {
         this.id = new SimpleIntegerProperty();
         this.idCutaneousSite = new SimpleIntegerProperty();
         this.fichierBrut = new SimpleStringProperty();
-        this.RIN = new SimpleIntegerProperty();
+        this.RIN = new SimpleDoubleProperty();
         this.concentration = new SimpleDoubleProperty();
         this.ARNC = new SimpleDoubleProperty();
         this.cyanine = new SimpleDoubleProperty();
@@ -33,7 +33,7 @@ public class TranscriptomicAnalysis {
         this.qualityReport = new SimpleStringProperty();
     }
 
-    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, int RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
         this();
         this.setId(id);
         this.setIdCutaneousSite(idCutaneousSite);
@@ -77,11 +77,11 @@ public class TranscriptomicAnalysis {
         this.fichierBrut.set(fichierBrut);
     }
 
-    public int getRIN() {
+    public double getRIN() {
         return this.RIN.get();
     }
 
-    public void setRIN(int RIN) {
+    public void setRIN(double RIN) {
         this.RIN.set(RIN);
     }
 

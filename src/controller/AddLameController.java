@@ -68,18 +68,20 @@ public class AddLameController extends Controller implements Initializable {
 
         if (this.histologicLamella != null) {
             this.addButton.setText("Modifier");
+
             if (this.histologicLamella.getPhoto() != null)
                 this.addPictureButton.setText("Supprimer");
+            else {
+                String[] s0 = this.histologicLamella.getPhoto().split("//");
+                this.photoLabel.setText(s0[3]);
+            }
+
             this.lamellaNum.setText(this.histologicLamella.getNumLame());
             this.cutArea.setText(this.histologicLamella.getSiteCoupe());
             this.blackOrientation.setText(Integer.toString(this.histologicLamella.getOrientationNoir()));
             this.greenOrientation.setText(Integer.toString(this.histologicLamella.getOrientationVert()));
             this.coloration.setText(this.histologicLamella.getColoration());
 
-            if (this.histologicLamella.getPhoto() != null) {
-                String[] s0 = this.histologicLamella.getPhoto().split("//");
-                this.photoLabel.setText(s0[3]);
-            }
 
         }
 
