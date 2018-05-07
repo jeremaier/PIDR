@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.TranscriptomieController">
    <children>
-       <Button fx:id="modifier" layoutX="620.0" layoutY="540.0" mnemonicParsing="false" onAction="#updateButtonAction" prefHeight="40.0" prefWidth="150.0" text="Modifer" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="30.0">
+       <Button fx:id="modifier" layoutX="620.0" layoutY="540.0" mnemonicParsing="false" onAction="#updateButtonAction" prefHeight="44.0" prefWidth="150.0" text="Modifer" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="30.0">
            <font>
                <Font size="20.0" />
            </font>
@@ -187,7 +187,7 @@
             <Label GridPane.columnIndex="2" />
           </children>
        </GridPane>
-       <Button fx:id="retour" layoutX="45.0" layoutY="25.0" mnemonicParsing="false" onAction="#retour" prefHeight="30.0" prefWidth="80.0" text="Retour" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0" />
+       <Button fx:id="retour" layoutX="45.0" layoutY="25.0" mnemonicParsing="false" onAction="#retour" prefHeight="33.0" prefWidth="93.0" text="Retour" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0" />
       <Button fx:id="supprimer" layoutX="464.0" layoutY="540.0" mnemonicParsing="false" onAction="#dellButtonAction" prefHeight="44.0" prefWidth="150.0" text="Supprimer -">
          <font>
             <Font size="20.0" />
