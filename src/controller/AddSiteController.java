@@ -16,6 +16,7 @@ import src.utils.SiteCutane;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class AddSiteController extends Controller implements Initializable {
@@ -55,9 +56,10 @@ public class AddSiteController extends Controller implements Initializable {
     private CutaneousSite site;
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
-    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL, SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
-    private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.AUTRE, Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
+    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.NULL, SiteCutane.SAIN, SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
+    private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(Diag.values()))));
     private String fichierDiagPath = null;
+    private String fichierMoyPath = null;
     private String spectrePath = null;
     private SiteController siteController;
 
@@ -86,14 +88,15 @@ public class AddSiteController extends Controller implements Initializable {
                 this.checkFichierDiag.setText(this.site.getFichierDiag());
             else this.checkFichierDiag.setText("Aucun");
 
+            /*if (this.site.getFichierDiag() != null)
+                this.fichier.setText(this.site.getFichierMoy());
+            else this.checkFichierDiag.setText("Aucun");*/
+
             if (this.site.getSpectre() != null)
                 this.checkFichierSpectre.setText("Non vide");
-
         }
 
-
         siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!siteCutane.getValue().equals(SiteCutane.SAIN), false));
-
         numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> addFichierSpectre.setDisable(numMesur.getText().length() <= 0));
 
         checkFichierDiag.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -129,7 +132,7 @@ public class AddSiteController extends Controller implements Initializable {
 
             AutreDiag = autreDiag.getText();
 
-            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, fichierMoyPath, spectrePath);
             this.siteController.populateSingleSite(newSite);
             siteCutaneDaoImpl.insert(newSite);
         } else {
@@ -145,13 +148,17 @@ public class AddSiteController extends Controller implements Initializable {
             if (fichierDiagPath == null)
                 fichierDiagPath = site.getFichierDiag();
 
+            if (fichierMoyPath == null)
+                fichierMoyPath = site.getFichierMoy();
+
             if (spectrePath == null)
                 spectrePath = site.getSpectre();
             else if (this.site.getSpectre() != null)
                 spectrePath = spectrePath + "~#" + site.getSpectre();
 
-            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, spectrePath);
+            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, fichierMoyPath, spectrePath);
             newSite.setFichierDiag(fichierDiagPath);
+            newSite.setFichierMoy(fichierMoyPath);
             newSite.setSpectre(spectrePath);
 
             this.siteCutaneDaoImpl.update(newSite, site.getId());

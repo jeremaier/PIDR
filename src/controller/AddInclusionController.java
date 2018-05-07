@@ -111,10 +111,12 @@ public class AddInclusionController extends Controller implements Initializable 
         Date dateInclusion = date == null ? null : InclusionDaoImpl.stringToDate(date);
         String numAna = this.inclusion.getNumAnaPat();
 
-        if (!this.inclusion.getIdPatient().equals("")) {
-            this.patientLabel.setText("ID : " + this.inclusion.getIdPatient());
-            this.addPatientButton.setText("Supprimer");
-            this.patientId = this.inclusion.getIdPatient();
+        if (this.inclusion.getIdPatient() != null) {
+            if (!this.inclusion.getIdPatient().equals("")) {
+                this.patientLabel.setText("ID : " + this.inclusion.getIdPatient());
+                this.addPatientButton.setText("Supprimer");
+                this.patientId = this.inclusion.getIdPatient();
+            }
         }
 
         if (!this.inclusion.getReference1().equals("Aucun")) {

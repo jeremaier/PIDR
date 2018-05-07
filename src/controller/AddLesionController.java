@@ -27,8 +27,6 @@ public class AddLesionController extends Controller implements Initializable {
     @FXML
     ChoiceBox<Diag> diagBox;
     @FXML
-    Button addMoyFileButton;
-    @FXML
     Button addPhotoSurButton;
     @FXML
     Button addPhotoHorsButton;
@@ -44,8 +42,6 @@ public class AddLesionController extends Controller implements Initializable {
     Button addButton;
     @FXML
     Label diagFileLabel;
-    @FXML
-    Label addMoyFileLabel;
     @FXML
     Label photoSurLabel;
     @FXML
@@ -99,7 +95,6 @@ public class AddLesionController extends Controller implements Initializable {
         this.addPhotoHorsButton.setDisable(!enable);
         this.addPhotoFixeButton.setDisable(!enable);
         this.addDiagFileButton.setDisable(!enable);
-        this.addMoyFileButton.setDisable(!enable);
 
         if (all) {
             this.addButton.setDisable(!enable);
@@ -142,11 +137,6 @@ public class AddLesionController extends Controller implements Initializable {
             this.diagFileLabel.setText(FileManager.getFileName(this.lesion.getFileDiag(), false));
             this.addDiagFileButton.setText("Supprimer");
         }
-
-        if (!this.lesion.getFichierMoy().equals("Aucun")) {
-            this.addMoyFileLabel.setText(FileManager.getFileName(this.lesion.getFichierMoy(), false));
-            this.addMoyFileButton.setText("Supprimer");
-        }
     }
 
     public void addAction() {
@@ -170,9 +160,6 @@ public class AddLesionController extends Controller implements Initializable {
         if (!this.diagFileLabel.getText().equals("Aucun"))
             this.lesion.setFileDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.diagFileLabel.getText());
 
-        if (!this.addMoyFileLabel.getText().equals("Aucun"))
-            this.lesion.setFichierMoy(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.addMoyFileLabel.getText());
-
         if (this.lesion.getId() >= 0) {
             this.lesionDaoImpl.update(this.lesion, this.lesion.getId());
             this.lesionsController.refreshLesions();
@@ -189,7 +176,7 @@ public class AddLesionController extends Controller implements Initializable {
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
         ArrayList<String> files = new ArrayList<>();
         String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
-        String photoSur, photoHors, photoFixe, otherDiag, moyFile;
+        String photoSur, photoHors, photoFixe, otherDiag;
 
         if (!this.addButton.getText().equals("Modifier")) {
             if (!(photoSur = directory + this.photoSurLabel.getText()).equals("Aucun"))
@@ -203,9 +190,6 @@ public class AddLesionController extends Controller implements Initializable {
 
             if (!(otherDiag = directory + this.diagFileLabel.getText()).equals("Aucun"))
                 files.add(otherDiag);
-
-            if (!(moyFile = directory + this.addMoyFileLabel.getText()).equals("Aucun"))
-                files.add(moyFile);
         }
 
         removeTask.addUrls(files);
@@ -243,12 +227,6 @@ public class AddLesionController extends Controller implements Initializable {
         else this.removeFileFromFTP("diag", this.addDiagFileButton, this.diagFileLabel);
     }
 
-    public void addMoyFileAction() {
-        if (this.addMoyFileLabel.getText().equals("Aucun"))
-            this.startUpload("moyFile", this.addMoyFileButton, this.addMoyFileLabel);
-        else this.removeFileFromFTP("moyFile", this.addMoyFileButton, this.addMoyFileLabel);
-    }
-
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
 
@@ -282,13 +260,6 @@ public class AddLesionController extends Controller implements Initializable {
                 this.diagBox.setValue(null);
                 this.diagBox.setDisable(false);
                 this.lesion.setFileDiag("Aucun");
-                break;
-            case "moyFile":
-                removeTask.addUrls(new ArrayList<String>() {{
-                    add(lesion.getFichierMoy());
-                }});
-
-                this.lesion.setFichierMoy("Aucun");
                 break;
         }
 
@@ -341,9 +312,6 @@ public class AddLesionController extends Controller implements Initializable {
                     this.lesion.setFileDiag(url);
                     this.diagBox.setValue(Diag.FICHIER);
                     this.diagBox.setDisable(true);
-                    break;
-                case "moyFile":
-                    this.lesion.setFichierMoy(url);
                     break;
             }
         }

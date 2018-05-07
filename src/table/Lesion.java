@@ -2,7 +2,12 @@ package src.table;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import src.utils.Diag;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Lesion {
     private int id;
@@ -14,7 +19,6 @@ public class Lesion {
     private Diag diag;
     private String autreDiag = "Aucun";
     private String fileDiag = "Aucun";
-    private String fichierMoy = "Aucun";
 
     public Lesion() {
         this.siteAnatomique = new SimpleStringProperty();
@@ -31,7 +35,6 @@ public class Lesion {
         this.setDiag(Diag.valueOf(diag));
         this.setAutreDiag(autreDiag);
         this.setFileDiag(fileDiag);
-        this.setFichierMoy(fichierMoy);
     }
 
     public int getId() {
@@ -91,26 +94,14 @@ public class Lesion {
     }
 
     public void setDiag(String diag) {
+        ObservableList<Diag> diags = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(Diag.values())));
+
         if (diag != null) {
-            switch (diag) {
-                case "Basocellulaire":
-                    this.diag = Diag.BASO;
+            for (Diag diagValue : diags) {
+                if (diagValue.toString().equals(diag)) {
+                    this.diag = diagValue;
                     break;
-                case "Spinocellulaire":
-                    this.diag = Diag.SPINO;
-                    break;
-                case "Keratose actinique":
-                    this.diag = Diag.KERATOSE;
-                    break;
-                case "Autre...":
-                    this.diag = Diag.AUTRE;
-                    break;
-                case "Fichier":
-                    this.diag = Diag.FICHIER;
-                    break;
-                case "Pas de malignité":
-                    this.diag = Diag.RIEN;
-                    break;
+                }
             }
         }
     }
@@ -129,12 +120,6 @@ public class Lesion {
 
     public void setFileDiag(String fileDiag) {
         this.fileDiag = fileDiag;
-    }
-
-    public String getFichierMoy(){ return this.fichierMoy;    }
-
-    public void setFichierMoy(String fichierMoy) {
-        this.fichierMoy = fichierMoy;
     }
 
     public StringProperty siteAnatomiqueProperty() {

@@ -55,6 +55,9 @@ public class SiteController extends Controller implements Initializable {
     Button transcriptomique;
 
     @FXML
+    Button fichierMoyButton;
+
+    @FXML
     TableView<CutaneousSite> affecteTab;
 
     @FXML
@@ -83,6 +86,32 @@ public class SiteController extends Controller implements Initializable {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
+    }
+
+    private static void removeFTP(RemoveTask removeTask, ArrayList<CutaneousSite> cutaneousSites) {
+        ArrayList<String> urls = new ArrayList<>();
+
+        for (CutaneousSite cutaneousSite : cutaneousSites) {
+            urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
+            String fichierDiag, fichierMoy;
+
+            if ((fichierDiag = cutaneousSite.getFichierDiag()) != null)
+                urls.add(fichierDiag);
+
+            if ((fichierMoy = cutaneousSite.getFichierMoy()) != null)
+                urls.add(fichierMoy);
+        }
+
+        removeTask.addUrls(urls);
+    }
+
+    @FXML
+    public void fichierDiagButtonAction() {
+        if (this.selectedSite != null) {
+            if (this.selectedSite.getFichierDiag() != null)
+                this.startDownload(this.selectedSite.getFichierDiag(), this.fichierDiag);
+            else JOptionPane.showMessageDialog(null, "Pas de fichier de diagnostic specifié pour ce site");
+        } else JOptionPane.showMessageDialog(null, "Veuillez selectionner un site cutané");
     }
 
     @Override
@@ -127,20 +156,13 @@ public class SiteController extends Controller implements Initializable {
             if (this.selectedSpectre != null) {
                 this.suprSpectre.setDisable(false);
                 this.downloadSpectre.setDisable(false);
+                this.fichierMoyButton.setDisable(false);
             } else {
                 this.suprSpectre.setDisable(true);
                 this.downloadSpectre.setDisable(true);
+                this.fichierMoyButton.setDisable(true);
             }
         }));
-    }
-
-    @FXML
-    public void fichierDiagButtonAction() {
-        if (this.selectedSite != null) {
-            if (this.selectedSite.getFichierDiag() != null)
-                this.startDownload(this.selectedSite.getFichierDiag(), this.fichierDiag);
-            else JOptionPane.showMessageDialog(null, "Pas de fichier de diagnostic specifié pour ce site");
-        } else JOptionPane.showMessageDialog(null, "Veuillez selectionner un site cutané");
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
@@ -232,18 +254,8 @@ public class SiteController extends Controller implements Initializable {
             SiteCutaneDaoImpl.delete(cutaneousSite.getId());
     }
 
-    private static void removeFTP(RemoveTask removeTask, ArrayList<CutaneousSite> cutaneousSites) {
-        ArrayList<String> urls = new ArrayList<>();
-
-        for (CutaneousSite cutaneousSite : cutaneousSites) {
-            urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
-            String fichierDiag;
-
-            if ((fichierDiag = cutaneousSite.getFichierDiag()) != null)
-                urls.add(fichierDiag);
-        }
-
-        removeTask.addUrls(urls);
+    public void fichierMoyAction() {
+        this.startDownload(this.selectedSite.getFichierMoy(), this.fichierMoyButton);
     }
 
     @FXML
@@ -287,8 +299,8 @@ public class SiteController extends Controller implements Initializable {
     }
 
     @Override
-    public void endRemove() {
-        this.endDownload(null, this.progressBar, this.progressLabel);
+    public void endRemove(Button button, ProgressBar progressBar, Label progressLabel) {
+        super.endRemove(button, progressBar, progressLabel);
         StringBuilder newSpectre = new StringBuilder();
 
         for (int i = 0; i < s.length - 1; i++)
@@ -299,7 +311,7 @@ public class SiteController extends Controller implements Initializable {
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
         this.spectre.remove(this.selectedSpectre);
 
-        populateSpectre(spectre);
+        populateSpectre(this.spectre);
     }
 
     @Override

@@ -32,8 +32,6 @@ public class LesionsController extends Controller implements Initializable {
     @FXML
     Button photosButton;
     @FXML
-    Button fichierMoyButton;
-    @FXML
     Button fileDiagButton;
     @FXML
     Button siteCutaneButton;
@@ -102,13 +100,9 @@ public class LesionsController extends Controller implements Initializable {
 
             if (!this.selectedLesion.getFileDiag().equals("Aucun"))
                 this.fileDiagButton.setDisable(!enable);
-
-            if (!this.selectedLesion.getFichierMoy().equals("Aucun"))
-                this.fichierMoyButton.setDisable(!enable);
         } else {
             this.photosButton.setDisable(!enable);
             this.fileDiagButton.setDisable(!enable);
-            this.fichierMoyButton.setDisable(!enable);
         }
 
         this.siteCutaneButton.setDisable(!enable);
@@ -120,9 +114,26 @@ public class LesionsController extends Controller implements Initializable {
         }
     }
 
-    @Override
-    void endUpload(String addedFileName, String directory, Label label, int num) {
+    private static void removeFTP(RemoveTask removeTask, ArrayList<Lesion> lesions) {
+        ArrayList<String> urls = new ArrayList<>();
 
+        for (Lesion lesion : lesions) {
+            String photoSur, photoHors, photoFixe, diagFile;
+
+            if (!(photoSur = lesion.getPhotoSur()).equals("Aucun"))
+                urls.add(photoSur);
+
+            if (!(photoHors = lesion.getPhotoHors()).equals("Aucun"))
+                urls.add(photoHors);
+
+            if (!(photoFixe = lesion.getPhotoFixe()).equals("Aucun"))
+                urls.add(photoFixe);
+
+            if (!(diagFile = lesion.getFileDiag()).equals("Aucun"))
+                urls.add(diagFile);
+        }
+
+        removeTask.addUrls(urls);
     }
 
     public void photosAction() {
@@ -143,10 +154,6 @@ public class LesionsController extends Controller implements Initializable {
 
     public void fileDiagAction() {
         this.startDownload(this.selectedLesion.getFileDiag(), this.fileDiagButton);
-    }
-
-    public void fichierMoyAction() {
-        this.startDownload(this.selectedLesion.getFichierMoy(), this.fileDiagButton);
     }
 
     void refreshLesions() {
@@ -206,29 +213,8 @@ public class LesionsController extends Controller implements Initializable {
         }
     }
 
-    private static void removeFTP(RemoveTask removeTask, ArrayList<Lesion> lesions) {
-        ArrayList<String> urls = new ArrayList<>();
-
-        for (Lesion lesion : lesions) {
-            String photoSur, photoHors, photoFixe, diagFile, fichierMoy;
-
-            if (!(photoSur = lesion.getPhotoSur()).equals("Aucun"))
-                urls.add(photoSur);
-
-            if (!(photoHors = lesion.getPhotoHors()).equals("Aucun"))
-                urls.add(photoHors);
-
-            if (!(photoFixe = lesion.getPhotoFixe()).equals("Aucun"))
-                urls.add(photoFixe);
-
-            if (!(diagFile = lesion.getFileDiag()).equals("Aucun"))
-                urls.add(diagFile);
-
-            if (!(fichierMoy = lesion.getFichierMoy()).equals("Aucun"))
-                urls.add(fichierMoy);
-        }
-
-        removeTask.addUrls(urls);
+    @Override
+    void endUpload(String addedFileName, String directory, Label label, int num) {
     }
 
     public void removeAction() {
