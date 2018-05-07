@@ -19,7 +19,7 @@ public class SiteView {
         Stage siteStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        siteStage.setTitle("Vision d'un site");
+        siteStage.setTitle("Sites cutanés");
         siteStage.setX(stage.getX());
         siteStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));

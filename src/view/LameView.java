@@ -19,7 +19,7 @@ public class LameView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage lameStage = new Stage();
 
-        lameStage.setTitle("Lame histologique");
+        lameStage.setTitle("Lames histologiques");
         lameStage.setX(stage.getX());
         lameStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Lames.fxml"));

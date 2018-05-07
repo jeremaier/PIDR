@@ -206,6 +206,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         transcriptomicAnalysis.setConcentration(resultSet.getDouble("CONCENTRATION"));
         transcriptomicAnalysis.setARNC(resultSet.getDouble("ARNC"));
         transcriptomicAnalysis.setCyanine(resultSet.getDouble("CY3"));
+        transcriptomicAnalysis.setYield(resultSet.getDouble("RENDEMENT"));
         transcriptomicAnalysis.setSpecificActivity(resultSet.getString("ACTIVITE_SPECIFIQUE"));
         transcriptomicAnalysis.setExclusionCriteria(resultSet.getString("CRITERE_EXCLUSION"));
         transcriptomicAnalysis.setSerialNumber(resultSet.getInt("NUM_SERIE"));

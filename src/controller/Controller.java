@@ -95,8 +95,8 @@ public abstract class Controller {
         progressLabel.setVisible(false);
     }
 
-    public void endRemove() {
-        this.endDownload(null, this.progressBar, this.progressLabel);
+    public void endRemove(Button button, ProgressBar progressBar, Label progressLabel) {
+        this.endDownload(button, progressBar, progressLabel);
     }
 
     abstract void endUpload(String addedFileName, String directory, Label label, int num);

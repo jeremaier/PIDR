@@ -21,6 +21,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class InclusionsController extends Controller implements Initializable {
@@ -148,7 +149,7 @@ public class InclusionsController extends Controller implements Initializable {
         this.inclAnapath.setCellValueFactory(cellData -> cellData.getValue().numAnaPathProperty());
         this.inclIDPatient.setCellValueFactory(cellData -> cellData.getValue().idPatientProperty());
         this.inclDiagnostic.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
-        this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(Diag.NULL, Diag.BASO, Diag.SPINO, Diag.KERATOSE, Diag.AUTRE, Diag.FICHIER, Diag.RIEN));
+        this.diagnosticChoiceBox.setItems(FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(Diag.values()))));
         this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, false);
 
         if (this.procObservableList != null)
@@ -197,9 +198,11 @@ public class InclusionsController extends Controller implements Initializable {
             click.consume();
         });
 
-        this.inclusionsTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            this.selectedInclusion = this.inclusionsTable.getSelectionModel().getSelectedItem();
-            this.enableButtons(this.selectedInclusion != null, false);
+        this.inclusionsTable.addEventFilter(MouseEvent.MOUSE_CLICKED, click -> {
+            if (this.inclusionsTable.getSelectionModel().getSelectedItem() != null) {
+                this.selectedInclusion = this.inclusionsTable.getSelectionModel().getSelectedItem();
+                this.enableButtons(true, false);
+            }
         });
 
         this.procList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> this.displayRemoveDownloadButtons());
@@ -248,7 +251,7 @@ public class InclusionsController extends Controller implements Initializable {
 
     private void remove() {
         ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton, null, this.progressBar, this.progressLabel);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton, this.refDownloadButton, this.progressBar, this.progressLabel);
         InclusionsController.removeFTPSQL(removeTask, this.selectedInclusion);
 
         if (lesionsToRemove.size() != 0)
@@ -297,11 +300,14 @@ public class InclusionsController extends Controller implements Initializable {
         if (!res.isEmpty())
             this.resList.setItems(this.resObservableList);
         else this.resList.setItems(FXCollections.observableArrayList());
+
         this.resList.refresh();
 
         if (!proc.isEmpty())
             this.procList.setItems(this.procObservableList);
         else this.procList.setItems(FXCollections.observableArrayList());
+
+        this.procList.refresh();
     }
 
     private void populateProcDoc(String addedFileName) {
@@ -343,13 +349,14 @@ public class InclusionsController extends Controller implements Initializable {
         }
     }
 
-    public void endRemove() {
+    public void endRemove(Button button, ProgressBar progressBar, Label progressLabel) {
+        super.endRemove(button, progressBar, progressLabel);
         this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
         this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
         this.populateDocs(this.resObservableList, this.procObservableList);
-        this.enableButtons(true, true);
-        this.docDownloadButton.setVisible(true);
-        this.progressDocBar.setVisible(false);
+        this.lesionsButton.setDisable(true);
+        this.editButton.setDisable(true);
+        this.removeButton.setDisable(true);
     }
 
     @FXML

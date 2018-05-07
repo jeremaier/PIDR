@@ -44,8 +44,8 @@ public class RemoveTask extends Task<Void> {
         if (removeButton != null)
             removeButton.setVisible(false);
 
-        this.setOnSucceeded(e -> this.controller.endRemove());
-        this.setOnFailed(e -> this.controller.endRemove());
+        this.setOnSucceeded(e -> this.controller.endRemove(removeButton, progressBar, progressLabel));
+        this.setOnFailed(e -> this.getOnSucceeded());
 
         return this;
     }

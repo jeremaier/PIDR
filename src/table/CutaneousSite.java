@@ -1,8 +1,16 @@
 package src.table;
 
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import src.utils.Diag;
 import src.utils.SiteCutane;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CutaneousSite {
     private IntegerProperty id;
@@ -13,6 +21,8 @@ public class CutaneousSite {
     private StringProperty autreDiag;
     private StringProperty fichierDiag;
     private StringProperty spectre;
+    private String fichierMoy;
+    private String fileDiag;
 
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
@@ -23,15 +33,16 @@ public class CutaneousSite {
         this.fichierDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite( int idLesion,String site, int orientation, String diag, String autreDiag, String fichierDiag,  String spectre) {
+    public CutaneousSite(int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String fichierMoy, String spectre) {
         this();
+        this.setFichierDiag(fileDiag);
         this.setIdLesion(idLesion);
         this.setSite(site);
         this.setOrientation(orientation);
         this.setDiag(diag);
         this.setAutreDiag(autreDiag);
         this.setSpectre(spectre);
-
+        this.setFichierMoy(fichierMoy);
     }
 
     public int getId() {
@@ -59,23 +70,14 @@ public class CutaneousSite {
     }
 
     public void setSite(String site) {
-        if (site != null) {
-            switch (site) {
-                case "SAIN":
-                    this.site = SiteCutane.SAIN;
+        ObservableList<SiteCutane> diags = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(SiteCutane.values())));
+
+        if (diag != null) {
+            for (SiteCutane siteValue : diags) {
+                if (siteValue.toString().equals(site)) {
+                    this.site = siteValue;
                     break;
-                case "":
-                    this.site = SiteCutane.NULL;
-                    break;
-                case "L":
-                    this.site = SiteCutane.L;
-                    break;
-                case "PL":
-                    this.site = SiteCutane.PL;
-                    break;
-                case "NL":
-                    this.site = SiteCutane.NL;
-                    break;
+                }
             }
         }
     }
@@ -97,26 +99,14 @@ public class CutaneousSite {
     }
 
     public void setDiag(String diag) {
+        ObservableList<Diag> diags = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(Diag.values())));
+
         if (diag != null) {
-            switch (diag) {
-                case "Basocellulaire":
-                    this.diag = Diag.BASO;
+            for (Diag diagValue : diags) {
+                if (diagValue.toString().equals(diag)) {
+                    this.diag = diagValue;
                     break;
-                case "Spinocellulaire":
-                    this.diag = Diag.SPINO;
-                    break;
-                case "Keratose actinique":
-                    this.diag = Diag.KERATOSE;
-                    break;
-                case "Autre...":
-                    this.diag = Diag.AUTRE;
-                    break;
-                case "Fichier":
-                    this.diag = Diag.FICHIER;
-                    break;
-                case "Pas de malignité":
-                    this.diag = Diag.RIEN;
-                    break;
+                }
             }
         }
     }
@@ -161,13 +151,25 @@ public class CutaneousSite {
         else return new SimpleStringProperty("");
     }
 
+    public String getFichierMoy() {
+        return this.fichierMoy;
+    }
 
-
-    //public StringProperty fichierDiag(){return  this.diag;}
+    public void setFichierMoy(String fichierMoy) {
+        this.fichierMoy = fichierMoy;
+    }
 
     public StringProperty autreDiagProperty() {
         return this.autreDiag;
     }
 
     public StringProperty spectreProperty(){return this.spectre; }
+
+    public String getFileDiag() {
+        return fileDiag;
+    }
+
+    public void setFileDiag(String fileDiag) {
+        this.fileDiag = fileDiag;
+    }
 }

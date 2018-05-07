@@ -80,26 +80,30 @@ public class PatientsController implements Initializable {
 
         this.idField.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (!oldValue.equals(newValue)) {
-                this.selectedId = this.idPatients.indexOf(this.idField.getText());
+                if (!this.idField.getText().equals("")) {
+                    this.selectedId = this.idPatients.indexOf(this.idField.getText());
 
-                if (Integer.parseInt(this.idField.getText()) > 0) {
-                    if (this.idPatients.contains(this.idField.getText())) {
-                        this.modifyButton.setDisable(false);
-                        this.addPatientButton.setDisable(true);
-                    } else if (!this.idField.getText().equals("")) {
-                        this.modifyButton.setDisable(true);
-                        this.addPatientButton.setDisable(false);
-                    } else {
-                        this.modifyButton.setDisable(true);
-                        this.addPatientButton.setDisable(true);
+                    if (Integer.parseInt(this.idField.getText()) > 0) {
+                        if (this.idPatients.contains(this.idField.getText())) {
+                            this.modifyButton.setDisable(false);
+                            this.addPatientButton.setDisable(true);
+                        } else if (!this.idField.getText().equals("")) {
+                            this.modifyButton.setDisable(true);
+                            this.addPatientButton.setDisable(false);
+                        } else {
+                            this.modifyButton.setDisable(true);
+                            this.addPatientButton.setDisable(true);
+                        }
                     }
                 }
             }
         });
 
         this.idField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*"))
-                this.idField.setText(newValue.replaceAll("[^\\d]", ""));
+            if (newValue.length() > 0) {
+                if (!newValue.matches("\\d*"))
+                    this.idField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
         });
 
         this.idSearchField.textProperty().addListener((observable, oldValue, newValue) -> {

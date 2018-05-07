@@ -70,7 +70,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         ResultSet resultSet = null;
 
         try {
-            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, DIAGNOSTIC, FILE_DIAG, FICHIER_MOY FROM lesion WHERE ID_INCLUSION = ?");
+            preparedStatement = SQLConnection.getConnection().prepareStatement("SELECT ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, DIAGNOSTIC, FILE_DIAG FROM lesion WHERE ID_INCLUSION = ?");
             preparedStatement.setString(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -84,7 +84,6 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
                 lesion.setPhotoFixe(resultSet.getString("PHOTO_FIXE"));
                 lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
                 lesion.setFileDiag(resultSet.getString("FILE_DIAG"));
-                lesion.setFichierMoy(resultSet.getString("FICHIER_MOY"));
 
                 lesions.add(lesion);
             }
@@ -121,7 +120,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = LesionDaoImpl.connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = LesionDaoImpl.connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.executeUpdate();
 
@@ -245,7 +244,6 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         lesion.setDiag(resultSet.getString("DIAGNOSTIC"));
         lesion.setAutreDiag(resultSet.getString("AUTRE_DIAG"));
         lesion.setFileDiag(resultSet.getString("FILE_DIAG"));
-        lesion.setFichierMoy(resultSet.getString("FICHIER_MOY"));
 
         return lesion;
     }
@@ -301,7 +299,6 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
 
         preparedStatement.setString(7, ((Lesion) object).getAutreDiag());
         preparedStatement.setString(8, ((Lesion) object).getFileDiag());
-        preparedStatement.setString(9, ((Lesion) object).getFichierMoy());
 
         return preparedStatement;
     }
@@ -311,7 +308,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = LesionDaoImpl.connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
+            preparedStatement = LesionDaoImpl.connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.setInt(10, id);
             preparedStatement.executeUpdate();
