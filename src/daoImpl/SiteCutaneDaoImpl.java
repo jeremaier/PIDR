@@ -114,18 +114,18 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(resultSet != null) {
+            if (resultSet != null) {
                 try {
                     resultSet.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if(preparedStatement != null) {
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -152,10 +152,10 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(resultSet != null) {
+            if (resultSet != null) {
                 try {
                     resultSet.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -191,18 +191,18 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(resultSet != null) {
+            if (resultSet != null) {
                 try {
                     resultSet.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
 
-            if(preparedStatement != null) {
+            if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
-                } catch(SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -250,6 +250,50 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         }
     }
 
+    @Override
+    public int getLastid() {
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+        int lastId = 0;
+
+        try {
+            statement = SiteCutaneDaoImpl.connection.createStatement();
+            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM site_cutane");
+
+            if (resultSet.next())
+                lastId = resultSet.getInt("lastId");
+            else return -1;
+
+            System.out.println("SELECT last_insert_id() AS lastId FROM site_cutane");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lastId;
+    }
+
+
+
     private CutaneousSite addToSite(ResultSet resultSet) throws SQLException {
         CutaneousSite site = new CutaneousSite();
 
@@ -270,9 +314,9 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
             preparedStatement.setInt(indexDebut, ((CutaneousSite) object).getId());
 
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getIdLesion());
-        preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite());
+        preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite().toString());
         preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getOrientation());
-        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag());
+        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag().toString());
         preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getAutreDiag());
         preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getFichierDiag());
         preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getSpectre());

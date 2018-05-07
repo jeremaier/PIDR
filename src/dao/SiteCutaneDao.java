@@ -14,4 +14,6 @@ public interface SiteCutaneDao {
     List<CutaneousSite> selectByLesion(int id);
 
     void update(CutaneousSite site, int id);
+
+    int getLastid();
 }

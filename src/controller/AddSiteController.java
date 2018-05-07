@@ -54,7 +54,7 @@ public class AddSiteController extends Controller implements Initializable {
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
     private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.SAIN, SiteCutane.NULL, SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
-    private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
+    private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(Diag.AUTRE, Diag.BASO, Diag.FICHIER, Diag.KERATOSE, Diag.SPINO, Diag.RIEN);
     private String fichierDiagPath = null;
     private String spectrePath = null;
     private SiteController siteController;
@@ -70,6 +70,24 @@ public class AddSiteController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         siteCutane.getItems().addAll(this.siteValeur);
         diag.getItems().addAll(this.diagValeur);
+
+        if (site != null) {
+
+            this.siteCutane.getSelectionModel().select(this.site.getSite());
+
+            this.orientation.setText(Integer.toString(this.site.getOrientation()));
+            this.diag.getSelectionModel().select(this.site.getDiag());
+            this.autreDiag.setText(this.site.getAutreDiag());
+
+            if (this.site.getFichierDiag() != null)
+                this.checkFichierDiag.setText(this.site.getFichierDiag());
+            else this.checkFichierDiag.setText("Aucun");
+
+            if (this.site.getSpectre() != null)
+                this.checkFichierSpectre.setText("Non vide");
+
+        }
+
 
         siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!siteCutane.getValue().equals(SiteCutane.SAIN), false));
 
@@ -106,9 +124,9 @@ public class AddSiteController extends Controller implements Initializable {
             this.siteController.populateSingleSite(newSite);
             siteCutaneDaoImpl.insert(newSite);
         } else {
-            SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite();
+            SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite().toString();
             Orientation = orientation.getText().length() > 0 ? Integer.parseInt(orientation.getText()) : site.getOrientation();
-            diagnostique = diag.getSelectionModel().getSelectedItem() != null ? diag.getSelectionModel().getSelectedItem().toString() : site.getDiag();
+            diagnostique = diag.getSelectionModel().getSelectedItem() != null ? diag.getSelectionModel().getSelectedItem().toString() : site.getDiag().toString();
 
             if (autreDiag.getText().length() > 0 && diag.getSelectionModel().getSelectedItem() == null)
                 AutreDiag = autreDiag.getText();
@@ -137,13 +155,21 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void fichierDiag() {
-        this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//", null, 1);
+        if (site == null)
+            this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(siteCutaneDaoImpl.getLastid() + 1), null, 1);
+        else
+            this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(this.site.getId()), null, 1);
+
     }
 
     @FXML
     private void spectreButtonAction() {
         if (numMesur.getText().length() > 0)
-            this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//", numMesur.getText(), 2);
+            if (this.site == null)
+                this.startUpload(this.addFichierSpectre, checkFichierSpectre, "//siteCutane//" + Integer.toString(siteCutaneDaoImpl.getLastid() + 1), numMesur.getText(), 2);
+            else
+                this.startUpload(this.addFichierSpectre, checkFichierDiag, "//siteCutane//" + Integer.toString(this.site.getId()), null, 2);
+
         else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");

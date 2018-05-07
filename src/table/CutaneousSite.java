@@ -7,10 +7,9 @@ import src.utils.SiteCutane;
 public class CutaneousSite {
     private IntegerProperty id;
     private IntegerProperty idLesion;
-    private IntegerProperty healthy;
-    private StringProperty site;
+    private SiteCutane site;
     private IntegerProperty orientation;
-    private StringProperty diag;
+    private Diag diag;
     private StringProperty autreDiag;
     private StringProperty fichierDiag;
     private StringProperty spectre;
@@ -18,10 +17,7 @@ public class CutaneousSite {
     public CutaneousSite() {
         this.id = new SimpleIntegerProperty();
         this.idLesion = new SimpleIntegerProperty();
-        this.healthy = new SimpleIntegerProperty();
-        this.site = new SimpleStringProperty();
         this.orientation = new SimpleIntegerProperty();
-        this.diag = new SimpleStringProperty();
         this.autreDiag = new SimpleStringProperty();
         this.spectre = new SimpleStringProperty();
         this.fichierDiag = new SimpleStringProperty();
@@ -54,12 +50,34 @@ public class CutaneousSite {
         this.idLesion.set(idLesion);
     }
 
-    public String getSite() {
-        return this.site.get();
+    public SiteCutane getSite() {
+        return this.site;
+    }
+
+    public void setSite(SiteCutane site) {
+        this.site = site;
     }
 
     public void setSite(String site) {
-        this.site.set(site);
+        if (site != null) {
+            switch (site) {
+                case "SAIN":
+                    this.site = SiteCutane.SAIN;
+                    break;
+                case "":
+                    this.site = SiteCutane.NULL;
+                    break;
+                case "L":
+                    this.site = SiteCutane.L;
+                    break;
+                case "PL":
+                    this.site = SiteCutane.PL;
+                    break;
+                case "NL":
+                    this.site = SiteCutane.NL;
+                    break;
+            }
+        }
     }
 
     public int getOrientation() {
@@ -70,12 +88,37 @@ public class CutaneousSite {
         this.orientation.set(orientation);
     }
 
-    public String getDiag() {
-        return this.diag.get();
+    public Diag getDiag() {
+        return this.diag;
+    }
+
+    public void setDiag(Diag diag) {
+        this.diag = diag;
     }
 
     public void setDiag(String diag) {
-        this.diag.set(diag);
+        if (diag != null) {
+            switch (diag) {
+                case "Basocellulaire":
+                    this.diag = Diag.BASO;
+                    break;
+                case "Spinocellulaire":
+                    this.diag = Diag.SPINO;
+                    break;
+                case "Keratose actinique":
+                    this.diag = Diag.KERATOSE;
+                    break;
+                case "Autre...":
+                    this.diag = Diag.AUTRE;
+                    break;
+                case "Fichier":
+                    this.diag = Diag.FICHIER;
+                    break;
+                case "Pas de malignité":
+                    this.diag = Diag.RIEN;
+                    break;
+            }
+        }
     }
 
     public String getAutreDiag() {
@@ -103,7 +146,9 @@ public class CutaneousSite {
     }
 
     public StringProperty siteProperty() {
-        return this.site;
+        if (this.site != null)
+            return this.site.getName();
+        else return new SimpleStringProperty("");
     }
 
     public IntegerProperty orientationProperty() {
@@ -111,10 +156,14 @@ public class CutaneousSite {
     }
 
     public StringProperty diagProperty() {
-        return this.diag;
+        if (this.diag != null)
+            return this.diag.getName();
+        else return new SimpleStringProperty("");
     }
 
-    public StringProperty fichierDiag(){return  this.diag;}
+
+
+    //public StringProperty fichierDiag(){return  this.diag;}
 
     public StringProperty autreDiagProperty() {
         return this.autreDiag;

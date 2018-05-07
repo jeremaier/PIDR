@@ -62,7 +62,15 @@ public class AddLameController extends Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (histologicLamella == null)
-            lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, false));
+            lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, true));
+
+        if(this.histologicLamella!=null){
+            this.cutArea.setText(this.histologicLamella.getSiteCoupe());
+            this.blackOrientation.setText(Integer.toString(this.histologicLamella.getOrientationNoir()));
+            this.greenOrientation.setText(Integer.toString(this.histologicLamella.getOrientationVert()));
+
+            String photoName;
+        }
 
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
     }
@@ -121,7 +129,12 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     public void photoButtonAction() {
-        this.startUpload(this.addPictureButton, photoLabel, histologicLamella != null ? "//lame_histologique//" : "//trancriptomie//");
+        if(this.histologicLamella!=null)
+        this.startUpload(this.addPictureButton, photoLabel,"//lame_histologique//"+Integer.toString(this.histologicLamella.getId())+"//");
+        else
+            this.startUpload(this.addPictureButton, photoLabel,"//lame_histologique//"+numAnapat + lamellaNum.getText()+"//");
+
+
     }
 
     private void startUpload(Button button, Label label, String directory) {
@@ -151,9 +164,8 @@ public class AddLameController extends Controller implements Initializable {
     @Override
     void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
-            String path = histologicLamella != null ? String.valueOf(this.histologicLamella.getId()) : numAnapat + lamellaNum.getText();
 
-            this.photoPath = directory + path + addedFileName;
+            this.photoPath = directory + addedFileName;
             label.setText(addedFileName);
         }
 
