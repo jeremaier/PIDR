@@ -74,7 +74,7 @@ public class LoginController implements Initializable {
 
                 Stage stage = (Stage) connectButton.getScene().getWindow();
                 stage.close();
-                new InclusionsView(connection, fileManager);
+                new InclusionsView(null, connection, fileManager);
             } else {
                 alert.setTitle("Erreur d'identification");
                 alert.setHeaderText(null);

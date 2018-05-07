@@ -76,6 +76,10 @@ public class InclusionsController extends Controller implements Initializable {
     TableColumn<Inclusion, String> inclIDPatient;
     @FXML
     TableColumn<Inclusion, String> inclDiagnostic;
+    @FXML
+    ProgressBar progressDocBar;
+    @FXML
+    Label progressDocLabel;
 
     private InclusionDaoImpl inclusionDaoImpl;
     private ObservableList<Inclusion> inclusionsList;
@@ -181,6 +185,7 @@ public class InclusionsController extends Controller implements Initializable {
             if (this.resList.getSelectionModel().getSelectedItem() != null)
                 this.procList.getSelectionModel().clearSelection();
 
+            this.displayRemoveDownloadButtons();
             click.consume();
         });
 
@@ -188,6 +193,7 @@ public class InclusionsController extends Controller implements Initializable {
             if (this.procList.getSelectionModel().getSelectedItem() != null)
                 this.resList.getSelectionModel().clearSelection();
 
+            this.displayRemoveDownloadButtons();
             click.consume();
         });
 
@@ -242,11 +248,11 @@ public class InclusionsController extends Controller implements Initializable {
 
     private void remove() {
         ArrayList<Lesion> lesionsToRemove = LesionDaoImpl.removeLesions(this.selectedInclusion.getId());
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeButton, null, this.progressBar, this.progressLabel);
         InclusionsController.removeFTPSQL(removeTask, this.selectedInclusion);
 
         if (lesionsToRemove.size() != 0)
-            LesionsController.remove(removeTask/*, this.selectedInclusion*/, lesionsToRemove);
+            LesionsController.remove(removeTask, lesionsToRemove);
         else new Thread(removeTask).start();
     }
 
@@ -305,7 +311,7 @@ public class InclusionsController extends Controller implements Initializable {
 
     private void populateResDoc(String addedFileName) {
         this.resObservableList.add(addedFileName);
-        this.procList.setItems(this.resObservableList);
+        this.resList.setItems(this.resObservableList);
     }
 
     @FXML
@@ -321,34 +327,29 @@ public class InclusionsController extends Controller implements Initializable {
     @FXML
     private void docDownloadAction() {
         if (this.selectedDoc != null)
-            this.startDownload(this.selectedDoc, this.docDownloadButton);
+            this.startDocDownload(this.selectedDoc, this.docDownloadButton, progressDocBar, progressDocLabel);
     }
 
     @FXML
     private void removeDocAction() {
         if (this.selectedDoc != null) {
-            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeDocButton);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.removeDocButton, this.docDownloadButton, this.progressDocBar, this.progressDocLabel);
 
             removeTask.addUrls(new ArrayList<String>() {{
                 add(selectedDoc);
             }});
 
-            removeTask.setOnSucceeded(e -> {
-                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
-                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
-                this.populateDocs(this.resObservableList, this.procObservableList);
-                this.enableButtons(true, true);
-            });
-
-            removeTask.setOnFailed(e -> {
-                this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
-                this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
-                this.populateDocs(this.resObservableList, this.procObservableList);
-                this.enableButtons(true, true);
-            });
-
             new Thread(removeTask).start();
         }
+    }
+
+    public void endRemove() {
+        this.resObservableList = this.fileManager.listFiles(FileManager.getResDirectoryName(), true, false);
+        this.procObservableList = this.fileManager.listFiles(FileManager.getProcDirectoryName(), false, true);
+        this.populateDocs(this.resObservableList, this.procObservableList);
+        this.enableButtons(true, true);
+        this.docDownloadButton.setVisible(true);
+        this.progressDocBar.setVisible(false);
     }
 
     @FXML
@@ -384,15 +385,12 @@ public class InclusionsController extends Controller implements Initializable {
 
     @FXML
     private void lesionsAction() {
-        new LesionsView(this.connection, this.fileManager, this.selectedInclusion);
+        this.setStage(this.lesionsButton);
+
+        new LesionsView(this.stage, this.connection, this.fileManager, this.selectedInclusion);
 
         this.setStage(this.lesionsButton);
         this.stage.close();
-    }
-
-    protected void endDownload() {
-        super.endDownload();
-        this.refDownloadButton.setVisible(true);
     }
 
     private void startUpload(String buttonName, Button button, String directory) {
@@ -400,7 +398,9 @@ public class InclusionsController extends Controller implements Initializable {
 
         this.setStage(button);
         this.enableButtons(false, true);
-        this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        this.progressDocBar.progressProperty().bind(uploadTask.progressProperty());
+        this.progressDocBar.setVisible(true);
+        this.docDownloadButton.setVisible(false);
         uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), null, 0));
         uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), null, 0));
 
@@ -411,6 +411,9 @@ public class InclusionsController extends Controller implements Initializable {
 
     @Override
     void endUpload(String listName, String addedFileName, Label label, int num) {
+        this.progressDocBar.setVisible(false);
+        this.docDownloadButton.setVisible(true);
+
         if (addedFileName != null) {
             switch (listName) {
                 case "proc":

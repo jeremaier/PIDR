@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class SiteView {
-    public SiteView(Lesion lesion, Connection connection, FileManager fileManager) {
+    public SiteView(Stage stage, Lesion lesion, Connection connection, FileManager fileManager) {
         Parent rootLog = null;
         Stage siteStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
         siteStage.setTitle("Vision d'un site");
-        siteStage.setX(siteStage.getX() - 25);
+        siteStage.setX(stage.getX());
+        siteStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Site.fxml"));
         viewLoader.setControllerFactory(iC -> new SiteController(connection, lesion, fileManager));
 

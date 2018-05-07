@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class TranscriptomieView {
-    public TranscriptomieView( Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
+    public TranscriptomieView(Stage stage, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage transcriptomieStage = new Stage();
 
         transcriptomieStage.setTitle("Analyse transcriptomique");
-        transcriptomieStage.setX(transcriptomieStage.getX() - 25);
+        transcriptomieStage.setX(stage.getX());
+        transcriptomieStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Trancriptomique.fxml"));
         viewLoader.setControllerFactory(iC -> new TranscriptomieController(connection, fileManager, transcriptomicAnalysis, siteId));
 

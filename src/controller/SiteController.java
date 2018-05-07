@@ -51,7 +51,6 @@ public class SiteController extends Controller implements Initializable {
     @FXML
     Button fichierDiag;
 
-
     @FXML
     Button transcriptomique;
 
@@ -165,7 +164,8 @@ public class SiteController extends Controller implements Initializable {
         Inclusion inclusion = inclusionDaoImpl.selectById(this.lesion.getIdInclusion());
 
         this.setStage(this.retour);
-        new LesionsView(this.connection, this.fileManager, inclusion);
+
+        new LesionsView(this.stage, this.connection, this.fileManager, inclusion);
 
         this.stage.close();
     }
@@ -194,7 +194,7 @@ public class SiteController extends Controller implements Initializable {
 
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedSite);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), this.selectedSite);
                 this.siteListe.remove(selectedSite);
                 this.affecteTab.getSelectionModel().clearSelection();
                 this.enableButtons(true, true);
@@ -258,7 +258,7 @@ public class SiteController extends Controller implements Initializable {
         if (this.selectedSpectreId != null && this.selectedSite != null) {
             this.s = this.selectedSite.getSpectre().split("~#");
 
-            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel);
             removeTask.addUrls(new ArrayList<String>() {{
                 add(s[selectedSpectreId]);
             }});
@@ -270,8 +270,8 @@ public class SiteController extends Controller implements Initializable {
     private void transcriptomieButtonAction() {
         this.setStage(this.transcriptomique);
             if (transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()) != null)
-                new TranscriptomieView(connection, fileManager, transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
-            else new TranscriptomieView(connection, fileManager, null, this.selectedSite.getId());
+                new TranscriptomieView(this.stage, this.connection, this.fileManager, this.transcriptomieDaoImpl.selectBySite(this.selectedSite.getId()), this.selectedSite.getId());
+            else new TranscriptomieView(this.stage, this.connection, this.fileManager, null, this.selectedSite.getId());
 
         this.stage.close();
     }
@@ -286,7 +286,7 @@ public class SiteController extends Controller implements Initializable {
 
     @Override
     public void endRemove() {
-        this.endDownload();
+        this.endDownload(null, this.progressBar, this.progressLabel);
         StringBuilder newSpectre = new StringBuilder();
 
         for (int i = 0; i < s.length - 1; i++)

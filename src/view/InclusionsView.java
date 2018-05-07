@@ -2,8 +2,10 @@ package src.view;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import src.controller.InclusionsController;
@@ -13,13 +15,21 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class InclusionsView {
-    public InclusionsView(Connection connection, FileManager fileManager) {
+    public InclusionsView(Stage stage, Connection connection, FileManager fileManager) {
         Parent rootLog = null;
-        Stage inclusionsStage = new Stage();
+        Stage inclusionStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
-        inclusionsStage.setTitle("Inclusions");
-        inclusionsStage.setX(inclusionsStage.getX() - 25);
+        if (stage == null) {
+            Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+            inclusionStage.setX((primScreenBounds.getWidth() - 800) / 2 - 120);
+            inclusionStage.setY((primScreenBounds.getHeight() - 600) / 2 - 80);
+        } else {
+            inclusionStage.setX(stage.getX());
+            inclusionStage.setY(stage.getY());
+        }
+
+        inclusionStage.setTitle("Inclusions");
         viewLoader.setLocation(getClass().getResource("/ressource/Inclusions.fxml"));
         viewLoader.setControllerFactory(iC -> new InclusionsController(connection, fileManager));
 
@@ -27,14 +37,14 @@ public class InclusionsView {
             rootLog = viewLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            inclusionsStage.close();
+            inclusionStage.close();
         }
 
-        inclusionsStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
+        inclusionStage.setOnCloseRequest((WindowEvent event) -> Platform.exit());
 
         assert rootLog != null;
-        inclusionsStage.setResizable(false);
-        inclusionsStage.setScene(new Scene(rootLog));
-        inclusionsStage.show();
+        inclusionStage.setResizable(false);
+        inclusionStage.setScene(new Scene(rootLog));
+        inclusionStage.show();
     }
 }

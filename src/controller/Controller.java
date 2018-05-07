@@ -52,29 +52,51 @@ public abstract class Controller {
         new Thread(uploadTask).start();
     }
 
-    void startDownload(ArrayList<String> urls, Button button) {
-        DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
+    private void startFileDownload(DownloadTask downloadTask, Button button, ProgressBar progressBar, Label progressLabel) {
+        if (button != null)
+            button.setVisible(false);
 
-        this.setStage(button);
-        this.enableButtons(false, true);
-        this.progressBar.setVisible(true);
-        this.progressBar.progressProperty().bind(downloadTask.progressProperty());
-        this.progressLabel.textProperty().bind(downloadTask.messageProperty());
-        downloadTask.setOnSucceeded(e -> this.endDownload());
-        downloadTask.setOnFailed(e -> this.endDownload());
+        progressBar.setVisible(true);
+        progressBar.progressProperty().bind(downloadTask.progressProperty());
+        progressLabel.textProperty().bind(downloadTask.messageProperty());
+        downloadTask.setOnSucceeded(e -> this.endDownload(button, progressBar, progressLabel));
+        downloadTask.setOnFailed(e -> this.endDownload(button, progressBar, progressLabel));
         downloadTask.setSelectedDirectory(FileManager.openDirectoryChooser(this.stage));
 
         new Thread(downloadTask).start();
     }
 
-    protected void endDownload() {
+    void startDownload(ArrayList<String> urls, Button button) {
+        this.startFileDownload(this.initDownload(urls, button), null, this.progressBar, this.progressLabel);
+    }
+
+    void startDocDownload(String url, Button button, ProgressBar progressBar, Label label) {
+        this.startFileDownload(this.initDownload(new ArrayList<String>() {{
+            add(url);
+        }}, button), button, progressBar, label);
+    }
+
+    private DownloadTask initDownload(ArrayList<String> urls, Button button) {
+        DownloadTask downloadTask = new DownloadTask(this.fileManager, urls);
+
+        this.setStage(button);
+        this.enableButtons(false, true);
+
+        return downloadTask;
+    }
+
+    void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
         this.enableButtons(true, true);
-        this.progressBar.setVisible(false);
-        this.progressLabel.setVisible(false);
+
+        if (button != null)
+            button.setVisible(true);
+
+        progressBar.setVisible(false);
+        progressLabel.setVisible(false);
     }
 
     public void endRemove() {
-        this.endDownload();
+        this.endDownload(null, this.progressBar, this.progressLabel);
     }
 
     abstract void endUpload(String addedFileName, String directory, Label label, int num);

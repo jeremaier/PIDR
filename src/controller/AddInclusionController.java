@@ -111,7 +111,7 @@ public class AddInclusionController extends Controller implements Initializable 
         Date dateInclusion = date == null ? null : InclusionDaoImpl.stringToDate(date);
         String numAna = this.inclusion.getNumAnaPat();
 
-        if (this.inclusion.getIdPatient() != null) {
+        if (!this.inclusion.getIdPatient().equals("")) {
             this.patientLabel.setText("ID : " + this.inclusion.getIdPatient());
             this.addPatientButton.setText("Supprimer");
             this.patientId = this.inclusion.getIdPatient();
@@ -189,7 +189,7 @@ public class AddInclusionController extends Controller implements Initializable 
 
     @FXML
     private void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
         String ref1, ref2;
         String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//";
         ArrayList<String> refs = new ArrayList<>();
@@ -223,7 +223,7 @@ public class AddInclusionController extends Controller implements Initializable 
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
 
         switch (buttonName) {
             case "ref1":
@@ -245,14 +245,11 @@ public class AddInclusionController extends Controller implements Initializable 
         removeTask.setOnSucceeded(e -> {
             button.setText("Ajouter");
             label.setText("Aucun");
+            this.progressBar.setVisible(false);
             this.enableButtons(true, true);
         });
 
-        removeTask.setOnSucceeded(e -> {
-            button.setText("Ajouter");
-            label.setText("Aucun");
-            this.enableButtons(true, true);
-        });
+        removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
 
         this.inclusionDaoImpl.update(inclusion, Integer.parseInt(this.inclusionIDField.getText()));
         new Thread(removeTask).start();
@@ -279,6 +276,7 @@ public class AddInclusionController extends Controller implements Initializable 
             button.setText("Supprimer");
             this.endUpload(addedFileName, directory, label, 0);
             String url = directory + "//" + addedFileName;
+            this.progressBar.setVisible(false);
 
             switch (buttonName) {
                 case "ref1":

@@ -25,8 +25,6 @@ public class UploadTask extends Task<Void> {
     }
 
     void updateProgressBar(double value) {
-        System.out.println("lol");
-
         this.updateProgress(value, value);
     }
 

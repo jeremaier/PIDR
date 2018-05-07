@@ -18,7 +18,7 @@ public class AddTranscriptomieView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addTranscriptomieStage = new Stage();
 
-        addTranscriptomieStage.setX(parentStage.getX() + parentStage.getWidth());
+        addTranscriptomieStage.setX(parentStage.getX());
         addTranscriptomieStage.setY(parentStage.getY());
         addTranscriptomieStage.setTitle("Gestion des analyses transcriptomiques");
         viewLoader.setLocation(getClass().getResource("/ressource/AddTranscriptomie.fxml"));

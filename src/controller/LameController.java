@@ -93,9 +93,9 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void cancelButtonEvent() {
         this.setStage(this.retour);
-        InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(connection);
+        InclusionDaoImpl inclusionDaoImpl = new InclusionDaoImpl(this.connection);
 
-        new LesionsView(connection, fileManager, inclusionDaoImpl.selectById(lesion.getIdInclusion()));
+        new LesionsView(this.stage, this.connection, this.fileManager, inclusionDaoImpl.selectById(this.lesion.getIdInclusion()));
 
         this.stage.close();
     }
@@ -103,7 +103,7 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void ajoutButtonAction() {
         this.setStage(this.ajouter);
-        new AddLameView(this.stage, this, null, connection, fileManager, lesion, numAnapat);
+        new AddLameView(this.stage, this, null, this.connection, this.fileManager, this.lesion, this.numAnapat);
     }
 
     @FXML
@@ -111,7 +111,7 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.modifier);
 
         if (selectedHistologicLamella != null)
-            new AddLameView(this.stage, this, selectedHistologicLamella, connection, fileManager, lesion, numAnapat);
+            new AddLameView(this.stage, this, this.selectedHistologicLamella, this.connection, this.fileManager, this.lesion, this.numAnapat);
         else JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
     }
 
@@ -168,14 +168,12 @@ public class LameController extends Controller implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), this.selectedHistologicLamella);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), this.selectedHistologicLamella);
                 this.lameList.remove(this.selectedHistologicLamella);
                 this.tab.getSelectionModel().clearSelection();
                 populate();
                 this.enableButtons(true, true);
-            } else {
-                alert.close();
-            }
+            } else alert.close();
         } else {
             JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
         }

@@ -239,7 +239,7 @@ public class LesionsController extends Controller implements Initializable {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             this.enableButtons(false, true);
-            this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton)/*, this.inclusion*/, this.selectedLesion);
+            this.remove(new RemoveTask(this, this.fileManager).setParameters(this.removeButton, null, this.progressBar, this.progressLabel), this.selectedLesion);
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
             this.selectedIdLesion = -1;
@@ -256,7 +256,7 @@ public class LesionsController extends Controller implements Initializable {
     public void siteCutaneAction() {
         this.setStage(this.siteCutaneButton);
 
-        new SiteView(this.selectedLesion, this.connection, this.fileManager);
+        new SiteView(this.stage, this.selectedLesion, this.connection, this.fileManager);
 
         this.stage.close();
     }
@@ -264,7 +264,7 @@ public class LesionsController extends Controller implements Initializable {
     public void histologicLamellaAction() {
         this.setStage(this.histologicLamellaButton);
 
-        new LameView(this.connection, this.fileManager, this.selectedLesion, this.inclusion.getNumAnaPat());
+        new LameView(this.stage, this.connection, this.fileManager, this.selectedLesion, this.inclusion.getNumAnaPat());
 
         this.stage.close();
     }
@@ -273,7 +273,7 @@ public class LesionsController extends Controller implements Initializable {
         this.setStage(this.returnButton);
         this.fileManager.openFTPConnection();
 
-        new InclusionsView(this.connection, this.fileManager);
+        new InclusionsView(this.stage, this.connection, this.fileManager);
 
         this.stage.close();
     }

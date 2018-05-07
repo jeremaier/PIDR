@@ -7,6 +7,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 public class FileManager extends Observable {
-    private final static String procDirectoryName = ".//procedures";
-    private final static String resDirectoryName = ".//resultats";
+    private final static String procDirectoryName = "//procedures";
+    private final static String resDirectoryName = "//resultats";
     private final static String refDirectoryName = "//inclusions";
     private final static String lesionFilesDirectoryName = "//lesions";
     private SSLSessionReuseFTPSClient ftpClient;
@@ -117,7 +118,7 @@ public class FileManager extends Observable {
     public boolean openFTPConnection() {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
-        //ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         ftpClient.setConnectTimeout(2000);
         ftpClient.setDataTimeout(500);
 
@@ -247,7 +248,6 @@ public class FileManager extends Observable {
 
             try {
                 this.makeDirectories(dossier);
-                System.out.println(mesure);
                 if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
                     fileName = null;
             } catch (IOException e) {

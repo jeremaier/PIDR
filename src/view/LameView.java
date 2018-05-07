@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class LameView {
-    public LameView(Connection connection, FileManager fileManager, Lesion lesion, String numanapat) {
+    public LameView(Stage stage, Connection connection, FileManager fileManager, Lesion lesion, String numanapat) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage lameStage = new Stage();
 
         lameStage.setTitle("Lame histologique");
-        lameStage.setX(lameStage.getX() - 25);
+        lameStage.setX(stage.getX());
+        lameStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Lames.fxml"));
         viewLoader.setControllerFactory(iC -> new LameController(connection,lesion,fileManager, numanapat));
 

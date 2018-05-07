@@ -2,6 +2,8 @@ package src.utils;
 
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import src.controller.Controller;
 
 import java.util.ArrayList;
@@ -32,12 +34,15 @@ public class RemoveTask extends Task<Void> {
         this.urls.addAll(urls);
     }
 
-    public RemoveTask setParameters(Button button) {
+    public RemoveTask setParameters(Button button, Button removeButton, ProgressBar progressBar, Label progressLabel) {
         this.controller.setStage(button);
         this.controller.enableButtons(false, true);
-        this.controller.progressBar.setVisible(true);
-        this.controller.progressBar.progressProperty().bind(this.progressProperty());
-        this.controller.progressLabel.textProperty().bind(this.messageProperty());
+        progressBar.setVisible(true);
+        progressBar.progressProperty().bind(this.progressProperty());
+        progressLabel.textProperty().bind(this.messageProperty());
+
+        if (removeButton != null)
+            removeButton.setVisible(false);
 
         this.setOnSucceeded(e -> this.controller.endRemove());
         this.setOnFailed(e -> this.controller.endRemove());

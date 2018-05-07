@@ -136,14 +136,13 @@ public class AddTransciptomieController extends Controller implements Initializa
             Rin = Integer.parseInt(RIN.getText());
             else Rin=0;
 
-            newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
-            transcriptomieDaoImpl.insert(newTranscr);
-            transcriptomieController.display(newTranscr);
+            newTranscr = new TranscriptomicAnalysis(Id, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            this.transcriptomieDaoImpl.insert(newTranscr);
+            this.transcriptomieController.display(newTranscr);
 
             this.setStage(this.accepte);
-            new TranscriptomieView(connection,fileManager,newTranscr,siteId);
+            new TranscriptomieView(this.stage, this.connection, this.fileManager, newTranscr, this.siteId);
             this.stage.close();
-
         } else {
             Id = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : transcriptomicAnalysis.getId();
             Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : transcriptomicAnalysis.getLamellaLocation();
@@ -177,7 +176,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             transcriptomieController.display(newTranscr);
 
             this.setStage(this.accepte);
-            new TranscriptomieView(connection,fileManager,newTranscr,siteId);
+            new TranscriptomieView(this.stage, this.connection, this.fileManager, newTranscr, this.siteId);
             this.stage.close();
         }
 
@@ -185,20 +184,20 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @FXML
     private void fichierBrutButton() {
-        this.startUpload(qualityReport, checkFichierBrut, "//Transcriptomie//",null,1 );
+        this.startUpload(this.qualityReport, this.checkFichierBrut, "//Transcriptomie//", null, 1);
     }
 
 
     @FXML
     private void qualityReportButtonAction() {
-        this.startUpload(qualityReport, checkQualityReport, "//Transcriptomie//",null,2 );
+        this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//", null, 2);
     }
 
     @FXML
     private void retour() {
         this.setStage(this.cancel);
 
-        new TranscriptomieView(connection, fileManager, transcriptomicAnalysis, siteId);
+        new TranscriptomieView(this.stage, connection, fileManager, transcriptomicAnalysis, siteId);
         transcriptomieController.display(transcriptomicAnalysis);
 
         this.stage.close();

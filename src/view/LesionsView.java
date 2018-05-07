@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class LesionsView {
-    public LesionsView(Connection connection, FileManager fileManager, Inclusion inclusion) {
+    public LesionsView(Stage stage, Connection connection, FileManager fileManager, Inclusion inclusion) {
         Parent rootLog = null;
         Stage lesionsStage = new Stage();
         FXMLLoader viewLoader = new FXMLLoader();
 
         lesionsStage.setTitle("Lesions");
-        lesionsStage.setX(lesionsStage.getX() - 25);
+        lesionsStage.setX(stage.getX());
+        lesionsStage.setY(stage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Lesions.fxml"));
         viewLoader.setControllerFactory(iC -> new LesionsController(connection, fileManager, inclusion));
 

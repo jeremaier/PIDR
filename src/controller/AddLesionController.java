@@ -115,7 +115,7 @@ public class AddLesionController extends Controller implements Initializable {
         Diag diag = this.lesion.getDiag();
         this.addButton.setText("Modifier");
         this.siteAnatomiqueField.setText(this.lesion.getSiteAnatomique());
-        this.diagBox.getSelectionModel().select(this.lesion.getDiag());
+        this.diagBox.getSelectionModel().select(diag);
         this.idLesion = Integer.toString(this.lesion.getId());
         this.enableButtons(true, false);
 
@@ -186,7 +186,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     public void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
         ArrayList<String> files = new ArrayList<>();
         String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
         String photoSur, photoHors, photoFixe, otherDiag, moyFile;
@@ -250,7 +250,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button);
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
 
         switch (buttonName) {
             case "sur":

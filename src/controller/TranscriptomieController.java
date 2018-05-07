@@ -127,7 +127,7 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     private void retour() {
         this.setStage(this.retour);
-        new SiteView(new LesionDaoImpl(connection).selectById(new SiteCutaneDaoImpl(connection).selectById(siteId).getIdLesion()), connection, fileManager);
+        new SiteView(this.stage, new LesionDaoImpl(connection).selectById(new SiteCutaneDaoImpl(connection).selectById(siteId).getIdLesion()), connection, fileManager);
 
         this.stage.close();
     }
@@ -172,7 +172,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer), transcriptomicAnalysis);
+                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), transcriptomicAnalysis);
                 this.transcriptomicAnalysis = null;
                 this.display(null);
                 this.enableButtons(true, true);
