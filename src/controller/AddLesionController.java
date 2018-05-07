@@ -235,21 +235,21 @@ public class AddLesionController extends Controller implements Initializable {
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoSur());
                 }});
-
                 this.photoSurLabel.setText("Aucun");
+                this.lesion.setPhotoSur("Aucun");
                 break;
             case "hors":
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoHors());
                 }});
-
+                this.photoHorsLabel.setText("Aucun");
                 this.lesion.setPhotoHors("Aucun");
                 break;
             case "fixe":
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoFixe());
                 }});
-
+                this.photoFixeLabel.setText("Aucun");
                 this.lesion.setPhotoFixe("Aucun");
                 break;
             case "diag":
