@@ -179,14 +179,14 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void fichierDiag() {
         if (this.checkFichierDiag.getText().equals("Aucun"))
-            this.startUpload(this.addFicherDiag, checkFichierDiag,  site != null ? "//siteCutane//" + Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1), null, 1);
+            this.startUpload(this.addFicherDiag, checkFichierDiag,  site != null ? "//siteCutane//" + Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1)+"//", null, 1);
         else this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag, site.getFichierDiag());
     }
 
     @FXML
     private void imagesSpectresAction() {
         if (this.checkFichierDiag.getText().equals("Aucun"))
-            this.startUpload(this.imagesSpectresButton, checkFichierImages,  site != null ? "//siteCutane//" +  Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1), null, 1);
+            this.startUpload(this.imagesSpectresButton, checkFichierImages,  site != null ? "//siteCutane//" +  Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1)+"//", null, 1);
         else this.removeFileFromFTP(this.imagesSpectresButton, this.checkFichierDiag, site.getImagesSpectres());
     }
 

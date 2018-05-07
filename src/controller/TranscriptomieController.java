@@ -84,6 +84,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /*TODO supprimer un bouton*/
         this.display(this.transcriptomicAnalysis);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
