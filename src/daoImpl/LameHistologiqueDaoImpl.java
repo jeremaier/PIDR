@@ -294,6 +294,7 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
         int lastId = -1;
 
         try {
+            System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
             statement = LameHistologiqueDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM lame_histologique");
 

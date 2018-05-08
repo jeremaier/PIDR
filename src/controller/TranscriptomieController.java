@@ -62,8 +62,7 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     Button retour;
 
-    @FXML
-    Button modifier;
+
 
     @FXML
     Button ajouter;
@@ -84,9 +83,18 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*TODO supprimer un bouton*/
-        if(this.transcriptomicAnalysis!=null)
+
+        if(this.transcriptomicAnalysis!=null) {
             this.ajouter.setText("Modifier");
+            if (this.transcriptomicAnalysis.getFichierBrut()==null)
+                fichierBrut.setDisable(true);
+            if (this.transcriptomicAnalysis.getQualityReport()==null)
+                qualityReport.setDisable(true);
+
+        }else{enableButtons(false,false);}
+
+
+
         this.display(this.transcriptomicAnalysis);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
@@ -104,6 +112,8 @@ public class TranscriptomieController extends Controller implements Initializabl
             this.ARNc.setText(Double.toString(transcriptomicAnalysis.getARNC()));
             this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
         } else {
+            System.out.println("popopo");
+            enableButtons(false,false);
             this.ID.setText("");
             this.emplacement.setText("");
             this.numSerie.setText("");
@@ -119,6 +129,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void fichierBrutAction() {
+
         this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.fichierBrut);
     }
 
@@ -138,7 +149,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     private void updateButtonAction() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
-        this.setStage(this.modifier);
+        this.setStage(this.ajouter);
 
         if (this.transcriptomicAnalysis != null) {
             new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
@@ -149,13 +160,15 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     private void addButtonAction() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
+        System.out.println(transcriptomicAnalysis==null);
         this.setStage(this.ajouter);
 
         if (this.transcriptomicAnalysis == null) {
             new AddTranscriptomieView(this.stage, this, connection, fileManager, null, siteId);
             this.stage.close();
         } else {
-            updateButtonAction();
+            new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
+            this.stage.close();
         }
     }
 
@@ -173,8 +186,9 @@ public class TranscriptomieController extends Controller implements Initializabl
                 this.enableButtons(false, true);
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), transcriptomicAnalysis);
                 this.transcriptomicAnalysis = null;
+                this.ajouter.setText("Ajouter");
                 this.display(null);
-                this.enableButtons(true, true);
+                this.enableButtons(false, false);
             } else alert.close();
         }
     }
@@ -221,10 +235,12 @@ public class TranscriptomieController extends Controller implements Initializabl
     public void enableButtons(boolean enable, boolean all) {
         this.fichierBrut.setDisable(!enable);
         this.qualityReport.setDisable(!enable);
-        this.retour.setDisable(!enable);
-        this.modifier.setDisable(!enable);
-        this.ajouter.setDisable(!enable);
         this.supprimer.setDisable(!enable);
+
+        if (all) {
+            this.retour.setDisable(!enable);
+            this.ajouter.setDisable(!enable);
+        }
     }
 
     @Override

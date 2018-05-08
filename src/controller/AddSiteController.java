@@ -162,10 +162,11 @@ public class AddSiteController extends Controller implements Initializable {
             Orientation = this.orientation.getText().length() > 0 ? Integer.parseInt(this.orientation.getText()) : this.site.getOrientation();
             diagnostique = this.diag.getSelectionModel().getSelectedItem() != null ? this.diag.getSelectionModel().getSelectedItem().toString() : this.site.getDiag().toString();
 
-            if (this.autreDiag.getText().length() > 0 && this.diag.getSelectionModel().getSelectedItem() == null)
+            if (this.autreDiag.getText()!= null )
                 AutreDiag = this.autreDiag.getText();
             else
-                AutreDiag = this.autreDiag.getText().length() == 0 && this.diag.getSelectionModel().getSelectedItem() != null ? null : this.site.getAutreDiag();
+                AutreDiag=this.site.getAutreDiag();
+
 
             if (this.fichierDiagPath == null)
                 this.fichierDiagPath = this.site.getFichierDiag();

@@ -296,7 +296,7 @@ public class SiteController extends Controller implements Initializable {
         this.modifier.setDisable(!enable);
         this.transcriptomique.setDisable(!enable);
 
-        if (this.selectedSite.getFichierDiag() != null)
+        if (this.selectedSite!= null && this.selectedSite.getFichierDiag() != null)
             this.fichierDiag.setDisable(!enable);
         else this.fichierDiag.setDisable(true);
     }

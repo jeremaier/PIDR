@@ -95,18 +95,18 @@ public class AddTransciptomieController extends Controller implements Initializa
                 } else this.enableButtons(true, false);
             });
         } else {
-            if (this.transcriptomicAnalysis.getFichierBrut() != null)
+            if (this.transcriptomicAnalysis.getFichierBrut() != null) {
                 this.fichierBrut.setText("Supprimer");
-            else {
+
                 String[] s0 = this.transcriptomicAnalysis.getFichierBrut().split("//");
-                this.fichierBrut.setText(s0[3]);
+                this.checkFichierBrut.setText(s0[3]);
             }
 
-            if (this.transcriptomicAnalysis.getQualityReport() != null)
+            if (this.transcriptomicAnalysis.getQualityReport() != null) {
                 this.qualityReport.setText("Supprimer");
-            else {
+
                 String[] s0 = this.transcriptomicAnalysis.getQualityReport().split("//");
-                this.qualityReport.setText(s0[3]);
+                this.checkQualityReport.setText(s0[3]);
             }
 
 
@@ -217,15 +217,15 @@ public class AddTransciptomieController extends Controller implements Initializa
     @FXML
     private void fichierBrutButton() {
         if (this.checkFichierBrut.getText().equals("Aucun"))
-            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + this.id.getText() + "//", null, 1);
+            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId+1 + "//", null, 1);
         else this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
     }
 
     @FXML
     private void qualityReportButtonAction() {
         if (this.checkQualityReport.getText().equals("Aucun"))
-            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + this.id.getText() + "//", null, 2);
-        else this.removeFileFromFTP("quality", this.fichierBrut, this.checkFichierBrut);
+            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId+1 + "//", null, 2);
+        else this.removeFileFromFTP("quality", this.qualityReport, this.checkQualityReport);
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
@@ -241,6 +241,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 this.transcriptomicAnalysis.setFichierBrut(null);
                 break;
             case "quality":
+                System.out.println("salut");
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(transcriptomicAnalysis.getQualityReport());
                 }});
@@ -268,14 +269,16 @@ public class AddTransciptomieController extends Controller implements Initializa
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancel, null, this.progressBar, this.progressLabel);
         ArrayList<String> files = new ArrayList<>();
         String directory;
-        directory = "//Transcriptomie//" + Integer.toString(this.lastId+1) + "//";
 
-        if (this.transcriptomicAnalysis==null) {
-            if (!( this.checkFichierBrut.getText()).equals("Aucun"))
-                files.add(directory+checkFichierBrut.getText());
+        directory = "//Transcriptomie//" + Integer.toString(this.lastId + 1) + "//";
+
+
+        if (this.transcriptomicAnalysis == null) {
+            if (!(this.checkFichierBrut.getText()).equals("Aucun"))
+                files.add(directory + checkFichierBrut.getText());
 
             if (!(this.checkQualityReport.getText()).equals("Aucun"))
-                files.add(directory+checkQualityReport.getText());
+                files.add(directory + checkQualityReport.getText());
 
             removeTask.addUrls(files);
 
