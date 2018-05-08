@@ -2,10 +2,7 @@ package src.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import src.daoImpl.LesionDaoImpl;
 import src.daoImpl.SiteCutaneDaoImpl;
 import src.daoImpl.TranscriptomieDaoImpl;
@@ -231,7 +228,10 @@ public class TranscriptomieController extends Controller implements Initializabl
         removeTask.addUrls(urls);
     }
 
-    @Override
+    public void endRemove(Button button, ProgressBar progressBar, Label label){
+
+    }
+
     public void enableButtons(boolean enable, boolean all) {
         this.fichierBrut.setDisable(!enable);
         this.qualityReport.setDisable(!enable);
