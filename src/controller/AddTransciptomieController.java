@@ -106,7 +106,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 this.qualityReport.setText("Supprimer");
 
                 String[] s0 = this.transcriptomicAnalysis.getQualityReport().split("//");
-                this.qualityReport.setText(s0[3]);
+                this.checkQualityReport.setText(s0[3]);
             }
 
 
@@ -241,6 +241,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 this.transcriptomicAnalysis.setFichierBrut(null);
                 break;
             case "quality":
+                System.out.println("salut");
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(transcriptomicAnalysis.getQualityReport());
                 }});
