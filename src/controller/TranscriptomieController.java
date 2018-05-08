@@ -85,13 +85,15 @@ public class TranscriptomieController extends Controller implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         /*TODO supprimer un bouton*/
+        if(this.transcriptomicAnalysis!=null)
+            this.ajouter.setText("Modifier");
         this.display(this.transcriptomicAnalysis);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
 
     void display(TranscriptomicAnalysis transcriptomicAnalysis) {
         if (transcriptomicAnalysis != null) {
-            this.ID.setText(Integer.toString(transcriptomicAnalysis.getId()));
+            this.ID.setText(Integer.toString(transcriptomicAnalysis.getIdBdd()));
             this.emplacement.setText(Integer.toString(transcriptomicAnalysis.getLamellaLocation()));
             this.numSerie.setText(Integer.toString(transcriptomicAnalysis.getSerialNumber()));
             this.cy3.setText(Double.toString(transcriptomicAnalysis.getCyanine()));
@@ -133,7 +135,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.stage.close();
     }
 
-    @FXML
+
     private void updateButtonAction() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
         this.setStage(this.modifier);
@@ -153,11 +155,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             new AddTranscriptomieView(this.stage, this, connection, fileManager, null, siteId);
             this.stage.close();
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Il y a déjà une analyse trascriptomique enregistrée pour ce site cutané");
-            alert.showAndWait();
+            updateButtonAction();
         }
     }
 

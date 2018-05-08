@@ -24,12 +24,12 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID_BDD,ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID_BDD, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO analyse_transcriptomique (ID, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
+            System.out.println("INSERT INTO analyse_transcriptomique (ID_BDD, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUL_EMPLACEMENT, QUALITY_REPORT)");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -173,12 +173,12 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID=?, ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID_BDD=?, ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
             preparedStatement.setInt(14, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE analyse_transcriptomique SET" + " ID=?, ID_SITE_CUTANE=?, FICHIER_BRUT = ?,  RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            System.out.println("UPDATE analyse_transcriptomique SET" + " ID_BDD=?, ID_SITE_CUTANE=?, FICHIER_BRUT = ?,  RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -196,10 +196,52 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
 
     }
 
+    @Override
+    public int getLast() {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        int lastId = 0;
+
+        try {
+            statement = TranscriptomieDaoImpl.connection.createStatement();
+            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM analyse_transcriptomique");
+
+            if (resultSet.next())
+                lastId = resultSet.getInt("lastId");
+            else return -1;
+
+            System.out.println("SELECT last_insert_id() AS lastId FROM analyse_transcriptomique");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lastId;
+    }
+
     private TranscriptomicAnalysis addToTranscriptomie(ResultSet resultSet) throws SQLException {
         TranscriptomicAnalysis transcriptomicAnalysis = new TranscriptomicAnalysis();
 
         transcriptomicAnalysis.setId(resultSet.getInt("ID"));
+        transcriptomicAnalysis.setIdBdd(resultSet.getInt("ID_BDD"));
         transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
         transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
         transcriptomicAnalysis.setRIN(resultSet.getDouble("RIN"));
@@ -222,7 +264,7 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
         if (indexDebut == 1)
             preparedStatement.setInt(indexDebut, ((TranscriptomicAnalysis) object).getId());
-        preparedStatement.setInt(indexDebut+1, ((TranscriptomicAnalysis) object).getId());
+        preparedStatement.setInt(indexDebut+1, ((TranscriptomicAnalysis) object).getIdBdd());
         preparedStatement.setInt(indexDebut + 2, ((TranscriptomicAnalysis) object).getIdCutaneousSite());
         preparedStatement.setString(indexDebut + 3, ((TranscriptomicAnalysis) object).getFichierBrut());
         preparedStatement.setDouble(indexDebut + 4, ((TranscriptomicAnalysis) object).getRIN());

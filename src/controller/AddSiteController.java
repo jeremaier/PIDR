@@ -117,6 +117,23 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void cancelButtonAction() {
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.annuler, null, this.progressBar, this.progressLabel);
+        ArrayList<String> files = new ArrayList<>();
+        String directory;
+        directory =  "//Transcriptomie//" + Integer.toString(this.lastId+1) + "//";
+
+
+
+        if (this.site==null) {
+            if (!( this.checkFichierDiag.getText()).equals("Aucun")) {
+                files.add(directory + this.checkFichierDiag.getText());
+            }
+            removeTask.addUrls(files);
+            new Thread(removeTask).start();
+
+        }
+
+
         this.setStage(this.annuler);
         this.stage.close();
     }
@@ -130,6 +147,7 @@ public class AddSiteController extends Controller implements Initializable {
 
         if (site == null) {
             if (siteCutane.getValue() != null) {
+
                 SITE = siteCutane.getValue().toString();
                 diagnostique = diag.getValue().toString();
             }
@@ -141,6 +159,8 @@ public class AddSiteController extends Controller implements Initializable {
 
             CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, imagesSpectresPath, spectrePath);
             this.siteController.populateSingleSite(newSite);
+
+
             siteCutaneDaoImpl.insert(newSite);
         } else {
             SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite().toString();
