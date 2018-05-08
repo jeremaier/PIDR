@@ -16,7 +16,7 @@ public class AddDiagView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage diagStage = new Stage();
 
-        diagStage.setX(parentStage.getX() + parentStage.getWidth());
+        diagStage.setX(parentStage.getX() - 400);
         diagStage.setY(parentStage.getY());
         diagStage.setTitle(lesion.getAutreDiag().equals("") ? "Ajout d'un diagnostic" : "Modification d'un diagnostic");
         viewLoader.setLocation(getClass().getResource("/ressource/AddDiag.fxml"));

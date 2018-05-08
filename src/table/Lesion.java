@@ -17,11 +17,12 @@ public class Lesion {
     private String photoFixe = "Aucun";
     private StringProperty siteAnatomique;
     private Diag diag;
-    private String autreDiag = "Aucun";
+    private StringProperty autreDiag;
     private String fileDiag = "Aucun";
 
     public Lesion() {
         this.siteAnatomique = new SimpleStringProperty();
+        this.autreDiag = new SimpleStringProperty();
     }
 
     public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fileDiag, String fichierMoy) {
@@ -107,11 +108,15 @@ public class Lesion {
     }
 
     public String getAutreDiag() {
-        return this.autreDiag;
+        return this.autreDiag.get();
     }
 
     public void setAutreDiag(String autreDiag) {
-        this.autreDiag = autreDiag;
+        this.autreDiag.set(autreDiag);
+    }
+
+    public StringProperty autreDiagProperty() {
+        return this.autreDiag;
     }
 
     public String getFileDiag() {

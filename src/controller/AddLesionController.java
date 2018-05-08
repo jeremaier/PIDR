@@ -114,10 +114,6 @@ public class AddLesionController extends Controller implements Initializable {
         this.idLesion = Integer.toString(this.lesion.getId());
         this.enableButtons(true, false);
 
-        if (diag != null)
-            if (diag.equals(Diag.FICHIER) || diag.equals(Diag.AUTRE))
-                this.diagBox.setDisable(true);
-
         if (!this.lesion.getPhotoSur().equals("Aucun")) {
             this.photoSurLabel.setText(FileManager.getFileName(this.lesion.getPhotoSur(), false));
             this.addPhotoSurButton.setText("Supprimer");
@@ -179,17 +175,17 @@ public class AddLesionController extends Controller implements Initializable {
         String photoSur, photoHors, photoFixe, otherDiag;
 
         if (!this.addButton.getText().equals("Modifier")) {
-            if (!(photoSur = directory + this.photoSurLabel.getText()).equals("Aucun"))
-                files.add(photoSur);
+            if (!(photoSur = this.photoSurLabel.getText()).equals("Aucun"))
+                files.add(directory + photoSur);
 
-            if (!(photoHors = directory + this.photoHorsLabel.getText()).equals("Aucun"))
-                files.add(photoHors);
+            if (!(photoHors = this.photoHorsLabel.getText()).equals("Aucun"))
+                files.add(directory + photoHors);
 
-            if (!(photoFixe = directory + this.photoFixeLabel.getText()).equals("Aucun"))
-                files.add(photoFixe);
+            if (!(photoFixe = this.photoFixeLabel.getText()).equals("Aucun"))
+                files.add(directory + photoFixe);
 
-            if (!(otherDiag = directory + this.diagFileLabel.getText()).equals("Aucun"))
-                files.add(otherDiag);
+            if (!(otherDiag = this.diagFileLabel.getText()).equals("Aucun"))
+                files.add(directory + otherDiag);
         }
 
         removeTask.addUrls(files);
@@ -310,8 +306,6 @@ public class AddLesionController extends Controller implements Initializable {
                     break;
                 case "diag":
                     this.lesion.setFileDiag(url);
-                    this.diagBox.setValue(Diag.FICHIER);
-                    this.diagBox.setDisable(true);
                     break;
             }
         }
