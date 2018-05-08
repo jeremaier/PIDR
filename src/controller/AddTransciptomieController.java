@@ -217,14 +217,14 @@ public class AddTransciptomieController extends Controller implements Initializa
     @FXML
     private void fichierBrutButton() {
         if (this.checkFichierBrut.getText().equals("Aucun"))
-            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId+1 + "//", null, 1);
+            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId + 1 + "//", null, 1);
         else this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
     }
 
     @FXML
     private void qualityReportButtonAction() {
         if (this.checkQualityReport.getText().equals("Aucun"))
-            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId+1 + "//", null, 2);
+            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId + 1 + "//", null, 2);
         else this.removeFileFromFTP("quality", this.qualityReport, this.checkQualityReport);
     }
 

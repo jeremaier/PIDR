@@ -81,14 +81,16 @@ public class TranscriptomieController extends Controller implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        if(this.transcriptomicAnalysis!=null) {
+        if (this.transcriptomicAnalysis != null) {
             this.ajouter.setText("Modifier");
-            if (this.transcriptomicAnalysis.getFichierBrut()==null)
+            if (this.transcriptomicAnalysis.getFichierBrut() == null)
                 fichierBrut.setDisable(true);
-            if (this.transcriptomicAnalysis.getQualityReport()==null)
+            if (this.transcriptomicAnalysis.getQualityReport() == null)
                 qualityReport.setDisable(true);
 
-        }else{enableButtons(false,false);}
+        } else {
+            enableButtons(false, false);
+        }
 
 
 
@@ -110,7 +112,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
         } else {
             System.out.println("popopo");
-            enableButtons(false,false);
+            enableButtons(false, false);
             this.ID.setText("");
             this.emplacement.setText("");
             this.numSerie.setText("");
@@ -157,7 +159,7 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     private void addButtonAction() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
-        System.out.println(transcriptomicAnalysis==null);
+        System.out.println(transcriptomicAnalysis == null);
         this.setStage(this.ajouter);
 
         if (this.transcriptomicAnalysis == null) {
