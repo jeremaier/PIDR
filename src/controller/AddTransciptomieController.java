@@ -72,6 +72,7 @@ public class AddTransciptomieController extends Controller implements Initializa
     private String fichierBrutPath;
     private String qualityReportPath;
     private TranscriptomieController transcriptomieController;
+    private int lastId;
 
     public AddTransciptomieController(TranscriptomieController transcriptomieController, Connection connection, FileManager fileManager, TranscriptomicAnalysis transcriptomicAnalysis, int siteId) {
         this.connection = connection;
@@ -83,7 +84,8 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*TODO verifier que Id n'existe pas déjà*/
+        this.lastId = transcriptomieDaoImpl.getLast();
+
 
         if (transcriptomicAnalysis == null) {
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -111,7 +113,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             }
 
 
-            this.id.setText(Integer.toString(this.transcriptomicAnalysis.getId()));
+            this.id.setText(Integer.toString(this.transcriptomicAnalysis.getIdBdd()));
             this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
             this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
             this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
@@ -128,14 +130,14 @@ public class AddTransciptomieController extends Controller implements Initializa
     @FXML
     private void accepteButton() {
         TranscriptomicAnalysis newTranscr;
-        int Id, Emplacement, NumSerie;
+        int IdBdd, Emplacement, NumSerie;
         Double Activ, Cy3, Rendement, Concentration, Arnc, Rin;
         String Crit;
 
         if (transcriptomicAnalysis == null) {
             if (id.getText().length() > 0)
-                Id = Integer.parseInt(id.getText());
-            else Id = 0;
+                IdBdd = Integer.parseInt(id.getText());
+            else IdBdd = 0;
 
             if (emplacement.getText().length() > 0)
                 Emplacement = Integer.parseInt(emplacement.getText());
@@ -171,7 +173,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 Rin = Double.parseDouble(RIN.getText().replace(",", "."));
             else Rin = 0.0;
 
-            newTranscr = new TranscriptomicAnalysis(Id, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(IdBdd, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             this.transcriptomieDaoImpl.insert(newTranscr);
             this.transcriptomieController.display(newTranscr);
 
@@ -179,7 +181,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             new TranscriptomieView(this.stage, this.connection, this.fileManager, newTranscr, this.siteId);
             this.stage.close();
         } else {
-            Id = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : transcriptomicAnalysis.getId();
+            IdBdd = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : transcriptomicAnalysis.getIdBdd();
             Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : transcriptomicAnalysis.getLamellaLocation();
             NumSerie = numeroSerie.getText().length() > 0 ? Integer.parseInt(numeroSerie.getText()) : transcriptomicAnalysis.getSerialNumber();
             Cy3 = cy3.getText().length() > 0 ? Double.parseDouble(cy3.getText()) : transcriptomicAnalysis.getCyanine();
@@ -206,7 +208,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 }
             }
 
-            newTranscr = new TranscriptomicAnalysis(Id, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(IdBdd, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
             transcriptomieController.display(newTranscr);
 
@@ -223,11 +225,11 @@ public class AddTransciptomieController extends Controller implements Initializa
             if (this.checkFichierBrut.equals("Aucun"))
                 this.startUpload(this.fichierBrut, this.checkFichierBrut, "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//", null, 1);
             else {
-                this.removeFileFromFTP("brut",this.fichierBrut, this.checkFichierBrut);
+                this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
             }
         } else if (checkFichierBrut.getText().equals("Aucun"))
             this.startUpload(this.fichierBrut, this.checkFichierBrut, "//Transcriptomie//" + this.id.getText() + "//", null, 1);
-        else this.removeFileFromFTP("brut",this.fichierBrut, this.checkFichierBrut);
+        else this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
     }
 
 
@@ -235,13 +237,13 @@ public class AddTransciptomieController extends Controller implements Initializa
     private void qualityReportButtonAction() {
         if (transcriptomicAnalysis != null) {
             if (this.checkFichierBrut.equals("Aucun"))
-                this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//"+Integer.toString(this.transcriptomicAnalysis.getId()) + "//", null, 2);
+                this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//", null, 2);
             else {
                 this.removeFileFromFTP("quality", this.fichierBrut, this.checkFichierBrut);
             }
         } else if (checkFichierBrut.getText().equals("Aucun"))
             this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//" + this.id.getText() + "//", null, 2);
-        else this.removeFileFromFTP( "quality" ,this.fichierBrut, this.checkFichierBrut);
+        else this.removeFileFromFTP("quality", this.fichierBrut, this.checkFichierBrut);
     }
 
     private void removeFileFromFTP(String buttonName, Button button, Label label) {
@@ -281,10 +283,28 @@ public class AddTransciptomieController extends Controller implements Initializa
     }
 
 
-
     @FXML
     private void retour() {
-        this.setStage(this.cancel);
+
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancel, null, this.progressBar, this.progressLabel);
+        ArrayList<String> files = new ArrayList<>();
+        String directory;
+        directory = "//Transcriptomie//" + Integer.toString(this.lastId+1) + "//";
+
+
+
+        if (this.transcriptomicAnalysis==null) {
+            if (!( this.checkFichierBrut.getText()).equals("Aucun"))
+                files.add(directory+checkFichierBrut.getText());
+
+            if (!(this.checkQualityReport.getText()).equals("Aucun"))
+                files.add(directory+checkQualityReport.getText());
+
+            removeTask.addUrls(files);
+            new Thread(removeTask).start();
+
+        }
+
 
         new TranscriptomieView(this.stage, connection, fileManager, transcriptomicAnalysis, siteId);
         transcriptomieController.display(transcriptomicAnalysis);

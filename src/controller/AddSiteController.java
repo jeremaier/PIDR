@@ -117,6 +117,23 @@ public class AddSiteController extends Controller implements Initializable {
 
     @FXML
     private void cancelButtonAction() {
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.annuler, null, this.progressBar, this.progressLabel);
+        ArrayList<String> files = new ArrayList<>();
+        String directory;
+        directory =  "//Transcriptomie//" + Integer.toString(this.lastId+1) + "//";
+
+
+
+        if (this.site==null) {
+            if (!( this.checkFichierDiag.getText()).equals("Aucun")) {
+                files.add(directory + this.checkFichierDiag.getText());
+            }
+            removeTask.addUrls(files);
+            new Thread(removeTask).start();
+
+        }
+
+
         this.setStage(this.annuler);
         this.stage.close();
     }
@@ -130,6 +147,7 @@ public class AddSiteController extends Controller implements Initializable {
 
         if (site == null) {
             if (siteCutane.getValue() != null) {
+
                 SITE = siteCutane.getValue().toString();
                 diagnostique = diag.getValue().toString();
             }
@@ -141,6 +159,8 @@ public class AddSiteController extends Controller implements Initializable {
 
             CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, fichierDiagPath, imagesSpectresPath, spectrePath);
             this.siteController.populateSingleSite(newSite);
+
+
             siteCutaneDaoImpl.insert(newSite);
         } else {
             SITE = siteCutane.getSelectionModel().getSelectedItem() != null ? siteCutane.getSelectionModel().getSelectedItem().toString() : site.getSite().toString();
@@ -179,14 +199,14 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void fichierDiag() {
         if (this.checkFichierDiag.getText().equals("Aucun"))
-            this.startUpload(this.addFicherDiag, checkFichierDiag,  site != null ? "//siteCutane//" + Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1), null, 1);
+            this.startUpload(this.addFicherDiag, checkFichierDiag,  site != null ? "//siteCutane//" + Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1)+"//", null, 1);
         else this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag, site.getFichierDiag());
     }
 
     @FXML
     private void imagesSpectresAction() {
         if (this.checkFichierDiag.getText().equals("Aucun"))
-            this.startUpload(this.imagesSpectresButton, checkFichierImages,  site != null ? "//siteCutane//" +  Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1), null, 1);
+            this.startUpload(this.imagesSpectresButton, checkFichierImages,  site != null ? "//siteCutane//" +  Integer.toString(this.site.getId()) : Integer.toString(this.lastId + 1)+"//", null, 1);
         else this.removeFileFromFTP(this.imagesSpectresButton, this.checkFichierDiag, site.getImagesSpectres());
     }
 

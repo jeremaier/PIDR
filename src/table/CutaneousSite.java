@@ -34,9 +34,12 @@ public class CutaneousSite {
 
     public CutaneousSite(int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String imagesSpectres, String spectre) {
         this();
+        System.out.println("coucouc"+site);
+
         this.setFichierDiag(fileDiag);
         this.setIdLesion(idLesion);
         this.setSite(site);
+        System.out.println(getSite());
         this.setOrientation(orientation);
         this.setDiag(diag);
         this.setAutreDiag(autreDiag);
@@ -69,10 +72,10 @@ public class CutaneousSite {
     }
 
     public void setSite(String site) {
-        ObservableList<SiteCutane> diags = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(SiteCutane.values())));
+        ObservableList<SiteCutane> sites = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(SiteCutane.values())));
 
-        if (diag != null) {
-            for (SiteCutane siteValue : diags) {
+        if (site != null) {
+            for (SiteCutane siteValue : sites) {
                 if (siteValue.toString().equals(site)) {
                     this.site = siteValue;
                     break;

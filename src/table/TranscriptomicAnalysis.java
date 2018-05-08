@@ -4,6 +4,7 @@ import javafx.beans.property.*;
 
 public class TranscriptomicAnalysis {
     private IntegerProperty id;
+    private IntegerProperty idBdd;
     private IntegerProperty idCutaneousSite;
     private StringProperty fichierBrut;
     private DoubleProperty RIN;
@@ -19,6 +20,7 @@ public class TranscriptomicAnalysis {
 
     public TranscriptomicAnalysis() {
         this.id = new SimpleIntegerProperty();
+        this.idBdd= new SimpleIntegerProperty();
         this.idCutaneousSite = new SimpleIntegerProperty();
         this.fichierBrut = new SimpleStringProperty();
         this.RIN = new SimpleDoubleProperty();
@@ -33,9 +35,11 @@ public class TranscriptomicAnalysis {
         this.qualityReport = new SimpleStringProperty();
     }
 
-    public TranscriptomicAnalysis(int id, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+
+
+    public TranscriptomicAnalysis( int idBdd, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
         this();
-        this.setId(id);
+        this.setIdBdd(idBdd);
         this.setIdCutaneousSite(idCutaneousSite);
         this.setFichierBrut(fichierBrut);
         this.setRIN(RIN);
@@ -58,8 +62,13 @@ public class TranscriptomicAnalysis {
         this.id.set(id);
     }
 
+    public int getIdBdd() {
+        return idBdd.get();
+    }
 
-
+    public void setIdBdd(int idBdd) {
+        this.idBdd.set(idBdd);
+    }
 
     public int getIdCutaneousSite() {
         return this.idCutaneousSite.get();

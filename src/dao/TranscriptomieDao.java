@@ -14,5 +14,7 @@ public interface TranscriptomieDao {
 
     void update(TranscriptomicAnalysis transcriptomie, int id);
 
+    int getLast();
+
 
 }

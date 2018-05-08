@@ -51,6 +51,7 @@ public class AddLameController extends Controller implements Initializable {
     private HistologicLamella histologicLamella;
     private String photoPath;
     private LameController lameController;
+    private int lastId;
 
     public AddLameController(LameController lameController, Connection connection, FileManager fileManager, Lesion lesion, HistologicLamella histologicLamella, String numAnapat) {
         this.connection = connection;
@@ -63,15 +64,17 @@ public class AddLameController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("coucou");
+
         if (histologicLamella == null)
             lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, true));
 
         if (this.histologicLamella != null) {
             this.addButton.setText("Modifier");
 
-            if (this.histologicLamella.getPhoto() != null)
+            if (this.histologicLamella.getPhoto() != null){
                 this.addPictureButton.setText("Supprimer");
-            else {
+
                 String[] s0 = this.histologicLamella.getPhoto().split("//");
                 this.photoLabel.setText(s0[3]);
             }
@@ -92,10 +95,29 @@ public class AddLameController extends Controller implements Initializable {
         });
 
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
+        this.lastId = lameHistologiqueDaoImpl.getLastid();
+
     }
 
     @FXML
     private void cancelButtonAction() {
+        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
+        ArrayList<String> files = new ArrayList<>();
+        String directory;
+        directory = "//Transcriptomie//" + Integer.toString(this.lastId + 1) + "//";
+
+
+        if (this.histologicLamella == null) {
+            if (!(this.photoLabel.getText()).equals("Aucun")) {
+                files.add(directory + this.photoLabel.getText());
+            }
+            removeTask.addUrls(files);
+
+            new Thread(removeTask).start();
+
+        }
+
+
         this.setStage(this.cancelButton);
         this.stage.close();
     }
@@ -166,7 +188,7 @@ public class AddLameController extends Controller implements Initializable {
             }
 
         } else if (this.photoLabel.getText().equals("Aucun"))
-            this.startUpload(this.addPictureButton, photoLabel, "//lame_histologique//" + Integer.toString(lameHistologiqueDaoImpl.getLastid()) + "//");
+            this.startUpload(this.addPictureButton, photoLabel, "//lame_histologique//" + Integer.toString(lastId) + "//");
         else this.removeFileFromFTP(this.addPictureButton, this.photoLabel);
     }
 
