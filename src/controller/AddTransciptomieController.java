@@ -278,8 +278,8 @@ public class AddTransciptomieController extends Controller implements Initializa
                 files.add(directory+checkQualityReport.getText());
 
             removeTask.addUrls(files);
-            new Thread(removeTask).start();
 
+            new Thread(removeTask).start();
         }
 
 

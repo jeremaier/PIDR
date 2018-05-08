@@ -255,7 +255,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
     public int getLastid() {
         Statement statement = null;
         ResultSet resultSet = null;
-        int lastId = 0;
+        int lastId = -1;
 
         try {
             statement = SiteCutaneDaoImpl.connection.createStatement();
@@ -263,7 +263,6 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
 
             if (resultSet.next())
                 lastId = resultSet.getInt("lastId");
-            else return -1;
 
             System.out.println("SELECT last_insert_id() AS lastId FROM site_cutane");
         } catch (MySQLNonTransientConnectionException e) {

@@ -49,4 +49,8 @@ public class RemoveTask extends Task<Void> {
 
         return this;
     }
+
+    public boolean isEmpty() {
+        return this.urls.isEmpty();
+    }
 }

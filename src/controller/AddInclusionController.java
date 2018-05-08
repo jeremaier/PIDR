@@ -208,6 +208,7 @@ public class AddInclusionController extends Controller implements Initializable 
                 refs.add(directory + ref2);
 
             removeTask.addUrls(refs);
+
             new Thread(removeTask).start();
         }
 

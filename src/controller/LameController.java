@@ -59,14 +59,12 @@ public class LameController extends Controller implements Initializable {
     private ObservableList<HistologicLamella> lameList;
     private HistologicLamella selectedHistologicLamella;
     private Lesion lesion;
-    private String numAnapat;
     private LameHistologiqueDaoImpl lameHistologiqueDaoImpl;
 
-    public LameController(Connection connection, Lesion lesion, FileManager fileManager, String numAnapat) {
+    public LameController(Connection connection, Lesion lesion, FileManager fileManager) {
         this.connection = connection;
         this.lesion = lesion;
         this.fileManager = fileManager;
-        this.numAnapat = numAnapat;
         this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
     }
 
@@ -103,7 +101,7 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void ajoutButtonAction() {
         this.setStage(this.ajouter);
-        new AddLameView(this.stage, this, null, this.connection, this.fileManager, this.lesion, this.numAnapat);
+        new AddLameView(this.stage, this, null, this.connection, this.fileManager, this.lesion);
     }
 
     @FXML
@@ -111,7 +109,7 @@ public class LameController extends Controller implements Initializable {
         this.setStage(this.modifier);
 
         if (selectedHistologicLamella != null)
-            new AddLameView(this.stage, this, this.selectedHistologicLamella, this.connection, this.fileManager, this.lesion, this.numAnapat);
+            new AddLameView(this.stage, this, this.selectedHistologicLamella, this.connection, this.fileManager, this.lesion);
         else JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
     }
 
@@ -150,11 +148,8 @@ public class LameController extends Controller implements Initializable {
         this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
         this.populate();
 
-        this.enableButtons(false, false);
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
             selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
-            if(this.selectedHistologicLamella!=null)
-                System.out.println(this.selectedHistologicLamella.getNumLame());
             this.enableButtons(selectedHistologicLamella != null, false);
         });
     }
@@ -190,27 +185,40 @@ public class LameController extends Controller implements Initializable {
     @FXML
     public void photoButtonAction() {
         if (this.selectedHistologicLamella != null) {
-            if (this.selectedHistologicLamella.getPhoto() != null) {
+            if (this.selectedHistologicLamella.getPhoto() != null)
                 this.startDownload(this.selectedHistologicLamella.getPhoto(), this.photo);
-            } else {
-                JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
-        }
+            else JOptionPane.showMessageDialog(null, "Pas de photo specifié pour cette lame");
+        } else JOptionPane.showMessageDialog(null, "Veuillez selectionner une lame");
     }
 
     @Override
     public void enableButtons(boolean enable, boolean all) {
-        if (enable) {
-            if (this.selectedHistologicLamella.getPhoto() != null)
-                this.photo.setDisable(false);
-            else this.photo.setDisable(true);
-        }
-
         this.supprimer.setDisable(!enable);
         this.modifier.setDisable(!enable);
+
+        if (selectedHistologicLamella != null) {
+            if (this.selectedHistologicLamella.getPhoto() != null)
+                this.photo.setDisable(!enable);
+        } else this.photo.setDisable(!enable);
+
+        if (all) {
+            this.ajouter.setDisable(!enable);
+            this.retour.setDisable(!enable);
+        }
+    }
+
+    public void endRemove(Button button, ProgressBar progressBar, Label progressLabel) {
+        this.photo.setDisable(true);
+        this.supprimer.setDisable(true);
+        this.modifier.setDisable(true);
+        this.ajouter.setDisable(false);
+        this.retour.setDisable(false);
+
+        if (button != null)
+            button.setVisible(true);
+
+        progressBar.setVisible(false);
+        progressLabel.setVisible(false);
     }
 
     @Override
@@ -218,7 +226,7 @@ public class LameController extends Controller implements Initializable {
     }
 
     void refreshLesions() {
-        this.lameList = this.lameHistologiqueDaoImpl.selectAll();
+        this.lameList = this.lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
 
         if (!this.lameList.isEmpty())
             this.tab.setItems(this.lameList);

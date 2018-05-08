@@ -109,7 +109,6 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
 
     @Override
     public void insert(HistologicLamella lame) {
-
         PreparedStatement preparedStatement = null;
 
         try {
@@ -290,7 +289,6 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
 
     @Override
     public int getLastid() {
-        System.out.println("kuku");
         Statement statement = null;
         ResultSet resultSet = null;
         int lastId = -1;

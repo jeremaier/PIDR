@@ -226,8 +226,24 @@ public class LesionsController extends Controller implements Initializable {
             this.lesionsList.remove(this.selectedIdLesion);
             this.lesionsTable.getSelectionModel().clearSelection();
             this.selectedIdLesion = -1;
-            this.enableButtons(true, true);
         } else alert.close();
+    }
+
+    public void endRemove(Button button, ProgressBar progressBar, Label progressLabel) {
+        this.removeButton.setDisable(true);
+        this.editButton.setDisable(true);
+        this.photosButton.setDisable(true);
+        this.fileDiagButton.setDisable(true);
+        this.siteCutaneButton.setDisable(true);
+        this.histologicLamellaButton.setDisable(true);
+        this.addButton.setDisable(false);
+        this.returnButton.setDisable(false);
+
+        if (button != null)
+            button.setVisible(true);
+
+        progressBar.setVisible(false);
+        progressLabel.setVisible(false);
     }
 
     private void remove(RemoveTask removeTask, Lesion lesion) {
@@ -247,7 +263,7 @@ public class LesionsController extends Controller implements Initializable {
     public void histologicLamellaAction() {
         this.setStage(this.histologicLamellaButton);
 
-        new LameView(this.stage, this.connection, this.fileManager, this.selectedLesion, this.inclusion.getNumAnaPat());
+        new LameView(this.stage, this.connection, this.fileManager, this.selectedLesion);
 
         this.stage.close();
     }

@@ -22,6 +22,7 @@ public class FileManager extends Observable {
     private final static String resDirectoryName = "//resultats";
     private final static String inclusionDirectoryName = "//inclusions";
     private final static String lesionFilesDirectoryName = "//lesions";
+    private final static String lamesFilesDirectoryName = "//lames";
     private SSLSessionReuseFTPSClient ftpClient;
     private String user;
     private String password;
@@ -72,6 +73,10 @@ public class FileManager extends Observable {
 
     public static String getLesionFilesDirectoryName(String lesionId) {
         return FileManager.lesionFilesDirectoryName + "//" + lesionId;
+    }
+
+    public static String getLameFilesDirectoryName(String lameId) {
+        return FileManager.lamesFilesDirectoryName + "//" + lameId;
     }
 
     public static String getProcDirectoryName() {

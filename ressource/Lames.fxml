@@ -33,13 +33,13 @@
     </Button>
     <Button fx:id="ajouter" layoutX="495.0" layoutY="540.0" mnemonicParsing="false" onAction="#ajoutButtonAction"
             prefHeight="50.0" prefWidth="130.0" text="Ajouter +" AnchorPane.bottomAnchor="15.0"
-            AnchorPane.rightAnchor="170.0"/>
-    <Button fx:id="supprimer" layoutX="656.0" layoutY="540.0" mnemonicParsing="false" onAction="#removeButtonAction"
-            prefHeight="50.0" prefWidth="130.0" text="Supprimer -" AnchorPane.bottomAnchor="15.0"
-            AnchorPane.rightAnchor="20.0"/>
-    <Button fx:id="modifier" layoutX="335.0" layoutY="540.0" mnemonicParsing="false" onAction="#modifActionButton"
-            prefHeight="50.0" prefWidth="130.0" text="Modifier" AnchorPane.bottomAnchor="15.0"
             AnchorPane.rightAnchor="320.0"/>
+    <Button fx:id="supprimer" disable="true" layoutX="656.0" layoutY="540.0" mnemonicParsing="false"
+            onAction="#removeButtonAction" prefHeight="50.0" prefWidth="130.0" text="Supprimer -"
+            AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0"/>
+    <Button fx:id="modifier" disable="true" layoutX="335.0" layoutY="540.0" mnemonicParsing="false"
+            onAction="#modifActionButton" prefHeight="50.0" prefWidth="130.0" text="Modifier"
+            AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="170.0"/>
     <GridPane alignment="CENTER" layoutX="560.0" layoutY="18.0" prefHeight="30.0" prefWidth="220.0"
               AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
         <columnConstraints>

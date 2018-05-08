@@ -324,7 +324,7 @@ public class SiteController extends Controller implements Initializable {
     }
 
     void refreshSite() {
-        this.siteListe = this.siteCutaneDaoImpl.selectAll();
+        this.siteListe = this.siteCutaneDaoImpl.selectByLesion(this.lesion.getId());
 
         if (!this.siteListe.isEmpty())
             this.affecteTab.setItems(this.siteListe);

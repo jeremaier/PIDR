@@ -90,7 +90,7 @@ public class AddSiteController extends Controller implements Initializable {
             this.orientation.setText(Integer.toString(this.site.getOrientation()));
             this.diag.getSelectionModel().select(this.site.getDiag());
             this.autreDiag.setText(this.site.getAutreDiag());
-            this.lastId = this.siteCutaneDaoImpl.getLastid() + 1;
+            this.lastId = this.site.getId();
 
             if (this.site.getFichierDiag() != null)
                 this.checkFichierDiag.setText(this.site.getFichierDiag());
@@ -102,7 +102,7 @@ public class AddSiteController extends Controller implements Initializable {
 
             if (this.site.getSpectre() != null)
                 this.checkFichierSpectre.setText("Non vide");
-        }
+        } else this.lastId = this.siteCutaneDaoImpl.getLastid() + 1;
 
         this.siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!this.siteCutane.getValue().equals(SiteCutane.SAIN), false));
         this.numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> this.addFichierSpectre.setDisable(this.numMesur.getText().length() <= 0));
@@ -126,6 +126,7 @@ public class AddSiteController extends Controller implements Initializable {
                 files.add(directory + this.checkFichierDiag.getText());
 
             removeTask.addUrls(files);
+
             new Thread(removeTask).start();
         }
 
