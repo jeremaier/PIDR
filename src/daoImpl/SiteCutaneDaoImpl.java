@@ -231,7 +231,7 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         try {
             preparedStatement = SiteCutaneDaoImpl.connection.prepareStatement("UPDATE site_cutane SET " + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FICHIER_DIAG =?, IMAGES_SPECTRES = ?, SPECTROSCOPIE = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, site, 0);
-            preparedStatement.setInt(8, id);
+            preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE site_cutane SET" + "ID_LESION = ?, SITE = ?, ORIENTATION = ?, DIAGNOSTIQUE = ?, AUTRE_DIAG =?, FICHIER_DIAG=?, SPECTROSCOPIE = ? WHERE ID = ?");

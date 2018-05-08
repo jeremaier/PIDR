@@ -92,7 +92,9 @@ public class SiteController extends Controller implements Initializable {
         ArrayList<String> urls = new ArrayList<>();
 
         for (CutaneousSite cutaneousSite : cutaneousSites) {
-            urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
+            if(cutaneousSite.getSpectre()!=null)
+                urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
+
             String fichierDiag, fichierMoy;
 
             if ((fichierDiag = cutaneousSite.getFichierDiag()) != null)
@@ -301,9 +303,11 @@ public class SiteController extends Controller implements Initializable {
         super.endRemove(button, progressBar, progressLabel);
         StringBuilder newSpectre = new StringBuilder();
 
-        for (int i = 0; i < s.length - 1; i++)
-            if (i != selectedSpectreId)
-                newSpectre.append("~#").append(s[i]);
+        if(s!=null) {
+            for (int i = 0; i < s.length - 1; i++)
+                if (i != selectedSpectreId)
+                    newSpectre.append("~#").append(s[i]);
+        }
 
         this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());

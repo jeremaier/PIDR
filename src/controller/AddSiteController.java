@@ -85,7 +85,7 @@ public class AddSiteController extends Controller implements Initializable {
 
         if (site != null) {
 
-
+            this.ajouter.setText("Modifier");
             this.siteCutane.getSelectionModel().select(this.site.getSite());
 
             this.orientation.setText(Integer.toString(this.site.getOrientation()));
