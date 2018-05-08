@@ -168,7 +168,7 @@ public class AddLameController extends Controller implements Initializable {
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
 
         removeTask.addUrls(new ArrayList<String>() {{
-            add(histologicLamella != null ? "//lame_histologique//" + Integer.toString(histologicLamella.getId()) : "//lame_histologique//" + Integer.toString(lastId) + photoLabel.getText());
+            add(histologicLamella != null ? "//lame_histologique//" + Integer.toString(histologicLamella.getId())+"//" : "//lame_histologique//" + Integer.toString(lastId) + photoLabel.getText()+"//" ) ;
         }});
 
         removeTask.setOnSucceeded(e -> {
