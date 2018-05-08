@@ -169,12 +169,14 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     public void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
-        ArrayList<String> files = new ArrayList<>();
-        String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
-        String photoSur, photoHors, photoFixe, otherDiag;
+        this.setStage(this.cancelButton);
 
         if (!this.addButton.getText().equals("Modifier")) {
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
+            ArrayList<String> files = new ArrayList<>();
+            String directory = FileManager.getLesionFilesDirectoryName(this.idLesion) + "//";
+            String photoSur, photoHors, photoFixe, otherDiag;
+
             if (!(photoSur = this.photoSurLabel.getText()).equals("Aucun"))
                 files.add(directory + photoSur);
 
@@ -186,17 +188,18 @@ public class AddLesionController extends Controller implements Initializable {
 
             if (!(otherDiag = this.diagFileLabel.getText()).equals("Aucun"))
                 files.add(directory + otherDiag);
+
+            removeTask.addUrls(files);
+
+            new Thread(removeTask).start();
         }
 
-        removeTask.addUrls(files);
-
-        new Thread(removeTask).start();
         this.stage.close();
     }
 
     public void otherDiagAction() {
         this.setStage(this.otherDiagButton);
-        new AddDiagView(this.stage, this, this.lesion);
+        new AddDiagView(this.stage, this.lesion);
     }
 
     public void addPhotoSurAction() {

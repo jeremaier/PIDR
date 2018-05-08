@@ -29,7 +29,7 @@ public class AddDiagController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (!this.lesion.getAutreDiag().equals("Aucun")) {
+        if (this.lesion.getAutreDiag() != null) {
             this.diag.setText(this.lesion.getAutreDiag());
             this.addButton.setText("Modifier");
         }
@@ -41,7 +41,7 @@ public class AddDiagController implements Initializable {
 
         if (!this.diag.getText().equals(""))
             this.lesion.setAutreDiag(this.diag.getText());
-        else this.lesion.setAutreDiag("Aucun");
+        else this.lesion.setAutreDiag(null);
 
         this.addDiag.close();
     }

@@ -11,13 +11,14 @@ import src.daoImpl.PatientDaoImpl;
 import java.io.IOException;
 
 public class PatientsView {
-    public PatientsView(AddInclusionController addInclusionController, PatientDaoImpl patientDaoImpl) {
+    public PatientsView(Stage parentStage, AddInclusionController addInclusionController, PatientDaoImpl patientDaoImpl) {
         Parent rootLog = null;
         FXMLLoader viewLoader = new FXMLLoader();
         Stage patientStage = new Stage();
 
         patientStage.setTitle("Patients");
-        patientStage.setX(patientStage.getX() - 20);
+        patientStage.setX(parentStage.getX() - 650);
+        patientStage.setY(parentStage.getY());
         viewLoader.setLocation(getClass().getResource("/ressource/Patients.fxml"));
         viewLoader.setControllerFactory(iC -> new PatientsController(addInclusionController, patientDaoImpl));
 

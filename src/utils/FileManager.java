@@ -20,11 +20,12 @@ import java.util.Observable;
 public class FileManager extends Observable {
     private final static String procDirectoryName = "//procedures";
     private final static String resDirectoryName = "//resultats";
-    private final static String refDirectoryName = "//inclusions";
+    private final static String inclusionDirectoryName = "//inclusions";
     private final static String lesionFilesDirectoryName = "//lesions";
     private SSLSessionReuseFTPSClient ftpClient;
     private String user;
     private String password;
+    private static String current;
 
     public FileManager(String user, String password) {
         this.user = user;
@@ -44,14 +45,14 @@ public class FileManager extends Observable {
     public static File openDirectoryChooser(Stage stage) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choisissez un dossier");
-        directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        directoryChooser.setInitialDirectory(new File(FileManager.current == null ? System.getProperty("user.dir") : FileManager.current));
         return directoryChooser.showDialog(stage);
     }
 
     public static void openFileChooser(Stage stage, UploadTask uploadTask) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisissez un fichier");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setInitialDirectory(new File(FileManager.current == null ? System.getProperty("user.dir") : FileManager.current));
         uploadTask.setSelectedFile(fileChooser.showOpenDialog(stage));
     }
 
@@ -65,8 +66,8 @@ public class FileManager extends Observable {
         return folder.getAbsoluteFile() + "//" + name;
     }
 
-    public static String getRefDirectoryName(String inclusionId) {
-        return FileManager.refDirectoryName + "//" + inclusionId;
+    public static String getInclusionDirectoryName(String inclusionId) {
+        return FileManager.inclusionDirectoryName + "//" + inclusionId;
     }
 
     public static String getLesionFilesDirectoryName(String lesionId) {
@@ -119,7 +120,7 @@ public class FileManager extends Observable {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
         ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-        ftpClient.setConnectTimeout(2000);
+        ftpClient.setConnectTimeout(1500);
         ftpClient.setDataTimeout(500);
 
         try {
@@ -200,6 +201,7 @@ public class FileManager extends Observable {
 
     void downloadFromUrl(DownloadTask task, File selectedDirectory, ArrayList<String> urls) {
         if(selectedDirectory != null) {
+            FileManager.current = selectedDirectory.getAbsolutePath();
             this.openFTPConnection();
 
             try {
@@ -233,6 +235,7 @@ public class FileManager extends Observable {
         String fileName = null;
 
         if (selectedFile != null) {
+            FileManager.current = selectedFile.getParent();
             InputStream input = null;
 
             this.openFTPConnection();
@@ -249,6 +252,7 @@ public class FileManager extends Observable {
 
             try {
                 this.makeDirectories(dossier);
+
                 if (!this.ftpClient.storeFile(dossier + "//" + (mesure == null ? "" : mesure + "=") + fileName, input))
                     fileName = null;
             } catch (IOException e) {

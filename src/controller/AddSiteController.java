@@ -62,7 +62,7 @@ public class AddSiteController extends Controller implements Initializable {
     private CutaneousSite site;
     private Lesion lesion;
     private SiteCutaneDaoImpl siteCutaneDaoImpl;
-    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(SiteCutane.NULL, SiteCutane.SAIN, SiteCutane.L, SiteCutane.PL, SiteCutane.NL);
+    private ObservableList<SiteCutane> siteValeur = FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(SiteCutane.values())));
     private ObservableList<Diag> diagValeur = FXCollections.observableArrayList(FXCollections.observableArrayList(new ArrayList<>(Arrays.asList(Diag.values()))));
     private String fichierDiagPath = null;
     private String imagesSpectresPath = null;

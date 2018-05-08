@@ -316,9 +316,17 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
             preparedStatement.setInt(indexDebut, ((CutaneousSite) object).getId());
 
         preparedStatement.setInt(indexDebut + 1, ((CutaneousSite) object).getIdLesion());
-        preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite().toString());
+
+        if (((CutaneousSite) object).getSite() == null)
+            preparedStatement.setString(indexDebut + 2, null);
+        else preparedStatement.setString(indexDebut + 2, ((CutaneousSite) object).getSite().toString());
+
         preparedStatement.setInt(indexDebut + 3, ((CutaneousSite) object).getOrientation());
-        preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag().toString());
+
+        if (((CutaneousSite) object).getDiag() == null)
+            preparedStatement.setString(indexDebut + 4, null);
+        else preparedStatement.setString(indexDebut + 4, ((CutaneousSite) object).getDiag().toString());
+
         preparedStatement.setString(indexDebut + 5, ((CutaneousSite) object).getAutreDiag());
         preparedStatement.setString(indexDebut + 6, ((CutaneousSite) object).getFichierDiag());
         preparedStatement.setString(indexDebut + 7, ((CutaneousSite) object).getImagesSpectres());

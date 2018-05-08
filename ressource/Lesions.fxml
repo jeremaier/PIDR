@@ -17,11 +17,11 @@
                 <Label text="La table est vide"/>
             </placeholder>
             <columns>
-                <TableColumn fx:id="lesionSite" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0" resizable="false"
+                <TableColumn fx:id="lesionSite" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
                              text="Site"/>
-                <TableColumn fx:id="lesionDiag" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0" resizable="false"
+                <TableColumn fx:id="lesionDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
                              text="Orientation diagnostic clinique"/>
-                <TableColumn fx:id="lesionAutreDiag" maxWidth="253.0" minWidth="-1.0" prefWidth="253.0"
+                <TableColumn fx:id="lesionAutreDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0"
                              resizable="false" text="Autre diagnostic"/>
             </columns>
         </TableView>

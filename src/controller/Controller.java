@@ -66,8 +66,12 @@ public abstract class Controller {
         new Thread(downloadTask).start();
     }
 
-    void startDownload(ArrayList<String> urls, Button button) {
-        this.startFileDownload(this.initDownload(urls, button), null, this.progressBar, this.progressLabel);
+    void startDownload(ArrayList<String> urls, Button stageButton) {
+        this.startFileDownload(this.initDownload(urls, stageButton), null, this.progressBar, this.progressLabel);
+    }
+
+    void startDownload(ArrayList<String> urls, Button stageButton, Button downloadButton) {
+        this.startFileDownload(this.initDownload(urls, stageButton), downloadButton, this.progressBar, this.progressLabel);
     }
 
     void startDocDownload(String url, Button button, ProgressBar progressBar, Label label) {
@@ -85,7 +89,7 @@ public abstract class Controller {
         return downloadTask;
     }
 
-    void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
+    private void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
         this.enableButtons(true, true);
 
         if (button != null)

@@ -310,7 +310,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         try {
             preparedStatement = LesionDaoImpl.connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
-            preparedStatement.setInt(10, id);
+            preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
             System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");

@@ -1043,6 +1043,20 @@
     -fx-background-insets: 0;
 }
 
+#mesures .scroll-bar:horizontal .increment-arrow,
+#mesures .scroll-bar:horizontal .decrement-arrow,
+#mesures .scroll-bar:horizontal .increment-button,
+#mesures .scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
+}
+
+.table-view .scroll-bar:horizontal .increment-arrow,
+.table-view .scroll-bar:horizontal .decrement-arrow,
+.table-view .scroll-bar:horizontal .increment-button,
+.table-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
+}
+
 .label {
     -fx-font-size: 12pt;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;

@@ -25,7 +25,7 @@ public class Lesion {
         this.autreDiag = new SimpleStringProperty();
     }
 
-    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fileDiag, String fichierMoy) {
+    public Lesion(int id, int idInclusion, String photoSur, String photoHors, String photoFixe, String siteAnatomique, String diag, String autreDiag, String fileDiag) {
         this();
         this.setId(id);
         this.setIdInclusion(idInclusion);

@@ -145,6 +145,7 @@ public class AddInclusionController extends Controller implements Initializable 
     @FXML
     private void addAction() {
         String id = this.inclusionIDField.getText();
+        String directory = FileManager.getInclusionDirectoryName(!this.addButton.getText().equals("Modifier") ? String.format("%03d", Integer.parseInt(this.inclusionIDField.getText())) : this.inclusionIDField.getText()) + "//";
         boolean newInclusion = this.inclusion.getId() == null;
         this.inclusion.setId(Integer.parseInt(id));
 
@@ -152,10 +153,10 @@ public class AddInclusionController extends Controller implements Initializable 
             this.inclusion.setIdPatient(this.patientId);
 
         if (!this.reference1FileLabel.getText().equals("Aucun"))
-            this.inclusion.setReference1(FileManager.getRefDirectoryName(id) + "//" + this.reference1FileLabel.getText());
+            this.inclusion.setReference1(directory + this.reference1FileLabel.getText());
 
         if (!this.reference2FileLabel.getText().equals("Aucun"))
-            this.inclusion.setReference2(FileManager.getRefDirectoryName(id) + "//" + this.reference2FileLabel.getText());
+            this.inclusion.setReference2(directory + this.reference2FileLabel.getText());
 
         if (this.inclusionDatePicker.getValue() != null)
             this.inclusion.setDateInclusion(Date.valueOf(this.inclusionDatePicker.getValue()));
@@ -181,26 +182,28 @@ public class AddInclusionController extends Controller implements Initializable 
             this.patientLabel.setText("Aucun");
             this.addPatientButton.setText("Ajouter");
             this.inclusion.setIdPatient(this.patientId);
-        } else new PatientsView(this, this.patientDaoImpl);
+        } else new PatientsView(this.stage, this, this.patientDaoImpl);
     }
 
     @FXML
     private void cancelAction() {
-        RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
-        String ref1, ref2;
-        String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText()) + "//";
-        ArrayList<String> refs = new ArrayList<>();
+        this.setStage(this.cancelButton);
 
         if (!this.addButton.getText().equals("Modifier")) {
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
+            String ref1, ref2;
+            String directory = FileManager.getInclusionDirectoryName(!this.addButton.getText().equals("Modifier") ? String.format("%03d", Integer.parseInt(this.inclusionIDField.getText())) : this.inclusionIDField.getText()) + "//";
+            ArrayList<String> refs = new ArrayList<>();
+
             if (!(ref1 = this.reference1FileLabel.getText()).equals("Aucun"))
                 refs.add(directory + ref1);
 
             if (!(ref2 = this.reference2FileLabel.getText()).equals("Aucun"))
                 refs.add(directory + ref2);
-        }
 
-        removeTask.addUrls(refs);
-        new Thread(removeTask).start();
+            removeTask.addUrls(refs);
+            new Thread(removeTask).start();
+        }
 
         this.stage.close();
     }
@@ -243,6 +246,10 @@ public class AddInclusionController extends Controller implements Initializable 
             button.setText("Ajouter");
             label.setText("Aucun");
             this.progressBar.setVisible(false);
+
+            if (!this.addButton.getText().equals("Modifier") && this.reference1FileLabel.getText().equals("Aucun") && this.reference2FileLabel.getText().equals("Aucun"))
+                this.inclusionIDField.setDisable(false);
+
             this.enableButtons(true, true);
         });
 
@@ -253,13 +260,17 @@ public class AddInclusionController extends Controller implements Initializable 
     }
 
     private void startUpload(String buttonName, Button button, Label label) {
-        String directory = FileManager.getRefDirectoryName(this.inclusionIDField.getText());
+        String directory = FileManager.getInclusionDirectoryName(!this.addButton.getText().equals("Modifier") ? String.format("%03d", Integer.parseInt(this.inclusionIDField.getText())) : this.inclusionIDField.getText());
         UploadTask uploadTask = new UploadTask(this.fileManager, directory, null);
 
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
         this.progressBar.setVisible(true);
+
+        if (!this.addButton.getText().equals("Modifier"))
+            this.inclusionIDField.setDisable(true);
+
         uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), directory, button, label));
         uploadTask.setOnFailed(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), directory, button, label));
 

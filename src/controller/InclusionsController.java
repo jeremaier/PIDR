@@ -293,7 +293,7 @@ public class InclusionsController extends Controller implements Initializable {
             refs.add(ref2Url);
 
         this.refDownloadButton.setVisible(false);
-        this.startDownload(refs, this.refDownloadButton);
+        this.startDownload(refs, this.refDownloadButton, this.refDownloadButton);
     }
 
     private void populateDocs(ObservableList<String> res, ObservableList<String> proc) {

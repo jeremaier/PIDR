@@ -319,30 +319,45 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
 
         try {
             for (Inclusion inclusion : inclusions) {
-                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
+                preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT site_cutane.DIAGNOSTIC, site_cutane.FICHIER_DIAG, site_cutane.AUTRE_DIAG FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
                 preparedStatement.setInt(1, Integer.parseInt(inclusion.getId()));
                 resultSet = preparedStatement.executeQuery();
                 ArrayList<String> diags = new ArrayList<>();
+                boolean fichierDiag = false;
+                boolean autreDiag = false;
 
                 while (resultSet.next()) {
                     String diag;
 
                     if (!diags.contains(diag = resultSet.getString("DIAGNOSTIC")))
                         diags.add(diag);
+
+                    if (resultSet.getString("FICHIER_DIAG") != null)
+                        fichierDiag = true;
+
+                    if (resultSet.getString("AUTRE_DIAG") != null)
+                        autreDiag = true;
                 }
 
-                int diagsNumber;
+                /*int diagsNumber;
+                StringBuilder concatDiags = new StringBuilder();
+
+                if(fichierDiag)
+                    concatDiags.append("Fichier");
+
+                if(autreDiag)
+                    concatDiags.append("Autre...");
 
                 if ((diagsNumber = diags.size()) > 0) {
                     if (diags.size() > 1) {
                         StringBuilder concatDiags = new StringBuilder(diags.get(0));
 
-                        for (int i = 1; i < diagsNumber; i++)
+                        for (int i = 0; i < diagsNumber; i++)
                             concatDiags.append("\n").append(diags.get(i));
 
                         inclusion.setDiag(concatDiags.toString());
                     } else inclusion.setDiag(diags.get(0));
-                }
+                }*/
             }
 
             System.out.println("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
