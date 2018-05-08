@@ -292,7 +292,7 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
     public int getLastid() {
         Statement statement = null;
         ResultSet resultSet = null;
-        int lastId = 0;
+        int lastId = -1;
 
         try {
             System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
@@ -301,7 +301,6 @@ public class LameHistologiqueDaoImpl extends DaoAutoIncrementImpl implements Lam
 
             if (resultSet.next())
                 lastId = resultSet.getInt("lastId");
-            else return -1;
 
             System.out.println("SELECT last_insert_id() AS lastId FROM lame_histologique");
         } catch (MySQLNonTransientConnectionException e) {
