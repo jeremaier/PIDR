@@ -13,6 +13,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
     private static Connection connection;
@@ -339,25 +340,27 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                         autreDiag = true;
                 }
 
-                /*int diagsNumber;
+                int diagsNumber;
                 StringBuilder concatDiags = new StringBuilder();
 
                 if(fichierDiag)
                     concatDiags.append("Fichier");
 
-                if(autreDiag)
+                if (fichierDiag && autreDiag)
+                    concatDiags.append("\nAutre...");
+                else if (autreDiag)
                     concatDiags.append("Autre...");
 
                 if ((diagsNumber = diags.size()) > 0) {
                     if (diags.size() > 1) {
-                        StringBuilder concatDiags = new StringBuilder(diags.get(0));
+                        if (fichierDiag || autreDiag)
+                            concatDiags.append("\n");
 
-                        for (int i = 0; i < diagsNumber; i++)
-                            concatDiags.append("\n").append(diags.get(i));
+                        IntStream.range(0, diagsNumber).forEach(i -> concatDiags.append("\n").append(diags.get(i)));
 
                         inclusion.setDiag(concatDiags.toString());
                     } else inclusion.setDiag(diags.get(0));
-                }*/
+                }
             }
 
             System.out.println("SELECT site_cutane.DIAGNOSTIC FROM site_cutane JOIN lesion WHERE site_cutane.ID_LESION = lesion.ID AND lesion.ID_INCLUSION = ?");
