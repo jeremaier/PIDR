@@ -331,7 +331,8 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                     String diag;
 
                     if (!diags.contains(diag = resultSet.getString("DIAGNOSTIC")))
-                        diags.add(diag);
+                        if (!diag.equals(Diag.FICHIER.toString()) || !diag.equals(Diag.AUTRE.toString()))
+                            diags.add(diag);
 
                     if (resultSet.getString("FICHIER_DIAG") != null)
                         fichierDiag = true;
@@ -354,9 +355,9 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 if ((diagsNumber = diags.size()) > 0) {
                     if (diags.size() > 1) {
                         if (fichierDiag || autreDiag)
-                            concatDiags.append("\n");
+                            concatDiags.append("\n").append(diags.get(0));
 
-                        IntStream.range(0, diagsNumber).forEach(i -> concatDiags.append("\n").append(diags.get(i)));
+                        IntStream.range(1, diagsNumber).forEach(i -> concatDiags.append("\n").append(diags.get(i)));
 
                         inclusion.setDiag(concatDiags.toString());
                     } else inclusion.setDiag(diags.get(0));

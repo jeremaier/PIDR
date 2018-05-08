@@ -4,116 +4,119 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0" stylesheets="@Style.css"
-            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="src.controller.LesionsController">
-    <children>
-        <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnAction"
-                prefHeight="33.0" prefWidth="100.0" text="Retour" AnchorPane.leftAnchor="20.0"
-                AnchorPane.topAnchor="15.0"/>
-        <TableView fx:id="lesionsTable" layoutX="16.0" layoutY="121.0" prefHeight="325.0" prefWidth="760.0"
-                   AnchorPane.bottomAnchor="215.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
-                   AnchorPane.topAnchor="60.0">
-            <placeholder>
-                <Label text="La table est vide"/>
-            </placeholder>
-            <columns>
-                <TableColumn fx:id="lesionSite" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
-                             text="Site"/>
-                <TableColumn fx:id="lesionDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
-                             text="Orientation diagnostic clinique"/>
-                <TableColumn fx:id="lesionAutreDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0"
-                             resizable="false" text="Autre diagnostic"/>
-            </columns>
-        </TableView>
-        <GridPane layoutX="20.0" layoutY="457.0" prefHeight="112.0" prefWidth="760.0" AnchorPane.bottomAnchor="20.0"
-                  AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="430.0" minWidth="0.0" prefWidth="357.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="0.0" prefWidth="359.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="10.0" prefWidth="359.0"/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="53.0" valignment="CENTER" vgrow="NEVER"/>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-            </rowConstraints>
-            <children>
-                <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAction" prefHeight="40.0"
-                        prefWidth="467.0" text="Ajouter +" GridPane.rowIndex="1">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </GridPane.margin>
-                    <font>
-                        <Font size="20.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="removeButton" disable="true" mnemonicParsing="false" onAction="#removeAction"
-                        prefHeight="40.0" prefWidth="412.0" text="Supprimer -" GridPane.columnIndex="1"
-                        GridPane.rowIndex="1">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </GridPane.margin>
-                    <font>
-                        <Font size="20.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="editButton" disable="true" mnemonicParsing="false" onAction="#editAction"
-                        prefHeight="40.0" prefWidth="629.0" text="Modifier" GridPane.columnIndex="2"
-                        GridPane.rowIndex="1">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </GridPane.margin>
-                    <font>
-                        <Font size="20.0"/>
-                    </font>
-                </Button>
-            </children>
-        </GridPane>
-        <ProgressBar fx:id="progressBar" layoutX="580.0" layoutY="20.0" prefWidth="200.0" progress="0.0"
-                     visible="false"/>
-        <Label fx:id="progressLabel" layoutX="678.0" layoutY="22.0"/>
-        <GridPane layoutX="25.0" layoutY="397.0" prefHeight="120.0" AnchorPane.bottomAnchor="90.0"
-                  AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
-            <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="375.0" minWidth="10.0"
-                                   prefWidth="375.0"/>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="375.0" minWidth="10.0"
-                                   prefWidth="375.0"/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
-            </rowConstraints>
-            <children>
-                <Button fx:id="siteCutaneButton" alignment="CENTER" disable="true" mnemonicParsing="false"
-                        onAction="#siteCutaneAction" prefHeight="45.0" prefWidth="300.0" text="Site cutané">
-                    <font>
-                        <Font size="18.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="histologicLamellaButton" disable="true" mnemonicParsing="false"
-                        onAction="#histologicLamellaAction" prefHeight="45.0" prefWidth="315.0" text="Lame histologique"
-                        GridPane.columnIndex="1">
-                    <font>
-                        <Font size="18.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="photosButton" disable="true" mnemonicParsing="false" onAction="#photosAction"
-                        prefHeight="45.0" prefWidth="300.0" text="Télécharger photos" GridPane.rowIndex="1">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </GridPane.margin>
-                    <font>
-                        <Font size="18.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="fileDiagButton" disable="true" mnemonicParsing="false" onAction="#fileDiagAction"
-                        prefHeight="45.0" prefWidth="315.0" text="Télécharger diagnostic" textOverrun="WORD_ELLIPSIS"
-                        wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                    <GridPane.margin>
-                        <Insets left="10.0" right="10.0"/>
-                    </GridPane.margin>
-                </Button>
-            </children>
-        </GridPane>
-    </children>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.controller.LesionsController">
+    <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnAction"
+            prefHeight="33.0" prefWidth="100.0" text="Retour" AnchorPane.leftAnchor="20.0"
+            AnchorPane.topAnchor="15.0"/>
+    <TableView fx:id="lesionsTable" layoutX="16.0" layoutY="121.0" prefHeight="325.0" prefWidth="760.0"
+               AnchorPane.bottomAnchor="215.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
+               AnchorPane.topAnchor="60.0">
+        <placeholder>
+            <Label text="La table est vide"/>
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="lesionSite" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
+                         text="Site"/>
+            <TableColumn fx:id="lesionDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0" resizable="false"
+                         text="Orientation diagnostic clinique"/>
+            <TableColumn fx:id="lesionAutreDiag" maxWidth="256.0" minWidth="-1.0" prefWidth="256.0"
+                         resizable="false" text="Autre diagnostic"/>
+        </columns>
+    </TableView>
+    <GridPane layoutX="20.0" layoutY="457.0" prefHeight="112.0" prefWidth="760.0" AnchorPane.bottomAnchor="20.0"
+              AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="430.0" minWidth="0.0" prefWidth="357.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="0.0" prefWidth="359.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="381.0" minWidth="10.0" prefWidth="359.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="53.0" valignment="CENTER" vgrow="NEVER"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <Button fx:id="addButton" mnemonicParsing="false" onAction="#addAction" prefHeight="40.0"
+                prefWidth="467.0" text="Ajouter +" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Button>
+        <Button fx:id="removeButton" disable="true" mnemonicParsing="false" onAction="#removeAction"
+                prefHeight="40.0" prefWidth="412.0" text="Supprimer -" GridPane.columnIndex="1"
+                GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Button>
+        <Button fx:id="editButton" disable="true" mnemonicParsing="false" onAction="#editAction"
+                prefHeight="40.0" prefWidth="629.0" text="Modifier" GridPane.columnIndex="2"
+                GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Button>
+    </GridPane>
+    <GridPane layoutX="25.0" layoutY="397.0" prefHeight="120.0" AnchorPane.bottomAnchor="90.0"
+              AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
+        <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="375.0" minWidth="10.0"
+                               prefWidth="375.0"/>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="375.0" minWidth="10.0"
+                               prefWidth="375.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <Button fx:id="siteCutaneButton" alignment="CENTER" disable="true" mnemonicParsing="false"
+                onAction="#siteCutaneAction" prefHeight="45.0" prefWidth="300.0" text="Sites cutanés">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <Button fx:id="histologicLamellaButton" disable="true" mnemonicParsing="false"
+                onAction="#histologicLamellaAction" prefHeight="45.0" prefWidth="315.0"
+                text="Lames histologiques" GridPane.columnIndex="1">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <Button fx:id="photosButton" disable="true" mnemonicParsing="false" onAction="#photosAction"
+                prefHeight="45.0" prefWidth="300.0" text="Télécharger les photos" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <Button fx:id="fileDiagButton" disable="true" mnemonicParsing="false" onAction="#fileDiagAction"
+                prefHeight="45.0" prefWidth="315.0" text="Télécharger fichier de diagnostic"
+                textOverrun="WORD_ELLIPSIS" wrapText="true" GridPane.columnIndex="1"
+                GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </GridPane.margin>
+        </Button>
+    </GridPane>
+    <GridPane alignment="CENTER" layoutX="680.0" layoutY="17.0" prefHeight="30.0" prefWidth="220.0"
+              AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0">
+        <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" visible="false"/>
+        <Label fx:id="progressLabel"/>
+    </GridPane>
 </AnchorPane>

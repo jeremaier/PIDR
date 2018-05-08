@@ -19,7 +19,7 @@ public class AddSiteView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addSiteStage = new Stage();
 
-        addSiteStage.setX(parentStage.getX() + parentStage.getWidth());
+        addSiteStage.setX(parentStage.getX() + parentStage.getWidth() - 265);
         addSiteStage.setY(parentStage.getY());
         addSiteStage.setTitle(site == null ? "Ajout d'un site cutané" : "Modification d'un site cutané");
         viewLoader.setLocation(getClass().getResource("/ressource/AddSite.fxml"));

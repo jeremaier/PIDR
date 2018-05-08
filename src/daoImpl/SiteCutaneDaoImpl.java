@@ -253,7 +253,6 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
 
     @Override
     public int getLastid() {
-
         Statement statement = null;
         ResultSet resultSet = null;
         int lastId = 0;

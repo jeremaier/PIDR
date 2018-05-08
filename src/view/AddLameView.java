@@ -19,7 +19,7 @@ public class AddLameView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addLameStage = new Stage();
 
-        addLameStage.setX(parentStage.getX() + parentStage.getWidth());
+        addLameStage.setX(parentStage.getX() + parentStage.getWidth() - 265);
         addLameStage.setY(parentStage.getY());
         addLameStage.setTitle(lame == null ? "Ajout d'une lame" : "Modification d'une lame");
         addLameStage.setTitle("Ajout d'une lame");

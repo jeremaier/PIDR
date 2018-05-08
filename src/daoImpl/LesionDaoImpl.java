@@ -22,48 +22,6 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         LesionDaoImpl.delete(SQLConnection.getConnection(), "lesion", id);
     }
 
-    /*public static boolean moreThanOneDiag(Diag diag) {
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            ArrayList<String> diags = new ArrayList<>();
-            statement = LesionDaoImpl.connection.createStatement();
-            resultSet = statement.executeQuery("SELECT DIAGNOSTIC FROM lesion");
-
-            while (resultSet.next())
-                diags.add(resultSet.getString("DIAGNOSTIC"));
-
-            System.out.println("SELECT DIAGNOSTIC FROM lesion");
-
-            if (Collections.frequency(diags, diag) > 1)
-                return true;
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return false;
-    }*/
-
     public static ArrayList<Lesion> removeLesions(String id) {
         ArrayList<Lesion> lesions = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -88,7 +46,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
                 lesions.add(lesion);
             }
 
-            System.out.println("SELECT ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, DIAGNOSTIC, FILE_DIAG, FICHIER_MOY FROM lesion WHERE ID_INCLUSION = ?");
+            System.out.println("SELECT ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, DIAGNOSTIC, FILE_DIAG FROM lesion WHERE ID_INCLUSION = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -124,7 +82,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
             preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
             preparedStatement.executeUpdate();
 
-            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG, FICHIER_MOY)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?))");
+            System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?))");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -313,7 +271,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
             preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ?, FICHIER_MOY = ? WHERE ID = ?");
+            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();

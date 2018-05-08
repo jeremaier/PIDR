@@ -150,14 +150,13 @@ public class LameController extends Controller implements Initializable {
         this.lameList = lameHistologiqueDaoImpl.selectByLesion(this.lesion.getId());
         this.populate();
 
+        this.enableButtons(false, false);
         this.tab.getSelectionModel().selectedIndexProperty().addListener(observable -> {
             selectedHistologicLamella = this.tab.getSelectionModel().getSelectedItem();
             if(this.selectedHistologicLamella!=null)
                 System.out.println(this.selectedHistologicLamella.getNumLame());
             this.enableButtons(selectedHistologicLamella != null, false);
         });
-
-
     }
 
     @FXML
@@ -204,8 +203,14 @@ public class LameController extends Controller implements Initializable {
 
     @Override
     public void enableButtons(boolean enable, boolean all) {
-        photo.setDisable(!enable);
-        supprimer.setDisable(!enable);
+        if (enable) {
+            if (this.selectedHistologicLamella.getPhoto() != null)
+                this.photo.setDisable(false);
+            else this.photo.setDisable(true);
+        }
+
+        this.supprimer.setDisable(!enable);
+        this.modifier.setDisable(!enable);
     }
 
     @Override

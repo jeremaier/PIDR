@@ -9,7 +9,6 @@ import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
 import src.utils.RemoveTask;
-import src.utils.UploadTask;
 import src.view.TranscriptomieView;
 
 import java.net.URL;
@@ -84,8 +83,8 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
         this.lastId = transcriptomieDaoImpl.getLast();
-
 
         if (transcriptomicAnalysis == null) {
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -96,8 +95,6 @@ public class AddTransciptomieController extends Controller implements Initializa
                 } else this.enableButtons(true, false);
             });
         } else {
-
-
             if (this.transcriptomicAnalysis.getFichierBrut() != null)
                 this.fichierBrut.setText("Supprimer");
             else {
@@ -123,8 +120,6 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.activiteSpecifique.setText(Double.toString(this.transcriptomicAnalysis.getSpecificActivity()));
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         }
-
-        this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
     }
 
     @FXML
@@ -221,28 +216,15 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @FXML
     private void fichierBrutButton() {
-        if (transcriptomicAnalysis != null) {
-            if (this.checkFichierBrut.equals("Aucun"))
-                this.startUpload(this.fichierBrut, this.checkFichierBrut, "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//", null, 1);
-            else {
-                this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
-            }
-        } else if (checkFichierBrut.getText().equals("Aucun"))
-            this.startUpload(this.fichierBrut, this.checkFichierBrut, "//Transcriptomie//" + this.id.getText() + "//", null, 1);
+        if (this.checkFichierBrut.getText().equals("Aucun"))
+            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + this.id.getText() + "//", null, 1);
         else this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
     }
 
-
     @FXML
     private void qualityReportButtonAction() {
-        if (transcriptomicAnalysis != null) {
-            if (this.checkFichierBrut.equals("Aucun"))
-                this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//", null, 2);
-            else {
-                this.removeFileFromFTP("quality", this.fichierBrut, this.checkFichierBrut);
-            }
-        } else if (checkFichierBrut.getText().equals("Aucun"))
-            this.startUpload(this.qualityReport, this.checkQualityReport, "//Transcriptomie//" + this.id.getText() + "//", null, 2);
+        if (this.checkQualityReport.getText().equals("Aucun"))
+            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + this.id.getText() + "//", null, 2);
         else this.removeFileFromFTP("quality", this.fichierBrut, this.checkFichierBrut);
     }
 
@@ -254,6 +236,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(transcriptomicAnalysis.getFichierBrut());
                 }});
+
                 this.checkFichierBrut.setText("Aucun");
                 this.transcriptomicAnalysis.setFichierBrut(null);
                 break;
@@ -261,22 +244,19 @@ public class AddTransciptomieController extends Controller implements Initializa
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(transcriptomicAnalysis.getQualityReport());
                 }});
+
                 this.checkQualityReport.setText("Aucun");
                 this.transcriptomicAnalysis.setQualityReport(null);
                 break;
         }
 
         removeTask.setOnSucceeded(e -> {
+            super.endRemove(null, this.progressBar, this.progressLabel);
             button.setText("Ajouter");
             label.setText("Aucun");
-            this.enableButtons(true, true);
         });
 
-        removeTask.setOnFailed(e -> {
-            button.setText("Ajouter");
-            label.setText("Aucun");
-            this.enableButtons(true, true);
-        });
+        removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
 
         this.transcriptomieDaoImpl.update(transcriptomicAnalysis, transcriptomicAnalysis.getId());
         new Thread(removeTask).start();
@@ -285,13 +265,10 @@ public class AddTransciptomieController extends Controller implements Initializa
 
     @FXML
     private void retour() {
-
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancel, null, this.progressBar, this.progressLabel);
         ArrayList<String> files = new ArrayList<>();
         String directory;
         directory = "//Transcriptomie//" + Integer.toString(this.lastId+1) + "//";
-
-
 
         if (this.transcriptomicAnalysis==null) {
             if (!( this.checkFichierBrut.getText()).equals("Aucun"))

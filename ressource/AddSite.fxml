@@ -4,13 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="540.0" maxWidth="530.0" minHeight="473.0" prefHeight="540.0"
-            prefWidth="530.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121"
+<AnchorPane maxHeight="540.0" maxWidth="530.0" minHeight="473.0" prefHeight="540.0" prefWidth="530.0"
+            stylesheets="@Style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="src.controller.AddSiteController">
     <GridPane prefHeight="382.0" prefWidth="530.0">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.0" minWidth="10.0" prefWidth="196.0"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="334.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.0" minWidth="10.0" prefWidth="184.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="346.0" minWidth="10.0" prefWidth="346.0"/>
         </columnConstraints>
         <rowConstraints>
             <RowConstraints maxHeight="65.0" minHeight="65.0" prefHeight="65.0" vgrow="SOMETIMES"/>
@@ -21,11 +21,6 @@
             <RowConstraints maxHeight="65.0" minHeight="65.0" prefHeight="65.0" vgrow="SOMETIMES"/>
             <RowConstraints maxHeight="65.0" minHeight="65.0" prefHeight="65.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-        <TextField fx:id="orientation" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <GridPane.margin>
-                <Insets left="10.0" right="20.0"/>
-            </GridPane.margin>
-        </TextField>
         <Label text="Site cutané :">
             <GridPane.margin>
                 <Insets left="20.0"/>
@@ -47,7 +42,7 @@
             </GridPane.margin>
         </Label>
         <Button fx:id="addFicherDiag" mnemonicParsing="false" onAction="#fichierDiag" prefHeight="37.0"
-                prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <opaqueInsets>
                 <Insets/>
             </opaqueInsets>
@@ -55,19 +50,13 @@
                 <Insets left="50.0"/>
             </GridPane.margin>
         </Button>
-        <Label fx:id="checkFichierDiag" prefHeight="19.0" prefWidth="64.0" text="Aucun" GridPane.columnIndex="1"
-               GridPane.rowIndex="4">
-            <GridPane.margin>
-                <Insets left="170.0"/>
-            </GridPane.margin>
-        </Label>
         <Label text="Fichier spectre :" GridPane.rowIndex="5">
             <GridPane.margin>
                 <Insets left="20.0"/>
             </GridPane.margin>
         </Label>
         <Button fx:id="addFichierSpectre" mnemonicParsing="false" onAction="#spectreButtonAction" prefHeight="37.0"
-                prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <opaqueInsets>
                 <Insets/>
             </opaqueInsets>
@@ -75,19 +64,24 @@
                 <Insets left="50.0"/>
             </GridPane.margin>
         </Button>
-        <Label fx:id="checkFichierSpectre" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <Label fx:id="checkFichierSpectre" text="Aucun" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <GridPane.margin>
-                <Insets left="170.0"/>
+                <Insets left="180.0"/>
             </GridPane.margin>
         </Label>
-        <TextField fx:id="numMesur" prefHeight="34.0" prefWidth="298.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-            <GridPane.margin>
-                <Insets left="10.0" right="290.0"/>
-            </GridPane.margin>
-        </TextField>
-        <ComboBox fx:id="siteCutane" prefWidth="150.0" GridPane.columnIndex="1">
+        <ComboBox fx:id="siteCutane" prefHeight="35.0" prefWidth="150.0" GridPane.columnIndex="1">
             <GridPane.margin>
                 <Insets left="10.0"/>
+            </GridPane.margin>
+        </ComboBox>
+        <TextField fx:id="orientation" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="10.0" right="20.0"/>
+            </GridPane.margin>
+        </TextField>
+        <ComboBox fx:id="diag" prefHeight="35.0" prefWidth="317.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <GridPane.margin>
+                <Insets left="10.0" right="20.0"/>
             </GridPane.margin>
         </ComboBox>
         <Label text="Autre diagnostic :" GridPane.rowIndex="3">
@@ -100,13 +94,13 @@
                 <Insets left="10.0" right="20.0"/>
             </GridPane.margin>
         </TextField>
-        <ComboBox fx:id="diag" prefHeight="34.0" prefWidth="317.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <TextField fx:id="numMesur" prefHeight="34.0" prefWidth="298.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <GridPane.margin>
-                <Insets left="10.0" right="20.0"/>
+                <Insets left="10.0" right="300.0"/>
             </GridPane.margin>
-        </ComboBox>
+        </TextField>
         <Button fx:id="imagesSpectresButton" mnemonicParsing="false" onAction="#imagesSpectresAction" prefHeight="37.0"
-                prefWidth="110.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                prefWidth="120.0" text="Ajouter" GridPane.columnIndex="1" GridPane.rowIndex="6">
             <GridPane.margin>
                 <Insets left="50.0"/>
             </GridPane.margin>
@@ -116,9 +110,14 @@
                 <Insets left="20.0"/>
             </GridPane.margin>
         </Label>
-        <Label fx:id="checkFichierImages" text="Aucun" GridPane.columnIndex="1" GridPane.rowIndex="6">
+        <Label fx:id="checkFichierImages" text="Aucun" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
             <GridPane.margin>
-                <Insets left="170.0"/>
+                <Insets left="180.0"/>
+            </GridPane.margin>
+        </Label>
+        <Label fx:id="checkFichierDiag" text="Aucun" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <GridPane.margin>
+                <Insets left="180.0"/>
             </GridPane.margin>
         </Label>
     </GridPane>

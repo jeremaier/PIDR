@@ -206,14 +206,8 @@ public class LesionsController extends Controller implements Initializable {
     }
 
     private static void removeSQL(ArrayList<Lesion> lesions) {
-        for (Lesion lesion : lesions) {
-            /*Diag diag = lesion.getDiag();
-
-            if (!LesionDaoImpl.moreThanOneDiag(diag))
-                InclusionDaoImpl.removeDiag(diag, Integer.parseInt(inclusion.getId()));*/
-
+        for (Lesion lesion : lesions)
             LesionDaoImpl.delete(lesion.getId());
-        }
     }
 
     @Override

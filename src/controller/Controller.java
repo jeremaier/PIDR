@@ -46,6 +46,7 @@ public abstract class Controller {
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
         this.progressBar.setVisible(true);
         uploadTask.setOnSucceeded(e -> this.endUpload(uploadTask.getAddedFileName(), directory, label, num));
+        uploadTask.setOnFailed(e -> uploadTask.getOnSucceeded());
 
         FileManager.openFileChooser(this.stage, uploadTask);
 
@@ -60,7 +61,7 @@ public abstract class Controller {
         progressBar.progressProperty().bind(downloadTask.progressProperty());
         progressLabel.textProperty().bind(downloadTask.messageProperty());
         downloadTask.setOnSucceeded(e -> this.endDownload(button, progressBar, progressLabel));
-        downloadTask.setOnFailed(e -> this.endDownload(button, progressBar, progressLabel));
+        downloadTask.setOnFailed(e -> downloadTask.getOnSucceeded());
         downloadTask.setSelectedDirectory(FileManager.openDirectoryChooser(this.stage));
 
         new Thread(downloadTask).start();

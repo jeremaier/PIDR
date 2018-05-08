@@ -171,12 +171,17 @@ public class AddInclusionController extends Controller implements Initializable 
             this.inclusionsController.refreshInclusions();
         }
 
+        this.inclusionsController.inclusionsTable.getSelectionModel().clearSelection();
+        this.inclusionsController.enableButtons(false, false);
+
         this.setStage(this.addButton);
         this.stage.close();
     }
 
     @FXML
     private void addPatientAction() {
+        this.setStage(this.addButton);
+
         if (this.addPatientButton.getText().equals("Supprimer")) {
             this.patientId = "";
             this.patientLabel.setText("Aucun");
@@ -188,17 +193,18 @@ public class AddInclusionController extends Controller implements Initializable 
     @FXML
     private void cancelAction() {
         this.setStage(this.cancelButton);
+        String ref1 = this.reference1FileLabel.getText();
+        String ref2 = this.reference2FileLabel.getText();
 
-        if (!this.addButton.getText().equals("Modifier")) {
+        if (!this.addButton.getText().equals("Modifier") && (!ref1.equals("Aucun") || !ref2.equals("Aucun"))) {
             RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.cancelButton, null, this.progressBar, this.progressLabel);
-            String ref1, ref2;
             String directory = FileManager.getInclusionDirectoryName(!this.addButton.getText().equals("Modifier") ? String.format("%03d", Integer.parseInt(this.inclusionIDField.getText())) : this.inclusionIDField.getText()) + "//";
             ArrayList<String> refs = new ArrayList<>();
 
-            if (!(ref1 = this.reference1FileLabel.getText()).equals("Aucun"))
+            if (!ref1.equals("Aucun"))
                 refs.add(directory + ref1);
 
-            if (!(ref2 = this.reference2FileLabel.getText()).equals("Aucun"))
+            if (!ref2.equals("Aucun"))
                 refs.add(directory + ref2);
 
             removeTask.addUrls(refs);
@@ -243,14 +249,12 @@ public class AddInclusionController extends Controller implements Initializable 
         }
 
         removeTask.setOnSucceeded(e -> {
+            super.endRemove(null, this.progressBar, this.progressLabel);
             button.setText("Ajouter");
             label.setText("Aucun");
-            this.progressBar.setVisible(false);
 
             if (!this.addButton.getText().equals("Modifier") && this.reference1FileLabel.getText().equals("Aucun") && this.reference2FileLabel.getText().equals("Aucun"))
                 this.inclusionIDField.setDisable(false);
-
-            this.enableButtons(true, true);
         });
 
         removeTask.setOnFailed(e -> removeTask.getOnSucceeded());

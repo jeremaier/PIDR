@@ -18,7 +18,7 @@ public class AddLesionView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addLesionStage = new Stage();
 
-        addLesionStage.setX(parentStage.getX() + parentStage.getWidth());
+        addLesionStage.setX(parentStage.getX() + parentStage.getWidth() - 350);
         addLesionStage.setY(parentStage.getY());
         addLesionStage.setTitle(lesion == null ? "Ajout d'une lésion cutanée" : "Modification d'une lésion cutanée");
         viewLoader.setLocation(getClass().getResource("/ressource/AddLesion.fxml"));

@@ -5,9 +5,9 @@ import javafx.beans.property.StringProperty;
 
 public enum SiteCutane {
     NULL(""),
-    SAIN("SAIN"),
+    SAIN("Sain"),
     MAIN("Main"),
-    POIGNET("POIGNET"),
+    POIGNET("Poignet"),
     L("L"),
     PL("PL"),
     NL("NL");

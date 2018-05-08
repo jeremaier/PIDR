@@ -78,9 +78,8 @@ public class AddLesionController extends Controller implements Initializable {
         }
 
         this.siteAnatomiqueField.lengthProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.equals(oldValue)) {
+            if (!newValue.equals(oldValue))
                 this.enableButtons(this.siteAnatomiqueField.getText().length() >= 1, false);
-            }
         });
 
         this.siteAnatomiqueField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -164,6 +163,9 @@ public class AddLesionController extends Controller implements Initializable {
             this.lesionsController.populateLesions(this.lesion);
         }
 
+        this.lesionsController.lesionsTable.getSelectionModel().clearSelection();
+        this.lesionsController.enableButtons(false, false);
+
         this.setStage(this.addButton);
         this.stage.close();
     }
@@ -234,6 +236,7 @@ public class AddLesionController extends Controller implements Initializable {
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoSur());
                 }});
+
                 this.photoSurLabel.setText("Aucun");
                 this.lesion.setPhotoSur("Aucun");
                 break;
@@ -241,6 +244,7 @@ public class AddLesionController extends Controller implements Initializable {
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoHors());
                 }});
+
                 this.photoHorsLabel.setText("Aucun");
                 this.lesion.setPhotoHors("Aucun");
                 break;
@@ -248,6 +252,7 @@ public class AddLesionController extends Controller implements Initializable {
                 removeTask.addUrls(new ArrayList<String>() {{
                     add(lesion.getPhotoFixe());
                 }});
+
                 this.photoFixeLabel.setText("Aucun");
                 this.lesion.setPhotoFixe("Aucun");
                 break;
@@ -256,23 +261,17 @@ public class AddLesionController extends Controller implements Initializable {
                     add(lesion.getFileDiag());
                 }});
 
-                this.diagBox.setValue(null);
-                this.diagBox.setDisable(false);
                 this.lesion.setFileDiag("Aucun");
                 break;
         }
 
         removeTask.setOnSucceeded(e -> {
+            super.endRemove(null, this.progressBar, this.progressLabel);
             button.setText("Ajouter");
             label.setText("Aucun");
-            this.enableButtons(true, true);
         });
 
-        removeTask.setOnFailed(e -> {
-            button.setText("Ajouter");
-            label.setText("Aucun");
-            this.enableButtons(true, true);
-        });
+        removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
 
         this.lesionDaoImpl.update(lesion, lesion.getId());
         new Thread(removeTask).start();
@@ -284,6 +283,8 @@ public class AddLesionController extends Controller implements Initializable {
         this.setStage(button);
         this.enableButtons(false, true);
         this.progressBar.progressProperty().bind(uploadTask.progressProperty());
+        this.progressBar.setVisible(true);
+        this.progressLabel.setVisible(true);
         uploadTask.setOnSucceeded(e -> this.endUpload(buttonName, uploadTask.getAddedFileName(), button, label));
 
         FileManager.openFileChooser(this.stage, uploadTask);
@@ -313,6 +314,8 @@ public class AddLesionController extends Controller implements Initializable {
             }
         }
 
+        this.progressBar.setVisible(false);
+        this.progressLabel.setVisible(false);
         this.enableButtons(true, true);
     }
 }

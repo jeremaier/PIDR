@@ -295,7 +295,10 @@ public class SiteController extends Controller implements Initializable {
         this.supprimer.setDisable(!enable);
         this.modifier.setDisable(!enable);
         this.transcriptomique.setDisable(!enable);
-        this.fichierDiag.setDisable(!enable);
+
+        if (this.selectedSite.getFichierDiag() != null)
+            this.fichierDiag.setDisable(!enable);
+        else this.fichierDiag.setDisable(true);
     }
 
     @Override
@@ -303,10 +306,10 @@ public class SiteController extends Controller implements Initializable {
         super.endRemove(button, progressBar, progressLabel);
         StringBuilder newSpectre = new StringBuilder();
 
-        if(s!=null) {
-            for (int i = 0; i < s.length - 1; i++)
-                if (i != selectedSpectreId)
-                    newSpectre.append("~#").append(s[i]);
+        if (this.s != null) {
+            for (int i = 0; i < this.s.length - 1; i++)
+                if (i != this.selectedSpectreId)
+                    newSpectre.append("~#").append(this.s[i]);
         }
 
         this.selectedSite.setSpectre(newSpectre.substring(0));

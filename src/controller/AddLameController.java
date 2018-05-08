@@ -64,15 +64,15 @@ public class AddLameController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("coucou");
+        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
 
-        if (histologicLamella == null)
-            lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, true));
+        if (this.histologicLamella == null)
+            this.lamellaNum.lengthProperty().addListener((observable, oldValue, newValue) -> this.enableButtons(lamellaNum.getText().length() > 0, true));
 
         if (this.histologicLamella != null) {
             this.addButton.setText("Modifier");
 
-            if (this.histologicLamella.getPhoto() != null){
+            if (this.histologicLamella.getPhoto() != null) {
                 this.addPictureButton.setText("Supprimer");
 
                 String[] s0 = this.histologicLamella.getPhoto().split("//");
@@ -84,19 +84,13 @@ public class AddLameController extends Controller implements Initializable {
             this.blackOrientation.setText(Integer.toString(this.histologicLamella.getOrientationNoir()));
             this.greenOrientation.setText(Integer.toString(this.histologicLamella.getOrientationVert()));
             this.coloration.setText(this.histologicLamella.getColoration());
-
-
-        }
+        } else this.lastId = lameHistologiqueDaoImpl.getLastid();
 
         this.photoLabel.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("Aucun")) {
                 addPictureButton.setText("Supprimer");
             }
         });
-
-        this.lameHistologiqueDaoImpl = new LameHistologiqueDaoImpl(connection);
-        this.lastId = lameHistologiqueDaoImpl.getLastid();
-
     }
 
     @FXML
@@ -106,17 +100,14 @@ public class AddLameController extends Controller implements Initializable {
         String directory;
         directory = "//Transcriptomie//" + Integer.toString(this.lastId + 1) + "//";
 
-
         if (this.histologicLamella == null) {
-            if (!(this.photoLabel.getText()).equals("Aucun")) {
+            if (!(this.photoLabel.getText()).equals("Aucun"))
                 files.add(directory + this.photoLabel.getText());
-            }
+
             removeTask.addUrls(files);
 
             new Thread(removeTask).start();
-
         }
-
 
         this.setStage(this.cancelButton);
         this.stage.close();
@@ -128,18 +119,10 @@ public class AddLameController extends Controller implements Initializable {
         String numLame, cut, coloration;
 
         if (this.histologicLamella == null) {
-
             numLame = this.lamellaNum.getText();
             cut = this.cutArea.getText();
-
-            if (greenOrientation.getText().length() > 0)
-                vert = Integer.parseInt(this.greenOrientation.getText());
-            else vert = 0;
-
-            if (blackOrientation.getText().length() > 0)
-                noir = Integer.parseInt(this.blackOrientation.getText());
-            else noir = 0;
-
+            vert = greenOrientation.getText().length() > 0 ? Integer.parseInt(this.greenOrientation.getText()) : 0;
+            noir = blackOrientation.getText().length() > 0 ? Integer.parseInt(this.blackOrientation.getText()) : 0;
             coloration = this.coloration.getText();
 
             if (photoLabel.getText().equals("Aucun"))
@@ -156,12 +139,8 @@ public class AddLameController extends Controller implements Initializable {
             noir = this.blackOrientation.getText().length() > 0 ? Integer.parseInt(this.blackOrientation.getText()) : this.histologicLamella.getOrientationNoir();
             coloration = this.coloration.getText().length() > 0 ? this.coloration.getText() : this.histologicLamella.getColoration();
 
-            if (photoPath == null) {
-                if (this.histologicLamella.getPhoto() != null)
-                    photoPath = this.histologicLamella.getPhoto();
-                else
-                    photoPath = null;
-            }
+            if (photoPath == null)
+                photoPath = this.histologicLamella.getPhoto();
 
             if (photoLabel.getText().equals("Aucun"))
                 photoPath = null;
@@ -171,24 +150,14 @@ public class AddLameController extends Controller implements Initializable {
             this.lameController.refreshLesions();
         }
 
-
         this.setStage(this.addButton);
         this.stage.close();
     }
 
     @FXML
     public void photoButtonAction() {
-
-
-        if (this.histologicLamella != null) {
-            if (this.photoLabel.getText().equals("Aucun"))
-                this.startUpload(this.addPictureButton, photoLabel, "//lame_histologique//" + Integer.toString(this.histologicLamella.getId()) + "//");
-            else {
-                this.removeFileFromFTP(this.addPictureButton, this.photoLabel);
-            }
-
-        } else if (this.photoLabel.getText().equals("Aucun"))
-            this.startUpload(this.addPictureButton, photoLabel, "//lame_histologique//" + Integer.toString(lastId) + "//");
+        if (this.photoLabel.getText().equals("Aucun"))
+            this.startUpload(this.addPictureButton, photoLabel, this.histologicLamella != null ? "//lame_histologique//" + Integer.toString(this.histologicLamella.getId()) : "//lame_histologique//" + Integer.toString(lastId));
         else this.removeFileFromFTP(this.addPictureButton, this.photoLabel);
     }
 
@@ -196,20 +165,16 @@ public class AddLameController extends Controller implements Initializable {
         RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(button, null, this.progressBar, this.progressLabel);
 
         removeTask.addUrls(new ArrayList<String>() {{
-            add(histologicLamella.getPhoto());
+            add(histologicLamella != null ? "//lame_histologique//" + Integer.toString(histologicLamella.getId()) : "//lame_histologique//" + Integer.toString(lastId) + photoLabel.getText());
         }});
 
         removeTask.setOnSucceeded(e -> {
+            super.endRemove(null, this.progressBar, this.progressLabel);
             button.setText("Ajouter");
             label.setText("Aucun");
-            this.enableButtons(true, true);
         });
 
-        removeTask.setOnFailed(e -> {
-            button.setText("Ajouter");
-            label.setText("Aucun");
-            this.enableButtons(true, true);
-        });
+        removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
 
         this.lameHistologiqueDaoImpl.update(histologicLamella, histologicLamella.getId());
         new Thread(removeTask).start();
@@ -248,6 +213,7 @@ public class AddLameController extends Controller implements Initializable {
             label.setText(addedFileName);
         }
 
+        this.progressBar.setVisible(false);
         this.enableButtons(true, true);
     }
 }

@@ -20,7 +20,7 @@ public class AddInclusionsView {
         FXMLLoader viewLoader = new FXMLLoader();
         Stage addInclusionStage = new Stage();
 
-        addInclusionStage.setX(parentStage.getX() + parentStage.getWidth());
+        addInclusionStage.setX(parentStage.getX() + parentStage.getWidth() - 280);
         addInclusionStage.setY(parentStage.getY());
         addInclusionStage.setTitle(inclusion == null ? "Ajout d'une inclusion" : "Modification d'une inclusion");
         viewLoader.setLocation(getClass().getResource("/ressource/AddInclusion.fxml"));
