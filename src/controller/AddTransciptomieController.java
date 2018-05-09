@@ -306,7 +306,6 @@ public class AddTransciptomieController extends Controller implements Initializa
             new Thread(removeTask).start();
         }
 
-
         new TranscriptomieView(this.stage, connection, fileManager, transcriptomicAnalysis, siteId);
         transcriptomieController.display(transcriptomicAnalysis);
 
@@ -320,6 +319,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 this.fichierBrutPath = directory + addedFileName;
             } else this.qualityReportPath = directory + addedFileName;
 
+            this.progressBar.setVisible(false);
             label.setText(addedFileName);
             this.enableButtons(true, true);
         }

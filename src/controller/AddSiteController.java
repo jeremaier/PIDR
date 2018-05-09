@@ -256,7 +256,6 @@ public class AddSiteController extends Controller implements Initializable {
     public void enableButtons(boolean enable, boolean all) {
         this.siteCutane.setDisable(!enable);
         this.orientation.setDisable(!enable);
-
     }
 
     @Override
@@ -270,6 +269,7 @@ public class AddSiteController extends Controller implements Initializable {
             label.setText(addedFileName);
         }
 
+        this.progressBar.setVisible(false);
         this.enableButtons(true, true);
     }
 
