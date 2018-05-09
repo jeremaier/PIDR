@@ -99,7 +99,7 @@ public class AddSiteController extends Controller implements Initializable {
 
             if (this.site.getImagesSpectres() != null) {
                 this.imagesSpectresButton.setText("Supprimer");
-                this.checkFichierImages.setText(this.site.getImagesSpectres());
+                this.checkFichierImages.setText(this.site.getImagesSpectres().split("//")[3]);
             }else this.checkFichierImages.setText("Aucun");
 
             if (this.site.getSpectre() != null)
@@ -241,7 +241,7 @@ public class AddSiteController extends Controller implements Initializable {
             if (this.site == null)
                 this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.lastId)+"//", numMesur.getText(), 2);
             else
-                this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.site.getId())+"//", null, 2);
+                this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.site.getId())+"//", numMesur.getText(), 2);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");

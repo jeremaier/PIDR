@@ -142,7 +142,7 @@ public class SiteController extends Controller implements Initializable {
                     for (String aS0 : s0) {
                         String[] s1 = aS0.split("//");
 
-                        this.spectre.add("mesure_" + s1[2].charAt(0));
+                        this.spectre.add("mesure_" + s1[3].charAt(0));
                     }
 
                     populateSpectre(this.spectre);
@@ -321,7 +321,7 @@ public class SiteController extends Controller implements Initializable {
                 if (i != this.selectedSpectreId)
                     newSpectre.append("~#").append(this.s[i]);
         }
-
+        System.out.println(selectedSite==null);
         this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
         this.spectre.remove(this.selectedSpectre);
