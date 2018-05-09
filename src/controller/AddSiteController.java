@@ -106,7 +106,8 @@ public class AddSiteController extends Controller implements Initializable {
                 this.checkFichierSpectre.setText("Non vide");
 
 
-        } else{ this.lastId = getIdLast();
+        } else {
+            this.lastId = getIdLast();
             System.out.println(lastId);
         }
 
@@ -245,7 +246,7 @@ public class AddSiteController extends Controller implements Initializable {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");
             alert.setHeaderText(null);
-            alert.setContentText("Il n'y a pas de num�ro de mesure pr�cis�");
+            alert.setContentText("Pas de numéro de mesure précisé");
             alert.showAndWait();
         }
     }
@@ -273,15 +274,15 @@ public class AddSiteController extends Controller implements Initializable {
     }
 
     private int getIdLast(){
-        ObservableList<Integer> ints= FXCollections.observableArrayList();
-        ints=siteCutaneDaoImpl.idList();
-        int i=0;
+        ArrayList<Integer> ints = siteCutaneDaoImpl.idList();
+        int i = 0;
+
         while(ints.contains(i)){
             System.out.println(ints.contains(i));
             i++;
             System.out.println(i);
-
         }
+
         return i;
     }
 }

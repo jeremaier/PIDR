@@ -67,7 +67,7 @@ public class AddLameController extends Controller implements Initializable {
         if (this.lame != null) {
             this.setLameInformations();
         } else {
-            this.idLame = lameHistologiqueDaoImpl.getLastid() + 1;
+            this.idLame = this.getIdLast();
             this.lame = new HistologicLamella();
             this.lame.setId(-1);
         }
@@ -111,6 +111,7 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     private void accepteButtonAction() {
+        this.lame.setId(this.idLame);
         this.lame.setIdLesion(this.lesion.getId());
         this.lame.setNumLame(this.lamellaNum.getText());
         this.lame.setSiteCoupe(this.cutArea.getText());
@@ -215,5 +216,19 @@ public class AddLameController extends Controller implements Initializable {
         this.progressBar.setVisible(false);
         this.progressLabel.setVisible(false);
         this.enableButtons(true, true);
+    }
+
+
+    private int getIdLast() {
+        ArrayList<Integer> ints = lameHistologiqueDaoImpl.idList();
+        int i = 0;
+
+        while (ints.contains(i)) {
+            System.out.println(ints.contains(i));
+            i++;
+            System.out.println(i);
+        }
+
+        return i;
     }
 }

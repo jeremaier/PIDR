@@ -10,7 +10,6 @@ import src.utils.SQLConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
     private static Connection connection;
@@ -225,18 +224,6 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         }
     }
 
-    private void addToObservableLists(ObservableList<Integer> site, ResultSet resultSet) {
-        try {
-            while (resultSet.next())
-                site.add(this.addID(resultSet));
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void update(CutaneousSite site, int id) {
         PreparedStatement preparedStatement = null;
@@ -265,57 +252,17 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
     }
 
     @Override
-    public int getLastid() {
+    public ArrayList<Integer> idList() {
+        ArrayList<Integer> sites = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
-        int lastId = -1;
-
-        try {
-            statement = SiteCutaneDaoImpl.connection.createStatement();
-            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM site_cutane");
-
-            if (resultSet.next())
-                lastId = resultSet.getInt("lastId");
-
-            System.out.println("SELECT last_insert_id() AS lastId FROM site_cutane");
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return lastId;
-    }
-
-    @Override
-    public ObservableList<Integer> idList() {
-        ObservableList<Integer> site = FXCollections.observableArrayList();
-        Statement statement = null;
-        ResultSet resultSet = null;
-
 
         try {
             statement = SiteCutaneDaoImpl.connection.createStatement();
             resultSet = statement.executeQuery("SELECT ID FROM site_cutane ORDER BY ID");
-            this.addToObservableLists(site, resultSet);
 
+            while (resultSet.next())
+                sites.add(resultSet.getInt("ID"));
 
             System.out.println("SELECT ID FROM site_cutane ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
@@ -341,9 +288,8 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
             }
         }
 
-        return site;
+        return sites;
     }
-
 
     private CutaneousSite addToSite(ResultSet resultSet) throws SQLException {
         CutaneousSite site = new CutaneousSite();
@@ -358,13 +304,6 @@ public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
         site.setImagesSpectres(resultSet.getString("IMAGES_SPECTRES"));
         site.setSpectre(resultSet.getString("SPECTROSCOPIE"));
 
-        return site;
-    }
-
-    private Integer addID(ResultSet resultSet) throws SQLException {
-        Integer site ;
-
-        site=(resultSet.getInt("ID"));
         return site;
     }
 

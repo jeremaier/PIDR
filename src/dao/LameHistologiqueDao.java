@@ -17,6 +17,5 @@ public interface LameHistologiqueDao {
 
     void update(HistologicLamella site, int id);
 
-    int getLastid();
-
+    List<Integer> idList();
 }

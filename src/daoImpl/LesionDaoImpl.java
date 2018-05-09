@@ -11,7 +11,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
+public class LesionDaoImpl extends DaoImpl implements LesionDao {
     private static Connection connection;
 
     public LesionDaoImpl(Connection connection) {
@@ -78,8 +78,8 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = LesionDaoImpl.connection.prepareStatement("INSERT INTO lesion (ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
+            preparedStatement = LesionDaoImpl.connection.prepareStatement("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 1);
             preparedStatement.executeUpdate();
 
             System.out.println("INSERT INTO lesion (ID, ID_INCLUSION, PHOTO_SUR, PHOTO_HORS, PHOTO_FIXE, SITE_ANATOMIQUE, DIAGNOSTIC, AUTRE_DIAG, FILE_DIAG)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?))");
@@ -244,19 +244,22 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
         return lesions;
     }
 
-    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object) throws SQLException {
-        preparedStatement.setInt(1, ((Lesion) object).getIdInclusion());
-        preparedStatement.setString(2, ((Lesion) object).getPhotoSur());
-        preparedStatement.setString(3, ((Lesion) object).getPhotoHors());
-        preparedStatement.setString(4, ((Lesion) object).getPhotoFixe());
-        preparedStatement.setString(5, ((Lesion) object).getSiteAnatomique());
+    protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
+        if (indexDebut == 1)
+            preparedStatement.setInt(indexDebut, ((Lesion) object).getId());
+
+        preparedStatement.setInt(indexDebut + 1, ((Lesion) object).getIdInclusion());
+        preparedStatement.setString(indexDebut + 2, ((Lesion) object).getPhotoSur());
+        preparedStatement.setString(indexDebut + 3, ((Lesion) object).getPhotoHors());
+        preparedStatement.setString(indexDebut + 4, ((Lesion) object).getPhotoFixe());
+        preparedStatement.setString(indexDebut + 5, ((Lesion) object).getSiteAnatomique());
 
         if (((Lesion) object).getDiag() == null)
-            preparedStatement.setString(6, null);
-        else preparedStatement.setString(6, ((Lesion) object).getDiag().toString());
+            preparedStatement.setString(indexDebut + 6, null);
+        else preparedStatement.setString(indexDebut + 6, ((Lesion) object).getDiag().toString());
 
-        preparedStatement.setString(7, ((Lesion) object).getAutreDiag());
-        preparedStatement.setString(8, ((Lesion) object).getFileDiag());
+        preparedStatement.setString(indexDebut + 7, ((Lesion) object).getAutreDiag());
+        preparedStatement.setString(indexDebut + 8, ((Lesion) object).getFileDiag());
 
         return preparedStatement;
     }
@@ -267,7 +270,7 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
 
         try {
             preparedStatement = LesionDaoImpl.connection.prepareStatement("UPDATE lesion SET " + "ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
-            preparedStatement = this.setPreparedStatement(preparedStatement, lesion);
+            preparedStatement = this.setPreparedStatement(preparedStatement, lesion, 0);
             preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
@@ -289,19 +292,19 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
     }
 
     @Override
-    public int getLastId() {
+    public ArrayList<Integer> idList() {
+        ArrayList<Integer> sites = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
-        int lastId = -1;
 
         try {
             statement = LesionDaoImpl.connection.createStatement();
-            resultSet = statement.executeQuery("SELECT last_insert_id() AS lastId FROM lesion");
+            resultSet = statement.executeQuery("SELECT ID FROM lesion ORDER BY ID");
 
-            if (resultSet.next())
-                lastId = resultSet.getInt("lastId");
+            while (resultSet.next())
+                sites.add(resultSet.getInt("ID"));
 
-            System.out.println("SELECT last_insert_id() AS lastId FROM lesion");
+            System.out.println("SELECT ID FROM lesion ORDER BY ID");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -325,6 +328,6 @@ public class LesionDaoImpl extends DaoAutoIncrementImpl implements LesionDao {
             }
         }
 
-        return lastId;
+        return sites;
     }
 }

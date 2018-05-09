@@ -72,7 +72,7 @@ public class AddLesionController extends Controller implements Initializable {
         if (this.lesion != null)
             this.setLesionInformations();
         else {
-            this.idLesion = Integer.toString(lesionDaoImpl.getLastId() + 1);
+            this.idLesion = this.getIdLast();
             this.lesion = new Lesion();
             this.lesion.setId(-1);
         }
@@ -135,6 +135,7 @@ public class AddLesionController extends Controller implements Initializable {
     }
 
     public void addAction() {
+        this.lesion.setId(Integer.parseInt(this.idLesion));
         this.lesion.setSiteAnatomique(this.siteAnatomiqueField.getText());
         Diag diagValue = this.diagBox.getValue();
 
@@ -317,5 +318,18 @@ public class AddLesionController extends Controller implements Initializable {
         this.progressBar.setVisible(false);
         this.progressLabel.setVisible(false);
         this.enableButtons(true, true);
+    }
+
+    private String getIdLast() {
+        ArrayList<Integer> ints = lesionDaoImpl.idList();
+        int i = 0;
+
+        while (ints.contains(i)) {
+            System.out.println(ints.contains(i));
+            i++;
+            System.out.println(i);
+        }
+
+        return Integer.toString(i);
     }
 }

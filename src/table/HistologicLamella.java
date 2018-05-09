@@ -6,28 +6,26 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class HistologicLamella {
-    private IntegerProperty id;
-    private IntegerProperty idLesion;
+    private int id;
+    private int idLesion;
     private StringProperty NumLame;
     private StringProperty siteCoupe;
     private IntegerProperty orientationNoir;
     private IntegerProperty orientationVert;
     private StringProperty coloration;
-    private StringProperty photo;
+    private String photo;
 
     public HistologicLamella() {
-        this.id = new SimpleIntegerProperty();
-        this.idLesion = new SimpleIntegerProperty();
-        this.NumLame=new SimpleStringProperty();
+        this.NumLame = new SimpleStringProperty();
         this.siteCoupe = new SimpleStringProperty();
         this.orientationNoir = new SimpleIntegerProperty();
         this.orientationVert = new SimpleIntegerProperty();
         this.coloration = new SimpleStringProperty();
-        this.photo = new SimpleStringProperty();
     }
 
-    public HistologicLamella( int idLesion,String numLame, String siteCoupe, int orientationNoir, int orientationVert, String coloration, String photo) {
+    public HistologicLamella(int id, int idLesion, String numLame, String siteCoupe, int orientationNoir, int orientationVert, String coloration, String photo) {
         this();
+        this.setId(id);
         this.setIdLesion(idLesion);
         this.setNumLame(numLame);
         this.setSiteCoupe(siteCoupe);
@@ -38,19 +36,19 @@ public class HistologicLamella {
     }
 
     public int getId() {
-        return this.id.get();
+        return this.id;
     }
 
     public void setId(int id) {
-        this.id.set(id);
+        this.id = id;
     }
 
     public int getIdLesion() {
-        return this.idLesion.get();
+        return this.idLesion;
     }
 
     public void setIdLesion(int idLesion) {
-        this.idLesion.set(idLesion);
+        this.idLesion = idLesion;
     }
 
     public String getNumLame() {
@@ -94,17 +92,11 @@ public class HistologicLamella {
     }
 
     public String getPhoto() {
-        return this.photo.get();
+        return this.photo;
     }
 
-    public void setPhoto(String photo) {this.photo.set(photo);}
-
-    public IntegerProperty idProperty() {
-        return this.id;
-    }
-
-    public IntegerProperty idLesionProperty() {
-        return this.idLesion;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public StringProperty numLameProperty() {
@@ -125,9 +117,5 @@ public class HistologicLamella {
 
     public StringProperty colorationProperty() {
         return this.coloration;
-    }
-
-    public StringProperty photoProperty() {
-        return this.photo;
     }
 }
