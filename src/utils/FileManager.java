@@ -211,7 +211,16 @@ public class FileManager extends Observable {
 
             try {
                 for (String url : urls) {
-                    String filePath = selectedDirectory + "//" + FileManager.getFileName(url, false);
+                    StringBuilder fileName = new StringBuilder(FileManager.getFileName(url, false));
+
+                    if (fileName.toString().contains("=")) {
+                        String[] splitFileName = fileName.toString().split("=");
+
+                        for (int i = 1; i < splitFileName.length; i++)
+                            fileName.append(splitFileName[i]);
+                    }
+
+                    String filePath = selectedDirectory + "//" + fileName;
                     FTPFile file = ftpClient.mlistFile(url);
                     long fileSize = file.getSize();
 
