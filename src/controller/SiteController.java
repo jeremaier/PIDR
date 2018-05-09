@@ -228,8 +228,7 @@ public class SiteController extends Controller implements Initializable {
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), this.selectedSite);
-                this.siteListe.remove(selectedSite);
-                this.affecteTab.getSelectionModel().clearSelection();
+
                 this.enableButtons(true, true);
             } else alert.close();
         }
@@ -321,10 +320,12 @@ public class SiteController extends Controller implements Initializable {
                 if (i != this.selectedSpectreId)
                     newSpectre.append("~#").append(this.s[i]);
         }
-        System.out.println(selectedSite==null);
+
         this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
         this.spectre.remove(this.selectedSpectre);
+        this.siteListe.remove(selectedSite);
+        this.affecteTab.getSelectionModel().clearSelection();
 
         populateSpectre(this.spectre);
     }

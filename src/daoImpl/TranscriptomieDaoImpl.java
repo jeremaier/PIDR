@@ -24,8 +24,8 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID_BDD,ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID_BDD, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID,ID_BDD,ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("INSERT INTO analyse_transcriptomique (ID,ID_BDD, ID_SITE_CUTANE, FICHIER_BRUT, RIN, ARNC, CY3, CONCENTRATION, RENDEMENT, ACTIVITE_SPECIFIQUE, CRITERE_EXCLUSION, NUM_SERIE, NUM_EMPLACEMENT, QUALITY_REPORT)" + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
             preparedStatement.executeUpdate();
 
@@ -173,12 +173,12 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID_BDD=?, ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            preparedStatement = TranscriptomieDaoImpl.connection.prepareStatement("UPDATE analyse_transcriptomique SET " + "ID=?, ID_BDD=?, ID_SITE_CUTANE = ?, FICHIER_BRUT = ?, RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
             preparedStatement = this.setPreparedStatement(preparedStatement, transcr, 0);
-            preparedStatement.setInt(14, id);
+            preparedStatement.setInt(15, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE analyse_transcriptomique SET" + " ID_BDD=?, ID_SITE_CUTANE=?, FICHIER_BRUT = ?,  RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
+            System.out.println("UPDATE analyse_transcriptomique SET" + "ID=?, ID_BDD=?, ID_SITE_CUTANE=?, FICHIER_BRUT = ?,  RIN = ?, ARNC = ?, CY3 = ?, CONCENTRATION =?, RENDEMENT = ?, ACTIVITE_SPECIFIQUE = ?, CRITERE_EXCLUSION = ?, NUM_SERIE = ?, NUM_EMPLACEMENT = ?, QUALITY_REPORT =? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();
@@ -264,19 +264,20 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
     protected PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException {
         if (indexDebut == 1)
             preparedStatement.setInt(indexDebut, ((TranscriptomicAnalysis) object).getId());
-        preparedStatement.setInt(indexDebut+1, ((TranscriptomicAnalysis) object).getIdBdd());
-        preparedStatement.setInt(indexDebut + 2, ((TranscriptomicAnalysis) object).getIdCutaneousSite());
-        preparedStatement.setString(indexDebut + 3, ((TranscriptomicAnalysis) object).getFichierBrut());
-        preparedStatement.setDouble(indexDebut + 4, ((TranscriptomicAnalysis) object).getRIN());
-        preparedStatement.setDouble(indexDebut + 5, ((TranscriptomicAnalysis) object).getConcentration());
-        preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getARNC());
-        preparedStatement.setDouble(indexDebut + 7, ((TranscriptomicAnalysis) object).getCyanine());
-        preparedStatement.setDouble(indexDebut + 8, ((TranscriptomicAnalysis) object).getYield());
-        preparedStatement.setDouble(indexDebut + 9, ((TranscriptomicAnalysis) object).getSpecificActivity());
-        preparedStatement.setString(indexDebut + 10, ((TranscriptomicAnalysis) object).getExclusionCriteria());
-        preparedStatement.setInt(indexDebut + 11, ((TranscriptomicAnalysis) object).getSerialNumber());
-        preparedStatement.setInt(indexDebut + 12, ((TranscriptomicAnalysis) object).getLamellaLocation());
-        preparedStatement.setString(indexDebut + 13, ((TranscriptomicAnalysis) object).getQualityReport());
+        preparedStatement.setInt(indexDebut+1,((TranscriptomicAnalysis) object).getId());
+        preparedStatement.setInt(indexDebut+2, ((TranscriptomicAnalysis) object).getIdBdd());
+        preparedStatement.setInt(indexDebut + 3, ((TranscriptomicAnalysis) object).getIdCutaneousSite());
+        preparedStatement.setString(indexDebut + 4, ((TranscriptomicAnalysis) object).getFichierBrut());
+        preparedStatement.setDouble(indexDebut + 5, ((TranscriptomicAnalysis) object).getRIN());
+        preparedStatement.setDouble(indexDebut + 6, ((TranscriptomicAnalysis) object).getConcentration());
+        preparedStatement.setDouble(indexDebut + 7, ((TranscriptomicAnalysis) object).getARNC());
+        preparedStatement.setDouble(indexDebut + 8, ((TranscriptomicAnalysis) object).getCyanine());
+        preparedStatement.setDouble(indexDebut + 9, ((TranscriptomicAnalysis) object).getYield());
+        preparedStatement.setDouble(indexDebut + 10, ((TranscriptomicAnalysis) object).getSpecificActivity());
+        preparedStatement.setString(indexDebut + 11, ((TranscriptomicAnalysis) object).getExclusionCriteria());
+        preparedStatement.setInt(indexDebut + 12, ((TranscriptomicAnalysis) object).getSerialNumber());
+        preparedStatement.setInt(indexDebut + 13, ((TranscriptomicAnalysis) object).getLamellaLocation());
+        preparedStatement.setString(indexDebut + 14, ((TranscriptomicAnalysis) object).getQualityReport());
 
         return preparedStatement;
     }
@@ -326,5 +327,45 @@ public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao 
         }
 
         return transcriptomicAnalyses;
+    }
+
+    @Override
+    public ArrayList<Integer> idList() {
+        ArrayList<Integer> sites = new ArrayList<>();
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            statement = TranscriptomieDaoImpl.connection.createStatement();
+            resultSet = statement.executeQuery("SELECT ID FROM analyse_transcriptomique ORDER BY ID");
+
+            while (resultSet.next())
+                sites.add(resultSet.getInt("ID"));
+
+            System.out.println("SELECT ID FROM analyse_transcriptomique ORDER BY ID");
+        } catch (MySQLNonTransientConnectionException e) {
+            FileManager.openAlert("La connection avec le serveur est interrompue");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return sites;
     }
 }

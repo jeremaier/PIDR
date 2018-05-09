@@ -37,8 +37,9 @@ public class TranscriptomicAnalysis {
 
 
 
-    public TranscriptomicAnalysis( int idBdd, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+    public TranscriptomicAnalysis( int id, int idBdd, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
         this();
+        this.setId(id);
         this.setIdBdd(idBdd);
         this.setIdCutaneousSite(idCutaneousSite);
         this.setFichierBrut(fichierBrut);

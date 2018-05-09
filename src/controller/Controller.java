@@ -90,7 +90,7 @@ public abstract class Controller {
         return downloadTask;
     }
 
-    private void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
+    public void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
         this.enableButtons(true, true);
 
         if (button != null)

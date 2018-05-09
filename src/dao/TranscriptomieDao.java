@@ -16,5 +16,8 @@ public interface TranscriptomieDao {
 
     int getLast();
 
+    List<Integer> idList();
+
+
 
 }

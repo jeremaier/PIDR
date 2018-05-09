@@ -79,8 +79,9 @@ public class AddLameController extends Controller implements Initializable {
         this.idLame = this.lame.getId();
 
         if (this.lame.getPhoto() != null) {
-            FileManager.getFileName(this.lame.getPhoto(), false);
+            this.photoLabel.setText(FileManager.getFileName(this.lame.getPhoto(), false));
             this.addPictureButton.setText("Supprimer");
+
         }
 
         this.lamellaNum.setText(this.lame.getNumLame());
@@ -111,7 +112,6 @@ public class AddLameController extends Controller implements Initializable {
 
     @FXML
     private void accepteButtonAction() {
-        this.lame.setId(this.idLame);
         this.lame.setIdLesion(this.lesion.getId());
         this.lame.setNumLame(this.lamellaNum.getText());
         this.lame.setSiteCoupe(this.cutArea.getText());
@@ -122,10 +122,11 @@ public class AddLameController extends Controller implements Initializable {
         if (!this.photoLabel.getText().equals("Aucun"))
             this.lame.setPhoto(FileManager.getLameFilesDirectoryName(Integer.toString(this.idLame)) + "//" + this.photoLabel.getText());
 
-        if (this.lame.getId() >= 0) {
+        if (this.lame.getId() != -1) {
             this.lameHistologiqueDaoImpl.update(this.lame, this.lame.getId());
             this.lameController.refreshLesions();
         } else {
+            this.lame.setId(this.idLame);
             this.lameHistologiqueDaoImpl.insert(this.lame);
             this.lameController.populateSingleLame(this.lame);
         }

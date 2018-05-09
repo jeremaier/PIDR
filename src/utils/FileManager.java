@@ -216,6 +216,8 @@ public class FileManager extends Observable {
                     if (fileName.toString().contains("=")) {
                         String[] splitFileName = fileName.toString().split("=");
 
+                        fileName = new StringBuilder("");
+
                         for (int i = 1; i < splitFileName.length; i++)
                             fileName.append(splitFileName[i]);
                     }

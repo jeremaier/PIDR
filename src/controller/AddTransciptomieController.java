@@ -84,7 +84,8 @@ public class AddTransciptomieController extends Controller implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
-        this.lastId = transcriptomieDaoImpl.getLast();
+        this.lastId = getIdLast();
+        System.out.println(lastId);
 
         if (transcriptomicAnalysis == null) {
             id.lengthProperty().addListener((observable, oldValue, newValue) -> {
@@ -180,7 +181,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 Rin = Double.parseDouble(RIN.getText().replace(",", "."));
             else Rin = 0.0;
 
-            newTranscr = new TranscriptomicAnalysis(IdBdd, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(this.lastId,IdBdd, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             this.transcriptomieDaoImpl.insert(newTranscr);
             this.transcriptomieController.display(newTranscr);
 
@@ -199,6 +200,8 @@ public class AddTransciptomieController extends Controller implements Initializa
             Arnc = ARNc.getText().length() > 0 ? Double.parseDouble(ARNc.getText()) : transcriptomicAnalysis.getARNC();
             Rin = RIN.getText().length() > 0 ? Double.parseDouble(RIN.getText()) : transcriptomicAnalysis.getRIN();
 
+            System.out.println(NumSerie);
+
             if (fichierBrutPath == null) {
                 if (this.transcriptomicAnalysis.getFichierBrut() == null) {
                     fichierBrutPath = null;
@@ -215,7 +218,7 @@ public class AddTransciptomieController extends Controller implements Initializa
                 }
             }
 
-            newTranscr = new TranscriptomicAnalysis(IdBdd, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(transcriptomicAnalysis.getId(),IdBdd, siteId, fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             transcriptomieDaoImpl.update(newTranscr, transcriptomicAnalysis.getId());
             transcriptomieController.display(newTranscr);
 
@@ -229,14 +232,14 @@ public class AddTransciptomieController extends Controller implements Initializa
     @FXML
     private void fichierBrutButton() {
         if (this.checkFichierBrut.getText().equals("Aucun"))
-            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId + 1 + "//", null, 1);
+            this.startUpload(this.fichierBrut, this.checkFichierBrut, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + Integer.toString(lastId)  + "//", null, 1);
         else this.removeFileFromFTP("brut", this.fichierBrut, this.checkFichierBrut);
     }
 
     @FXML
     private void qualityReportButtonAction() {
         if (this.checkQualityReport.getText().equals("Aucun"))
-            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + lastId + 1 + "//", null, 2);
+            this.startUpload(this.qualityReport, this.checkQualityReport, transcriptomicAnalysis != null ? "//Transcriptomie//" + Integer.toString(this.transcriptomicAnalysis.getId()) + "//" : "//Transcriptomie//" + Integer.toString(lastId)  + "//", null, 2);
         else this.removeFileFromFTP("quality", this.qualityReport, this.checkQualityReport);
     }
 
@@ -330,6 +333,19 @@ public class AddTransciptomieController extends Controller implements Initializa
         this.accepte.setDisable(!enable);
         this.fichierBrut.setDisable(!enable);
         this.qualityReport.setDisable(!enable);
+    }
+
+    private int getIdLast(){
+        ArrayList<Integer> ints = transcriptomieDaoImpl.idList();
+        int i = 0;
+
+        while(ints.contains(i)){
+            System.out.println(ints.contains(i));
+            i++;
+            System.out.println(i);
+        }
+
+        return i;
     }
 }
 
