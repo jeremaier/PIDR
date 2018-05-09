@@ -134,7 +134,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @FXML
     private void qualityReportAction() {
-        this.startDownload(this.transcriptomicAnalysis.getFichierBrut(), this.qualityReport);
+        this.startDownload(this.transcriptomicAnalysis.getQualityReport(), this.qualityReport);
     }
 
     @FXML
@@ -184,10 +184,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), transcriptomicAnalysis);
-                this.transcriptomicAnalysis = null;
-                this.ajouter.setText("Ajouter");
-                this.display(null);
-                this.enableButtons(false, false);
+                this.enableButtons(false, true);
             } else alert.close();
         }
     }
@@ -231,6 +228,10 @@ public class TranscriptomieController extends Controller implements Initializabl
     }
 
     public void endRemove(Button button, ProgressBar progressBar, Label label){
+        super.endRemove(button,progressBar,label);
+        this.transcriptomicAnalysis = null;
+        this.ajouter.setText("Ajouter");
+        this.display(null);
 
     }
 
@@ -247,5 +248,7 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @Override
     void endUpload(String addedFileName, String directory, Label label, int num) {
+
+
     }
 }

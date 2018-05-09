@@ -2,6 +2,7 @@ package src.dao;
 
 import src.table.CutaneousSite;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface SiteCutaneDao {
@@ -16,4 +17,6 @@ public interface SiteCutaneDao {
     void update(CutaneousSite site, int id);
 
     int getLastid();
+
+    List<Integer> idList();
 }

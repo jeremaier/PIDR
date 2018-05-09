@@ -95,16 +95,15 @@ public class AddTransciptomieController extends Controller implements Initializa
                 } else this.enableButtons(true, false);
             });
         } else {
+
             if (this.transcriptomicAnalysis.getFichierBrut() != null) {
                 this.fichierBrut.setText("Supprimer");
-
                 String[] s0 = this.transcriptomicAnalysis.getFichierBrut().split("//");
                 this.checkFichierBrut.setText(s0[3]);
             }
 
             if (this.transcriptomicAnalysis.getQualityReport() != null) {
                 this.qualityReport.setText("Supprimer");
-
                 String[] s0 = this.transcriptomicAnalysis.getQualityReport().split("//");
                 this.checkQualityReport.setText(s0[3]);
             }
@@ -120,6 +119,19 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.activiteSpecifique.setText(Double.toString(this.transcriptomicAnalysis.getSpecificActivity()));
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         }
+
+
+        checkFichierBrut.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!checkFichierBrut.getText().equals("Aucun"))
+                this.fichierBrut.setText("Supprimer");
+
+        });
+
+        checkQualityReport.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!checkQualityReport.getText().equals("Aucun"))
+                this.qualityReport.setText("Supprimer");
+
+        });
     }
 
     @FXML
@@ -234,20 +246,28 @@ public class AddTransciptomieController extends Controller implements Initializa
         switch (buttonName) {
             case "brut":
                 removeTask.addUrls(new ArrayList<String>() {{
-                    add(transcriptomicAnalysis.getFichierBrut());
+                    if (transcriptomicAnalysis != null && transcriptomicAnalysis.getFichierBrut() != null)
+                        add(transcriptomicAnalysis.getFichierBrut());
+                    else add(fichierBrutPath);
                 }});
 
                 this.checkFichierBrut.setText("Aucun");
-                this.transcriptomicAnalysis.setFichierBrut(null);
+                if (transcriptomicAnalysis != null)
+                    this.transcriptomicAnalysis.setFichierBrut(null);
+                else fichierBrutPath = null;
                 break;
             case "quality":
                 System.out.println("salut");
                 removeTask.addUrls(new ArrayList<String>() {{
-                    add(transcriptomicAnalysis.getQualityReport());
+                    if (transcriptomicAnalysis != null && transcriptomicAnalysis.getQualityReport() != null)
+                        add(transcriptomicAnalysis.getQualityReport());
+                    else add(qualityReportPath);
                 }});
 
                 this.checkQualityReport.setText("Aucun");
-                this.transcriptomicAnalysis.setQualityReport(null);
+                if (transcriptomicAnalysis != null)
+                    this.transcriptomicAnalysis.setQualityReport(null);
+                else qualityReport = null;
                 break;
         }
 
@@ -259,6 +279,7 @@ public class AddTransciptomieController extends Controller implements Initializa
 
         removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
 
+        if(this.transcriptomicAnalysis!=null)
         this.transcriptomieDaoImpl.update(transcriptomicAnalysis, transcriptomicAnalysis.getId());
         new Thread(removeTask).start();
     }
@@ -295,9 +316,9 @@ public class AddTransciptomieController extends Controller implements Initializa
     @Override
     void endUpload(String addedFileName, String directory, Label label, int num) {
         if (addedFileName != null) {
-            if (num == 1)
+            if (num == 1) {
                 this.fichierBrutPath = directory + addedFileName;
-            else this.qualityReportPath = directory + addedFileName;
+            } else this.qualityReportPath = directory + addedFileName;
 
             label.setText(addedFileName);
             this.enableButtons(true, true);

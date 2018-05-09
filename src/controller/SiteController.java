@@ -92,7 +92,7 @@ public class SiteController extends Controller implements Initializable {
         ArrayList<String> urls = new ArrayList<>();
 
         for (CutaneousSite cutaneousSite : cutaneousSites) {
-            if(cutaneousSite.getSpectre()!=null)
+            if (cutaneousSite.getSpectre() != null)
                 urls.addAll(Arrays.asList(cutaneousSite.getSpectre().split("~#")));
 
             String fichierDiag, fichierMoy;
@@ -123,6 +123,7 @@ public class SiteController extends Controller implements Initializable {
         this.diag.setCellValueFactory(cellData -> cellData.getValue().diagProperty());
         this.autreDiag.setCellValueFactory(cellDate -> cellDate.getValue().autreDiagProperty());
 
+
         this.siteCutaneDaoImpl = new SiteCutaneDaoImpl(connection);
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
         this.siteListe = siteCutaneDaoImpl.selectByLesion(this.lesion.getId());
@@ -134,7 +135,7 @@ public class SiteController extends Controller implements Initializable {
             this.enableButtons(selectedSite != null, false);
             this.spectre.clear();
             if (selectedSite != null) {
-                if (this.selectedSite.getSpectre()!= null && this.selectedSite.getSpectre().length()>0) {
+                if (this.selectedSite.getSpectre() != null && this.selectedSite.getSpectre().length() > 0) {
                     System.out.println(selectedSite.getSpectre());
                     String[] s0 = this.selectedSite.getSpectre().split("~#");
 
@@ -145,9 +146,18 @@ public class SiteController extends Controller implements Initializable {
                     }
 
                     populateSpectre(this.spectre);
+
+
                 }
+                if (this.selectedSite.getImagesSpectres() == null)
+                    imagesSpectresButton.setDisable(true);
+                else imagesSpectresButton.setDisable(false);
+                if (this.selectedSite.getFichierDiag() == null)
+                    fichierDiag.setDisable(true);
+                else fichierDiag.setDisable(false);
             }
         });
+
 
         this.spectreList.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
             this.selectedSpectre = this.spectreList.getSelectionModel().getSelectedItem();
@@ -156,13 +166,13 @@ public class SiteController extends Controller implements Initializable {
             if (this.selectedSpectre != null) {
                 this.suprSpectre.setDisable(false);
                 this.downloadSpectre.setDisable(false);
-                this.imagesSpectresButton.setDisable(false);
             } else {
                 this.suprSpectre.setDisable(true);
                 this.downloadSpectre.setDisable(true);
-                this.imagesSpectresButton.setDisable(true);
             }
         }));
+
+
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
@@ -331,6 +341,8 @@ public class SiteController extends Controller implements Initializable {
 
         else this.affecteTab.setItems(FXCollections.observableArrayList());
     }
+
+
 }
 
 

@@ -32,10 +32,10 @@ public class CutaneousSite {
         this.fichierDiag = new SimpleStringProperty();
     }
 
-    public CutaneousSite(int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String imagesSpectres, String spectre) {
+    public CutaneousSite(int id, int idLesion, String site, int orientation, String diag, String autreDiag, String fileDiag, String imagesSpectres, String spectre) {
         this();
         System.out.println("coucouc"+site);
-
+        this.setId(id);
         this.setFichierDiag(fileDiag);
         this.setIdLesion(idLesion);
         this.setSite(site);

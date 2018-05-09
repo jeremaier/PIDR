@@ -92,17 +92,23 @@ public class AddSiteController extends Controller implements Initializable {
             this.autreDiag.setText(this.site.getAutreDiag());
             this.lastId = this.site.getId();
 
-            if (this.site.getFichierDiag() != null)
-                this.checkFichierDiag.setText(this.site.getFichierDiag());
-            else this.checkFichierDiag.setText("Aucun");
+            if (this.site.getFichierDiag() != null) {
+                this.checkFichierDiag.setText(this.site.getFichierDiag().split("//")[3]);
+                this.addFicherDiag.setText("Supprimer");
+            }else this.checkFichierDiag.setText("Aucun");
 
-            if (this.site.getFichierDiag() != null)
+            if (this.site.getImagesSpectres() != null) {
+                this.imagesSpectresButton.setText("Supprimer");
                 this.checkFichierImages.setText(this.site.getImagesSpectres());
-            else this.checkFichierImages.setText("Aucun");
+            }else this.checkFichierImages.setText("Aucun");
 
             if (this.site.getSpectre() != null)
                 this.checkFichierSpectre.setText("Non vide");
-        } else this.lastId = this.siteCutaneDaoImpl.getLastid() + 1;
+
+
+        } else{ this.lastId = getIdLast();
+            System.out.println(lastId);
+        }
 
         this.siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!this.siteCutane.getValue().equals(SiteCutane.SAIN), false));
         this.numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> this.addFichierSpectre.setDisable(this.numMesur.getText().length() <= 0));
@@ -153,7 +159,7 @@ public class AddSiteController extends Controller implements Initializable {
 
             AutreDiag = this.autreDiag.getText();
 
-            CutaneousSite newSite = new CutaneousSite(this.lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, this.fichierDiagPath, this.imagesSpectresPath, this.spectrePath);
+            CutaneousSite newSite = new CutaneousSite(this.lastId, this.lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, this.fichierDiagPath, this.imagesSpectresPath, this.spectrePath);
             this.siteController.populateSingleSite(newSite);
 
             this.siteCutaneDaoImpl.insert(newSite);
@@ -179,7 +185,7 @@ public class AddSiteController extends Controller implements Initializable {
             else if (this.site.getSpectre() != null)
                 this.spectrePath = this.spectrePath + "~#" + site.getSpectre();
 
-            CutaneousSite newSite = new CutaneousSite(lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, this.fichierDiagPath, this.imagesSpectresPath, this.spectrePath);
+            CutaneousSite newSite = new CutaneousSite(this.site.getId(), lesion.getId(), SITE, Orientation, diagnostique, AutreDiag, this.fichierDiagPath, this.imagesSpectresPath, this.spectrePath);
             newSite.setFichierDiag(this.fichierDiagPath);
             newSite.setImagesSpectres(this.imagesSpectresPath);
             newSite.setSpectre(this.spectrePath);
@@ -195,17 +201,17 @@ public class AddSiteController extends Controller implements Initializable {
     @FXML
     private void fichierDiag() {
         if (this.checkFichierDiag.getText().equals("Aucun"))
-            this.startUpload(this.addFicherDiag, checkFichierDiag, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId()) : Integer.toString(this.lastId)), null, 1);
+            this.startUpload(this.addFicherDiag, checkFichierDiag, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId())+"//" : Integer.toString(this.lastId)+"//"), null, 1);
         else
-            this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId()) : Integer.toString(this.lastId)) + this.checkFichierDiag.getText());
+            this.removeFileFromFTP(this.addFicherDiag, this.checkFichierDiag, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId())+"//" : Integer.toString(this.lastId)+"//") + this.checkFichierDiag.getText());
     }
 
     @FXML
     private void imagesSpectresAction() {
         if (this.checkFichierImages.getText().equals("Aucun"))
-            this.startUpload(this.imagesSpectresButton, checkFichierImages, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId()) : Integer.toString(this.lastId)), null, 1);
+            this.startUpload(this.imagesSpectresButton, checkFichierImages, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId())+"//" : Integer.toString(this.lastId)+"//" ), null, 3);
         else
-            this.removeFileFromFTP(this.imagesSpectresButton, this.checkFichierImages, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId()) : Integer.toString(this.lastId)) + this.checkFichierImages.getText());
+            this.removeFileFromFTP(this.imagesSpectresButton, this.checkFichierImages, "//siteCutane//" + (site != null ? Integer.toString(this.site.getId())+"//" : Integer.toString(this.lastId)+"//") + this.checkFichierImages.getText());
     }
 
     private void removeFileFromFTP(Button button, Label label, String file) {
@@ -222,7 +228,7 @@ public class AddSiteController extends Controller implements Initializable {
         });
 
         removeTask.setOnFailed(e -> removeTask.getOnSucceeded());
-
+        if(this.site!=null)
         this.siteCutaneDaoImpl.update(this.site, this.site.getId());
 
         new Thread(removeTask).start();
@@ -232,9 +238,9 @@ public class AddSiteController extends Controller implements Initializable {
     private void spectreButtonAction() {
         if (this.numMesur.getText().length() > 0) {
             if (this.site == null)
-                this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.lastId), numMesur.getText(), 2);
+                this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.lastId)+"//", numMesur.getText(), 2);
             else
-                this.startUpload(this.addFichierSpectre, this.checkFichierDiag, "//siteCutane//" + Integer.toString(this.site.getId()), null, 2);
+                this.startUpload(this.addFichierSpectre, this.checkFichierSpectre, "//siteCutane//" + Integer.toString(this.site.getId())+"//", null, 2);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Erreur");
@@ -249,6 +255,7 @@ public class AddSiteController extends Controller implements Initializable {
     public void enableButtons(boolean enable, boolean all) {
         this.siteCutane.setDisable(!enable);
         this.orientation.setDisable(!enable);
+
     }
 
     @Override
@@ -256,11 +263,25 @@ public class AddSiteController extends Controller implements Initializable {
         if (addedFileName != null) {
             if (num == 1)
                 this.fichierDiagPath = directory + addedFileName;
-            else this.spectrePath = directory + numMesur.getText() + "=" + addedFileName;
+            else if(num==2) this.spectrePath = directory + numMesur.getText() + "=" + addedFileName;
+            else this.imagesSpectresPath = directory + addedFileName;
 
             label.setText(addedFileName);
         }
 
         this.enableButtons(true, true);
+    }
+
+    private int getIdLast(){
+        ObservableList<Integer> ints= FXCollections.observableArrayList();
+        ints=siteCutaneDaoImpl.idList();
+        int i=0;
+        while(ints.contains(i)){
+            System.out.println(ints.contains(i));
+            i++;
+            System.out.println(i);
+
+        }
+        return i;
     }
 }
