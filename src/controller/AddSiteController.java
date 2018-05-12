@@ -96,26 +96,29 @@ public class AddSiteController extends Controller implements Initializable {
             if (this.site.getFichierDiag() != null && this.site.getFichierDiag().length()>0) {
                 this.checkFichierDiag.setText(this.site.getFichierDiag().split("//")[3]);
                 this.addFicherDiag.setText("Supprimer");
-            }else this.checkFichierDiag.setText("Aucun");
+            } else this.checkFichierDiag.setText("Aucun");
 
             if (this.site.getImagesSpectres() != null && this.site.getImagesSpectres().length()>0 ) {
                 this.imagesSpectresButton.setText("Supprimer");
                 this.checkFichierImages.setText(this.site.getImagesSpectres().split("//")[3]);
-            }else this.checkFichierImages.setText("Aucun");
+            } else this.checkFichierImages.setText("Aucun");
 
-            if (this.site.getSpectre()!=null && this.site.getSpectre().length() >0 ) {
-                System.out.println(site.getSpectre().length());
-                this.checkFichierSpectre.setText("Non vide");
-            }else this.checkFichierSpectre.setText("Aucun");
-
-
-
-        } else {
-            this.lastId = getIdLast();
-        }
+            this.checkFichierSpectre.setText(this.site.getSpectre() != null && this.site.getSpectre().length() > 0 ? "Non vide" : "Aucun");
+        } else this.lastId = getIdLast();
 
         this.siteCutane.itemsProperty().addListener(observable -> this.enableButtons(!this.siteCutane.getValue().equals(SiteCutane.SAIN), false));
         this.numMesur.lengthProperty().addListener((observable, oldValue, newValue) -> this.addFichierSpectre.setDisable(this.numMesur.getText().length() <= 0));
+
+        this.orientation.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.orientation.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.orientation.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.orientation.getText().length() >= 3)
+                    this.orientation.setText(this.orientation.getText().substring(0, 3));
+        });
 
         this.checkFichierDiag.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("Aucun")) {

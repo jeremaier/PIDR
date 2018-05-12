@@ -141,9 +141,9 @@
         <Button fx:id="fichierBrut" mnemonicParsing="false" onAction="#fichierBrutButton" prefHeight="36.0"
                 prefWidth="126.0" text="Ajouter" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                 GridPane.rowIndex="5"/>
-        <Button fx:id="qualityReport" mnemonicParsing="false" onAction="#qualityReportButtonAction"
-                prefHeight="36.0" prefWidth="126.0" text="Ajouter" GridPane.columnIndex="4"
-                GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER"/>
+        <Button fx:id="qualityReport" mnemonicParsing="false" onAction="#qualityReportButtonAction" prefHeight="36.0"
+                prefWidth="126.0" text="Ajouter" GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                GridPane.rowIndex="5" GridPane.valignment="CENTER"/>
     </GridPane>
     <Button fx:id="accepte" layoutX="565.0" layoutY="537.0" mnemonicParsing="false" onAction="#accepteButton"
             prefHeight="40.0" prefWidth="130.0" text="Accepter +" AnchorPane.bottomAnchor="15.0"
@@ -152,9 +152,8 @@
             <Font size="20.0"/>
         </font>
     </Button>
-    <Button fx:id="cancel" layoutX="688.0" layoutY="537.0" mnemonicParsing="false" onAction="#retour"
-            prefHeight="40.0" prefWidth="130.0" text="Annuler" AnchorPane.bottomAnchor="15.0"
-            AnchorPane.rightAnchor="20.0">
+    <Button fx:id="cancel" layoutX="688.0" layoutY="537.0" mnemonicParsing="false" onAction="#retour" prefHeight="40.0"
+            prefWidth="130.0" text="Annuler" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="20.0">
         <font>
             <Font size="20.0"/>
         </font>
@@ -166,7 +165,7 @@
         </font>
     </Label>
     <Label fx:id="checkQualityReport" layoutX="444.0" layoutY="391.0" text="Aucun" wrapText="true"
-           AnchorPane.leftAnchor="444.0">
+           AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="438.0">
         <font>
             <Font size="14.0"/>
         </font>

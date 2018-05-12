@@ -27,10 +27,10 @@
             <Label text="La table est vide"/>
         </placeholder>
         <columns>
-            <TableColumn fx:id="siteCutane" editable="false" prefWidth="190.0" resizable="false" text="Site cutané"/>
-            <TableColumn fx:id="Orientation" prefWidth="190.0" resizable="false" text="Orientation"/>
-            <TableColumn fx:id="diag" prefWidth="190.0" resizable="false" text="Diagnostic"/>
-            <TableColumn fx:id="autreDiag" prefWidth="190.0" text="Autre Diagnostic"/>
+            <TableColumn fx:id="siteCutane" editable="false" prefWidth="135.0" resizable="false" text="Site cutané"/>
+            <TableColumn fx:id="Orientation" prefWidth="141.0" resizable="false" text="Orientation"/>
+            <TableColumn fx:id="diag" prefWidth="242.0" resizable="false" text="Diagnostic"/>
+            <TableColumn fx:id="autreDiag" prefWidth="242.0" text="Autre Diagnostic"/>
         </columns>
     </TableView>
     <Label layoutX="22.0" layoutY="430.0" text="Spectres optiques des mesures :" AnchorPane.bottomAnchor="180.0"/>

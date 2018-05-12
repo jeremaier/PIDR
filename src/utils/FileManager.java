@@ -57,16 +57,6 @@ public class FileManager extends Observable {
         uploadTask.setSelectedFile(fileChooser.showOpenDialog(stage));
     }
 
-    public static String getFilePath(String name) {
-        String directoryPath = System.getProperty("user.dir") + "//saves";
-        File folder = new File(directoryPath);
-
-        if (!folder.exists())
-            folder.mkdirs();
-
-        return folder.getAbsoluteFile() + "//" + name;
-    }
-
     public static String getInclusionDirectoryName(String inclusionId) {
         return FileManager.inclusionDirectoryName + "//" + inclusionId;
     }
@@ -98,8 +88,14 @@ public class FileManager extends Observable {
     public ObservableList<String> listFiles(String directory, boolean open, boolean close) {
         ObservableList<String> fileList = FXCollections.observableArrayList();
 
-        if (open)
-            this.openFTPConnection();
+        if (open) {
+            try {
+                this.openFTPConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible de se connecter au serveur FTP");
+            }
+        }
 
         try {
             for (FTPFile file : ftpClient.listFiles(directory))
@@ -121,45 +117,35 @@ public class FileManager extends Observable {
         return this.ftpClient;
     }
 
-    public boolean openFTPConnection() {
+    public void openFTPConnection() throws IOException {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
         ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         ftpClient.setConnectTimeout(1500);
         ftpClient.setDataTimeout(500);
 
-        try {
-            ftpClient.connect("193.54.21.7");
-            ftpClient.setKeepAlive(true);
+        ftpClient.connect("193.54.21.7");
+        ftpClient.setKeepAlive(true);
 
-            ftpClient.execPROT("P");
+        ftpClient.execPROT("P");
 
-            int reply = ftpClient.getReplyCode();
+        int reply = ftpClient.getReplyCode();
 
-            if (!FTPReply.isPositiveCompletion(reply)) {
-                ftpClient.disconnect();
-                return false;
-            }
+        if (!FTPReply.isPositiveCompletion(reply))
+            ftpClient.disconnect();
 
-            if (!ftpClient.login(this.user, this.password)) {
-                ftpClient.logout();
-                ftpClient.disconnect();
-                return false;
-            }
-
-            ftpClient.setSoTimeout(5000);
-            ftpClient.setControlKeepAliveTimeout(120);
-            ftpClient.setControlKeepAliveReplyTimeout(120);
-            ftpClient.setBufferSize(1024 * 1024);
-            ftpClient.setAutodetectUTF8(true);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (!ftpClient.login(this.user, this.password)) {
+            ftpClient.logout();
+            ftpClient.disconnect();
         }
 
-        return true;
+        ftpClient.setSoTimeout(5000);
+        ftpClient.setControlKeepAliveTimeout(120);
+        ftpClient.setControlKeepAliveReplyTimeout(120);
+        ftpClient.setBufferSize(1024 * 1024);
+        ftpClient.setAutodetectUTF8(true);
+        ftpClient.enterLocalPassiveMode();
+        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
     }
 
     private void closeFTPConnection() {
@@ -185,15 +171,19 @@ public class FileManager extends Observable {
     }
 
     final void removeFiles(RemoveTask task, ArrayList<String> urls) {
-        this.openFTPConnection();
+        try {
+            this.openFTPConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+            FileManager.openAlert("Impossible de se connecter au serveur FTP");
+        }
 
         try {
             task.updateProgressBar(-1, "Suppression...");
 
-            for (String url : urls) {
+            for (String url : urls)
                 ftpClient.deleteFile(url);
-                System.out.println(url);
-            }
+
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.openAlert("Impossible de supprimer le fichier");
@@ -207,7 +197,13 @@ public class FileManager extends Observable {
     void downloadFromUrl(DownloadTask task, File selectedDirectory, ArrayList<String> urls) {
         if(selectedDirectory != null) {
             FileManager.current = selectedDirectory.getAbsolutePath();
-            this.openFTPConnection();
+
+            try {
+                this.openFTPConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible de se connecter au serveur FTP");
+            }
 
             try {
                 for (String url : urls) {
@@ -254,7 +250,12 @@ public class FileManager extends Observable {
             FileManager.current = selectedFile.getParent();
             InputStream input = null;
 
-            this.openFTPConnection();
+            try {
+                this.openFTPConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible de se connecter au serveur FTP");
+            }
 
             try {
                 input = new FileInputStream(new File(selectedFile.getAbsolutePath()));
