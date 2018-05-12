@@ -33,6 +33,7 @@ public class LoginController implements Initializable {
     GridPane grid;
 
     private String loginFileName = "Log";
+    private static String logDirectoryName;
 
     public void NewConnection() {
         this.checkLog();
@@ -40,6 +41,10 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if ((System.getProperty("os.name")).toUpperCase().contains("WIN"))
+            logDirectoryName = System.getenv("AppData") + "//SpectroLive//";
+        else logDirectoryName = System.getProperty("user.home") + "/Library/Application Support/SpectroLive/";
+
         this.loadTokenFromFile();
         this.pi.setProgress(-1);
         this.pi.setVisible(false);
@@ -55,96 +60,108 @@ public class LoginController implements Initializable {
     }
 
     private void checkLog() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-
         if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
             SQLConnection sqlConnection = new SQLConnection(user.getText(), password.getText());
             FileManager fileManager = new FileManager(user.getText(), password.getText());
             Connection connection = SQLConnection.getConnection();
-            
-            /*TODO empecher co quand ftp marche pas*/
-            if (connection != null && fileManager.openFTPConnection()) {
-                if (this.saveLogin.isSelected())
-                    this.saveLoginInFile();
-                else this.deleteLoginFile();
 
-                System.out.println("Connection etablie");
-
-                Stage stage = (Stage) connectButton.getScene().getWindow();
-                stage.close();
-                new InclusionsView(null, connection, fileManager);
-            } else {
-                alert.setTitle("Erreur d'identification");
-                alert.setHeaderText(null);
-                alert.setContentText("Identifiant et/ou mot de passe incorrect(s)");
-                alert.showAndWait();
-                this.password.clear();
-                this.connectButton.setDisable(false);
+            try {
+                fileManager.openFTPConnection();
 
                 if (connection != null) {
+                    if (this.saveLogin.isSelected())
+                        this.saveLoginInFile();
+                    else this.deleteLoginFile();
+
+                    Stage stage = (Stage) connectButton.getScene().getWindow();
+                    stage.close();
+                    new InclusionsView(null, connection, fileManager);
+                } else {
+                    FileManager.openAlert("Identifiant et/ou mot de passe incorrect(s) ou impossible de se connecter");
+                    this.password.clear();
+                    this.connectButton.setDisable(false);
+
                     try {
                         sqlConnection.closeConnection();
-                    } catch(SQLException e) {
-                        e.printStackTrace();
+                    } catch (SQLException sqlException) {
+                        sqlException.printStackTrace();
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.openAlert("Impossible de se connecter au serveur FTP");
             }
         }
     }
 
     private void loadTokenFromFile() {
-        File file = new File(FileManager.getFilePath(loginFileName));
+        File file = new File(logDirectoryName + loginFileName);
         FileInputStream fIn;
         ObjectInputStream oIn;
 
-        try {
-            if (!file.createNewFile())
-                System.out.println("Cannot create file: " + file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(logDirectoryName);
+        if (file.exists()) {
+            if (file.length() > 0) {
+                try {
+                    fIn = new FileInputStream(file);
+                    oIn = new ObjectInputStream(fIn);
 
-        if (file.length() > 0) {
-            try {
-                fIn = new FileInputStream(file);
-                oIn = new ObjectInputStream(fIn);
+                    this.user.setText((String) oIn.readObject());
 
-                this.user.setText((String) oIn.readObject());
-
-                oIn.close();
-                fIn.close();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                    oIn.close();
+                    fIn.close();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     private void saveLoginInFile() {
-        if(!this.user.getText().equals("")) {
-            FileOutputStream fOut;
-            ObjectOutputStream oOut;
+        File folder = new File(logDirectoryName);
+        File file = new File(logDirectoryName + loginFileName);
 
-            try {
-                fOut = new FileOutputStream(FileManager.getFilePath(loginFileName));
-                oOut = new ObjectOutputStream(fOut);
+        if (!folder.exists())
+            folder.mkdirs();
 
-                oOut.writeObject(this.user.getText());
+        try {
+            if (!this.user.getText().equals("") && file.createNewFile()) {
+                FileOutputStream fOut;
+                ObjectOutputStream oOut;
 
-                oOut.close();
-                fOut.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    fOut = new FileOutputStream(file.getAbsoluteFile());
+                    oOut = new ObjectOutputStream(fOut);
+
+                    oOut.writeObject(this.user.getText());
+
+                    oOut.close();
+                    fOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void deleteLoginFile() {
-        File loginFile = new File(FileManager.getFilePath(loginFileName));
+        File loginFile = new File(logDirectoryName + loginFileName);
 
-        if (loginFile.exists())
-            if (!loginFile.delete())
-                System.out.println("Cannot delete file: " + loginFile);
+        if (loginFile.exists()) {
+            File folder = loginFile.getParentFile();
+
+            try {
+                java.nio.file.Files.delete(loginFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (!folder.delete())
+                System.out.println("Cannot delete file: " + folder);
+        }
     }
 }

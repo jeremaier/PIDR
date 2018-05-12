@@ -171,8 +171,6 @@ public class SiteController extends Controller implements Initializable {
                 this.downloadSpectre.setDisable(true);
             }
         }));
-
-
     }
 
     private void populateSite(ObservableList<CutaneousSite> siteListe) {
@@ -228,7 +226,6 @@ public class SiteController extends Controller implements Initializable {
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
                 this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), this.selectedSite);
-
                 this.enableButtons(true, true);
             } else alert.close();
         }
@@ -280,12 +277,31 @@ public class SiteController extends Controller implements Initializable {
         if (this.selectedSpectreId != null && this.selectedSite != null) {
             this.s = this.selectedSite.getSpectre().split("~#");
 
-            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.suprSpectre, null, this.progressBar, this.progressLabel);
+            removeTask.setOnSucceeded(e -> this.endRemoveSpectre(this.progressBar, this.progressLabel));
+            removeTask.setOnCancelled(e -> removeTask.getOnSucceeded());
+
             removeTask.addUrls(new ArrayList<String>() {{
                 add(s[selectedSpectreId]);
             }});
+
             new Thread(removeTask).start();
         }
+    }
+
+    private void endRemoveSpectre(ProgressBar progressBar, Label progressLabel) {
+        super.endRemove(null, progressBar, progressLabel);
+        StringBuilder newSpectre = new StringBuilder();
+
+        if (this.s != null)
+            for (int i = 0; i < this.s.length - 1; i++)
+                if (i != this.selectedSpectreId)
+                    newSpectre.append("~#").append(this.s[i]);
+
+        this.selectedSite.setSpectre(newSpectre.substring(0));
+        this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
+        this.spectre.remove(this.selectedSpectre);
+        this.spectreList.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -315,11 +331,10 @@ public class SiteController extends Controller implements Initializable {
         super.endRemove(button, progressBar, progressLabel);
         StringBuilder newSpectre = new StringBuilder();
 
-        if (this.s != null) {
+        if (this.s != null)
             for (int i = 0; i < this.s.length - 1; i++)
                 if (i != this.selectedSpectreId)
                     newSpectre.append("~#").append(this.s[i]);
-        }
 
         this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());

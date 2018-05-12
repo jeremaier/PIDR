@@ -21,6 +21,7 @@ import src.view.InclusionsView;
 import src.view.LameView;
 import src.view.SiteView;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -270,7 +271,12 @@ public class LesionsController extends Controller implements Initializable {
 
     public void returnAction() {
         this.setStage(this.returnButton);
-        this.fileManager.openFTPConnection();
+        try {
+            this.fileManager.openFTPConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+            FileManager.openAlert("Impossible de se connecter au serveur FTP");
+        }
 
         new InclusionsView(this.stage, this.connection, this.fileManager);
 

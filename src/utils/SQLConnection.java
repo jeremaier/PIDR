@@ -26,6 +26,7 @@ public class SQLConnection {
             connection = DriverManager.getConnection("jdbc:mysql://spectrolive-sql.cran.univ-lorraine.fr:3306/spectrolive?user=" + this.user + "&password=" + this.password + "&useSSL=false&autoReconnect=true&useUnicode=yes&characterEncoding=UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
+            FileManager.openAlert("Impossible de se connecter au serveur SQL");
         }
     }
 
