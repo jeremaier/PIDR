@@ -111,7 +111,6 @@ public class TranscriptomieController extends Controller implements Initializabl
             this.ARNc.setText(Double.toString(transcriptomicAnalysis.getARNC()));
             this.RIN.setText(Double.toString(transcriptomicAnalysis.getRIN()));
         } else {
-            System.out.println("popopo");
             enableButtons(false, false);
             this.ID.setText("");
             this.emplacement.setText("");

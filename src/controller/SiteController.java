@@ -326,8 +326,6 @@ public class SiteController extends Controller implements Initializable {
         this.spectre.remove(this.selectedSpectre);
         this.siteListe.remove(selectedSite);
         this.affecteTab.getSelectionModel().clearSelection();
-
-        populateSpectre(this.spectre);
     }
 
     @Override
@@ -342,8 +340,6 @@ public class SiteController extends Controller implements Initializable {
 
         else this.affecteTab.setItems(FXCollections.observableArrayList());
     }
-
-
 }
 
 

@@ -58,6 +58,7 @@ public abstract class Controller {
             button.setVisible(false);
 
         progressBar.setVisible(true);
+        progressLabel.setVisible(true);
         progressBar.progressProperty().bind(downloadTask.progressProperty());
         progressLabel.textProperty().bind(downloadTask.messageProperty());
         downloadTask.setOnSucceeded(e -> this.endDownload(button, progressBar, progressLabel));
@@ -90,7 +91,7 @@ public abstract class Controller {
         return downloadTask;
     }
 
-    public void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
+    void endDownload(Button button, ProgressBar progressBar, Label progressLabel) {
         this.enableButtons(true, true);
 
         if (button != null)

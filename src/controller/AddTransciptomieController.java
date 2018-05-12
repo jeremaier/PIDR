@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import src.daoImpl.TranscriptomieDaoImpl;
 import src.table.TranscriptomicAnalysis;
 import src.utils.FileManager;
@@ -15,6 +16,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public class AddTransciptomieController extends Controller implements Initializable {
     @FXML
@@ -85,10 +88,9 @@ public class AddTransciptomieController extends Controller implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         this.transcriptomieDaoImpl = new TranscriptomieDaoImpl(connection);
         this.lastId = getIdLast();
-        System.out.println(lastId);
 
         if (transcriptomicAnalysis == null) {
-            id.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            this.id.lengthProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.intValue() == 0) {
                     this.enableButtons(false, false);
                     fichierBrutPath = null;
@@ -109,7 +111,6 @@ public class AddTransciptomieController extends Controller implements Initializa
                 this.checkQualityReport.setText(s0[3]);
             }
 
-
             this.id.setText(Integer.toString(this.transcriptomicAnalysis.getIdBdd()));
             this.emplacement.setText(Integer.toString(this.transcriptomicAnalysis.getLamellaLocation()));
             this.rendement.setText(Double.toString(this.transcriptomicAnalysis.getYield()));
@@ -121,15 +122,62 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         }
 
+        Pattern pattern = Pattern.compile("\\d*|\\d+\\,\\d*");
+        TextFormatter formatterARNc = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+        TextFormatter formattercy3 = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+        TextFormatter formatterActiviteSpecifique = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+        TextFormatter formatterRendement = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+        TextFormatter formatterConcentration = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
+        TextFormatter formatterRIN = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
 
-        checkFichierBrut.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!checkFichierBrut.getText().equals("Aucun"))
+        this.ARNc.setTextFormatter(formatterARNc);
+        this.cy3.setTextFormatter(formattercy3);
+        this.activiteSpecifique.setTextFormatter(formatterActiviteSpecifique);
+        this.rendement.setTextFormatter(formatterRendement);
+        this.concentration.setTextFormatter(formatterConcentration);
+        this.RIN.setTextFormatter(formatterRIN);
+
+        this.id.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.id.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.id.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.id.getText().length() >= 6)
+                    this.id.setText(this.id.getText().substring(0, 6));
+        });
+
+        this.emplacement.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.emplacement.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.emplacement.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.emplacement.getText().length() >= 3)
+                    this.emplacement.setText(this.emplacement.getText().substring(0, 3));
+        });
+
+        this.numeroSerie.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.numeroSerie.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.numeroSerie.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.numeroSerie.getText().length() >= 14)
+                    this.numeroSerie.setText(this.numeroSerie.getText().substring(0, 14));
+        });
+
+        this.checkFichierBrut.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.checkFichierBrut.getText().equals("Aucun"))
                 this.fichierBrut.setText("Supprimer");
 
         });
 
-        checkQualityReport.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!checkQualityReport.getText().equals("Aucun"))
+        this.checkQualityReport.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.checkQualityReport.getText().equals("Aucun"))
                 this.qualityReport.setText("Supprimer");
 
         });
@@ -143,45 +191,18 @@ public class AddTransciptomieController extends Controller implements Initializa
         String Crit;
 
         if (transcriptomicAnalysis == null) {
-            if (id.getText().length() > 0)
-                IdBdd = Integer.parseInt(id.getText());
-            else IdBdd = 0;
-
-            if (emplacement.getText().length() > 0)
-                Emplacement = Integer.parseInt(emplacement.getText());
-            else Emplacement = 0;
-
-            if (numeroSerie.getText().length() > 0)
-                NumSerie = Integer.parseInt(numeroSerie.getText());
-            else NumSerie = 0;
-
-            if (cy3.getText().length() > 0)
-                Cy3 = Double.parseDouble(cy3.getText().replace(",", "."));
-            else Cy3 = (double) 0;
-
-            if (rendement.getText().length() > 0)
-                Rendement = Double.parseDouble(rendement.getText().replace(",", "."));
-            else Rendement = (double) 0;
-
-            if (concentration.getText().length() > 0)
-                Concentration = Double.parseDouble(concentration.getText().replace(",", "."));
-            else Concentration = (double) 0;
-
+            IdBdd = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : 0;
+            Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : 0;
+            NumSerie = numeroSerie.getText().length() > 0 ? Integer.parseInt(numeroSerie.getText()) : 0;
+            Cy3 = cy3.getText().length() > 0 ? Double.parseDouble(cy3.getText().replace(",", ".")) : (double) 0;
+            Rendement = rendement.getText().length() > 0 ? Double.parseDouble(rendement.getText().replace(",", ".")) : (double) 0;
+            Concentration = concentration.getText().length() > 0 ? Double.parseDouble(concentration.getText().replace(",", ".")) : (double) 0;
             Crit = critere.getText();
+            Activ = activiteSpecifique.getText().length() > 0 ? Double.parseDouble(activiteSpecifique.getText().replace(",", ".")) : (double) 0;
+            Arnc = ARNc.getText().length() > 0 ? Double.parseDouble(ARNc.getText()) : (double) 0;
+            Rin = RIN.getText().length() > 0 ? Double.parseDouble(RIN.getText().replace(",", ".")) : 0.0;
 
-            if (activiteSpecifique.getText().length() > 0)
-                Activ = Double.parseDouble(activiteSpecifique.getText().replace(",", "."));
-            else Activ = (double) 0;
-
-            if (ARNc.getText().length() > 0)
-                Arnc = Double.parseDouble(ARNc.getText());
-            else Arnc = (double) 0;
-
-            if (RIN.getText().length() > 0)
-                Rin = Double.parseDouble(RIN.getText().replace(",", "."));
-            else Rin = 0.0;
-
-            newTranscr = new TranscriptomicAnalysis(this.lastId,IdBdd, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
+            newTranscr = new TranscriptomicAnalysis(this.lastId, IdBdd, this.siteId, this.fichierBrutPath, Rin, Concentration, Arnc, Cy3, Rendement, Activ, Crit, NumSerie, Emplacement, qualityReportPath);
             this.transcriptomieDaoImpl.insert(newTranscr);
             this.transcriptomieController.display(newTranscr);
 
@@ -200,15 +221,8 @@ public class AddTransciptomieController extends Controller implements Initializa
             Arnc = ARNc.getText().length() > 0 ? Double.parseDouble(ARNc.getText()) : transcriptomicAnalysis.getARNC();
             Rin = RIN.getText().length() > 0 ? Double.parseDouble(RIN.getText()) : transcriptomicAnalysis.getRIN();
 
-            System.out.println(NumSerie);
-
-            if (fichierBrutPath == null) {
-                if (this.transcriptomicAnalysis.getFichierBrut() == null) {
-                    fichierBrutPath = null;
-                } else {
-                    fichierBrutPath = this.transcriptomicAnalysis.getFichierBrut();
-                }
-            }
+            if (fichierBrutPath == null)
+                fichierBrutPath = this.transcriptomicAnalysis.getFichierBrut();
 
             if (qualityReportPath == null) {
                 if (this.transcriptomicAnalysis.getFichierBrut() == null) {
@@ -296,7 +310,6 @@ public class AddTransciptomieController extends Controller implements Initializa
 
         directory = "//Transcriptomie//" + Integer.toString(this.lastId + 1) + "//";
 
-
         if (this.transcriptomicAnalysis == null) {
             if (!(this.checkFichierBrut.getText()).equals("Aucun"))
                 files.add(directory + checkFichierBrut.getText());
@@ -339,11 +352,8 @@ public class AddTransciptomieController extends Controller implements Initializa
         ArrayList<Integer> ints = transcriptomieDaoImpl.idList();
         int i = 0;
 
-        while(ints.contains(i)){
-            System.out.println(ints.contains(i));
+        while (ints.contains(i))
             i++;
-            System.out.println(i);
-        }
 
         return i;
     }

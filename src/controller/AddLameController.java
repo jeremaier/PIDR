@@ -71,6 +71,28 @@ public class AddLameController extends Controller implements Initializable {
             this.lame = new HistologicLamella();
             this.lame.setId(-1);
         }
+
+        this.greenOrientation.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.greenOrientation.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.greenOrientation.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.greenOrientation.getText().length() >= 3)
+                    this.greenOrientation.setText(this.greenOrientation.getText().substring(0, 3));
+        });
+
+        this.blackOrientation.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*"))
+                this.blackOrientation.setText(newValue.replaceAll("[^\\d]", ""));
+        });
+
+        this.blackOrientation.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue())
+                if (this.blackOrientation.getText().length() >= 3)
+                    this.blackOrientation.setText(this.blackOrientation.getText().substring(0, 3));
+        });
     }
 
     private void setLameInformations() {

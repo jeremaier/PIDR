@@ -50,7 +50,7 @@
                 <Insets left="50.0"/>
             </GridPane.margin>
         </Button>
-        <Label text="Fichier spectre :" GridPane.rowIndex="5">
+        <Label text="Fichiers spectres :" GridPane.rowIndex="5">
             <GridPane.margin>
                 <Insets left="20.0"/>
             </GridPane.margin>
@@ -105,7 +105,7 @@
                 <Insets left="50.0"/>
             </GridPane.margin>
         </Button>
-        <Label text="Images spectres :" GridPane.rowIndex="6">
+        <Label text="Images des spectres :" GridPane.rowIndex="6">
             <GridPane.margin>
                 <Insets left="20.0"/>
             </GridPane.margin>
