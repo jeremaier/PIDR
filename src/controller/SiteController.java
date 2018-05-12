@@ -280,7 +280,7 @@ public class SiteController extends Controller implements Initializable {
         if (this.selectedSpectreId != null && this.selectedSite != null) {
             this.s = this.selectedSite.getSpectre().split("~#");
 
-            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel);
+            RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.suprSpectre, null, this.progressBar, this.progressLabel);
             removeTask.addUrls(new ArrayList<String>() {{
                 add(s[selectedSpectreId]);
             }});

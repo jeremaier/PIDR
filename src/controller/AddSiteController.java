@@ -130,7 +130,7 @@ public class AddSiteController extends Controller implements Initializable {
         });
 
         this.checkFichierSpectre.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (this.site.getSpectre()!=null) {
+                if (this.site.getSpectre()!=null) {
                 this.checkFichierSpectre.setText("Non vide");
             }
         });
