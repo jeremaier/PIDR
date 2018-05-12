@@ -294,9 +294,12 @@ public class SiteController extends Controller implements Initializable {
         StringBuilder newSpectre = new StringBuilder();
 
         if (this.s != null)
-            for (int i = 0; i < this.s.length - 1; i++)
+            for (int i = 0; i < this.s.length; i++)
                 if (i != this.selectedSpectreId)
-                    newSpectre.append("~#").append(this.s[i]);
+                    if (newSpectre.length() != 0)
+                        newSpectre.append("~#").append(this.s[i]);
+                    else
+                        newSpectre.append(this.s[i]);
 
         this.selectedSite.setSpectre(newSpectre.substring(0));
         this.siteCutaneDaoImpl.update(this.selectedSite, this.selectedSite.getId());
