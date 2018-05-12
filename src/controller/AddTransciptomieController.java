@@ -211,10 +211,10 @@ public class AddTransciptomieController extends Controller implements Initializa
             }
 
             if (qualityReportPath == null) {
-                if (this.transcriptomicAnalysis.getFichierBrut() == null) {
+                if (this.transcriptomicAnalysis.getQualityReport() == null) {
                     qualityReportPath = null;
                 } else {
-                    fichierBrutPath = this.transcriptomicAnalysis.getQualityReport();
+                    qualityReportPath = this.transcriptomicAnalysis.getQualityReport();
                 }
             }
 
