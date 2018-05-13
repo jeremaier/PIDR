@@ -101,7 +101,6 @@ public class LoginController implements Initializable {
         FileInputStream fIn;
         ObjectInputStream oIn;
 
-        System.out.println(logDirectoryName);
         if (file.exists()) {
             if (file.length() > 0) {
                 try {

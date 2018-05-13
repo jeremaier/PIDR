@@ -11,7 +11,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class LesionDaoImpl extends DaoImpl implements LesionDao {
+public class LesionDaoImpl extends Dao implements LesionDao {
     private static Connection connection;
 
     public LesionDaoImpl(Connection connection) {
@@ -274,7 +274,7 @@ public class LesionDaoImpl extends DaoImpl implements LesionDao {
             preparedStatement.setInt(9, id);
             preparedStatement.executeUpdate();
 
-            System.out.println("UPDATE inclusion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
+            System.out.println("UPDATE lesion SET ID_INCLUSION = ?, PHOTO_SUR = ?, PHOTO_HORS = ?, PHOTO_FIXE = ?, SITE_ANATOMIQUE = ?, DIAGNOSTIC = ?, AUTRE_DIAG = ?, FILE_DIAG = ? WHERE ID = ?");
         } catch (MySQLNonTransientConnectionException e) {
             FileManager.openAlert("La connection avec le serveur est interrompue");
             e.printStackTrace();

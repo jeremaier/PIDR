@@ -315,11 +315,8 @@ public class AddSiteController extends Controller implements Initializable {
         ArrayList<Integer> ints = siteCutaneDaoImpl.idList();
         int i = 0;
 
-        while(ints.contains(i)){
-            System.out.println(ints.contains(i));
+        while (ints.contains(i))
             i++;
-            System.out.println(i);
-        }
 
         return i;
     }

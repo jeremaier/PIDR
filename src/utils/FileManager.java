@@ -93,7 +93,6 @@ public class FileManager extends Observable {
                 this.openFTPConnection();
             } catch (IOException e) {
                 e.printStackTrace();
-                FileManager.openAlert("Impossible de se connecter au serveur FTP");
             }
         }
 

@@ -246,11 +246,8 @@ public class AddLameController extends Controller implements Initializable {
         ArrayList<Integer> ints = lameHistologiqueDaoImpl.idList();
         int i = 0;
 
-        while (ints.contains(i)) {
-            System.out.println(ints.contains(i));
+        while (ints.contains(i))
             i++;
-            System.out.println(i);
-        }
 
         return i;
     }

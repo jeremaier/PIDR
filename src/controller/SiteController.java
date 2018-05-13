@@ -136,7 +136,6 @@ public class SiteController extends Controller implements Initializable {
             this.spectre.clear();
             if (selectedSite != null) {
                 if (this.selectedSite.getSpectre() != null && this.selectedSite.getSpectre().length() > 0) {
-                    System.out.println(selectedSite.getSpectre());
                     String[] s0 = this.selectedSite.getSpectre().split("~#");
 
                     for (String aS0 : s0) {

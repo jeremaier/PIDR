@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TranscriptomieDaoImpl extends DaoImpl implements TranscriptomieDao {
+public class TranscriptomieDaoImpl extends Dao implements TranscriptomieDao {
     private static Connection connection;
 
     public TranscriptomieDaoImpl(Connection connection) {

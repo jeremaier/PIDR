@@ -10,7 +10,7 @@ import src.utils.SQLConnection;
 
 import java.sql.*;
 
-public class PatientDaoImpl extends DaoImpl implements PatientDao {
+public class PatientDaoImpl extends Dao implements PatientDao {
     private static Connection connection;
 
     public PatientDaoImpl(Connection connection) {

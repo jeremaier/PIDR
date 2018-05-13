@@ -11,7 +11,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class SiteCutaneDaoImpl extends DaoImpl implements SiteCutaneDao {
+public class SiteCutaneDaoImpl extends Dao implements SiteCutaneDao {
     private static Connection connection;
 
     public SiteCutaneDaoImpl(Connection connection) {

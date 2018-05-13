@@ -15,54 +15,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
-public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
+public class InclusionDaoImpl extends Dao implements InclusionDao {
     private static Connection connection;
 
     public InclusionDaoImpl(Connection connection) {
         InclusionDaoImpl.connection = connection;
     }
-
-    /*public static String selectDiag(int id) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        String diagQuery = null;
-
-        try {
-            preparedStatement = InclusionDaoImpl.connection.prepareStatement("SELECT DIAG FROM inclusion WHERE ID = ?");
-            preparedStatement.setInt(1, id);
-            resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next())
-                diagQuery = resultSet.getString("DIAG");
-
-            System.out.println("SELECT DIAG FROM inclusion WHERE ID = ?");
-
-            return diagQuery;
-        } catch (MySQLNonTransientConnectionException e) {
-            FileManager.openAlert("La connection avec le serveur est interrompue");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
-    }*/
 
     public static void delete(int id) {
         InclusionDaoImpl.delete(SQLConnection.getConnection(), "inclusion", id);
@@ -108,53 +66,6 @@ public class InclusionDaoImpl extends DaoImpl implements InclusionDao {
                 inclusions1.remove(i);
         }
     }
-
-    /*public static void removeDiag(Diag diag, int id) {
-        if (diag != null) {
-            if (!diag.toString().equals("")) {
-                PreparedStatement preparedStatement = null;
-
-                try {
-                    String diagQuery = InclusionDaoImpl.selectDiag(id);
-                    String newDiag = "";
-
-                    if (diagQuery != null) {
-                        if (!diagQuery.equals("")) {
-                            String[] diagSplit = diagQuery.split(" - ");
-
-                            for (String diags : diagSplit) {
-                                if (!diags.equals(diag.toString()))
-                                    newDiag.concat(diags).concat(" - ");
-                            }
-                        }
-                    }
-
-                    if (newDiag.length() > 0)
-                        newDiag = newDiag.substring(0, newDiag.length() - 3);
-
-                    preparedStatement = InclusionDaoImpl.connection.prepareStatement("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-                    preparedStatement.setString(1, newDiag);
-                    preparedStatement.setInt(2, id);
-
-                    preparedStatement.executeUpdate();
-                    System.out.println("UPDATE inclusion SET " + "DIAG = ? WHERE ID = ?");
-                } catch (MySQLNonTransientConnectionException e) {
-                    FileManager.openAlert("La connection avec le serveur est interrompue");
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (preparedStatement != null) {
-                        try {
-                            preparedStatement.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-    }*/
 
     @Override
     public void insert(Inclusion inclusion) {

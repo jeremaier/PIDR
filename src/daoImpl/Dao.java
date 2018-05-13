@@ -9,7 +9,7 @@ abstract class Dao {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement("DELETE FROM " + table + " WHERE ID = ?");
+            preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE ID = ?", table));
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
@@ -26,4 +26,6 @@ abstract class Dao {
             }
         }
     }
+
+    protected abstract PreparedStatement setPreparedStatement(PreparedStatement preparedStatement, Object object, int indexDebut) throws SQLException;
 }

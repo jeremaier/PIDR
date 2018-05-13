@@ -156,7 +156,7 @@ public class AddLesionController extends Controller implements Initializable {
         if (!this.diagFileLabel.getText().equals("Aucun"))
             this.lesion.setFileDiag(FileManager.getLesionFilesDirectoryName(this.idLesion) + "//" + this.diagFileLabel.getText());
 
-        if (this.lesion.getId() >= 0) {
+        if (this.addButton.getText().equals("Modifier")) {
             this.lesionDaoImpl.update(this.lesion, this.lesion.getId());
             this.lesionsController.refreshLesions();
         } else {
@@ -324,11 +324,8 @@ public class AddLesionController extends Controller implements Initializable {
         ArrayList<Integer> ints = lesionDaoImpl.idList();
         int i = 0;
 
-        while (ints.contains(i)) {
-            System.out.println(ints.contains(i));
+        while (ints.contains(i))
             i++;
-            System.out.println(i);
-        }
 
         return Integer.toString(i);
     }

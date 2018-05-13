@@ -12,7 +12,6 @@ import src.utils.RemoveTask;
 import src.view.AddTranscriptomieView;
 import src.view.SiteView;
 
-import javax.swing.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -144,30 +143,13 @@ public class TranscriptomieController extends Controller implements Initializabl
         this.stage.close();
     }
 
-
-    private void updateButtonAction() {
-        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
-        this.setStage(this.ajouter);
-
-        if (this.transcriptomicAnalysis != null) {
-            new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
-            this.stage.close();
-        } else JOptionPane.showMessageDialog(null, "Il n'y a pas analyse trascriptomique");
-    }
-
     @FXML
     private void addButtonAction() {
         this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
-        System.out.println(transcriptomicAnalysis == null);
         this.setStage(this.ajouter);
 
-        if (this.transcriptomicAnalysis == null) {
-            new AddTranscriptomieView(this.stage, this, connection, fileManager, null, siteId);
-            this.stage.close();
-        } else {
-            new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
-            this.stage.close();
-        }
+        new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
+        this.stage.close();
     }
 
     @FXML
@@ -182,8 +164,8 @@ public class TranscriptomieController extends Controller implements Initializabl
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
-                this.remove(new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel), transcriptomicAnalysis);
-                this.enableButtons(false, true);
+                RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel);
+                this.remove(removeTask, transcriptomicAnalysis);
             } else alert.close();
         }
     }
@@ -227,16 +209,25 @@ public class TranscriptomieController extends Controller implements Initializabl
     }
 
     public void endRemove(Button button, ProgressBar progressBar, Label label){
-        super.endRemove(button,progressBar,label);
+        super.endRemove(button, progressBar, label);
         this.transcriptomicAnalysis = null;
         this.ajouter.setText("Ajouter");
         this.display(null);
-
     }
 
     public void enableButtons(boolean enable, boolean all) {
-        this.fichierBrut.setDisable(!enable);
-        this.qualityReport.setDisable(!enable);
+        if (this.transcriptomicAnalysis == null)
+            this.fichierBrut.setDisable(true);
+        else if (this.transcriptomicAnalysis.getFichierBrut() == null || this.transcriptomicAnalysis.getFichierBrut().equals(""))
+            this.fichierBrut.setDisable(true);
+        else this.fichierBrut.setDisable(!enable);
+
+        if (this.transcriptomicAnalysis == null)
+            this.qualityReport.setDisable(true);
+        else if (this.transcriptomicAnalysis.getQualityReport() == null || this.transcriptomicAnalysis.getQualityReport().equals(""))
+            this.qualityReport.setDisable(true);
+        else this.qualityReport.setDisable(!enable);
+
         this.supprimer.setDisable(!enable);
 
         if (all) {
@@ -247,7 +238,5 @@ public class TranscriptomieController extends Controller implements Initializabl
 
     @Override
     void endUpload(String addedFileName, String directory, Label label, int num) {
-
-
     }
 }

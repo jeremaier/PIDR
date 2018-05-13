@@ -11,7 +11,7 @@ import src.utils.SQLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class LameHistologiqueDaoImpl extends DaoImpl implements LameHistologiqueDao {
+public class LameHistologiqueDaoImpl extends Dao implements LameHistologiqueDao {
     private static Connection connection;
 
     public LameHistologiqueDaoImpl(Connection connection) {
