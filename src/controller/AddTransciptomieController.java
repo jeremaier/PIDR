@@ -122,7 +122,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         }
 
-        Pattern pattern = Pattern.compile("\\d*|\\d+\\,\\d*");
+        Pattern pattern = Pattern.compile("\\d*|\\d+\\.\\d*");
         TextFormatter formatterARNc = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
         TextFormatter formattercy3 = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
         TextFormatter formatterActiviteSpecifique = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> pattern.matcher(change.getControlNewText()).matches() ? change : null);
