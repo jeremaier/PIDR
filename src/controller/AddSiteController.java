@@ -300,7 +300,12 @@ public class AddSiteController extends Controller implements Initializable {
         if (addedFileName != null) {
             if (num == 1)
                 this.fichierDiagPath = directory + addedFileName;
-            else if(num==2) this.spectrePath = directory + numMesur.getText() + "=" + addedFileName;
+            else if(num==2)
+                if(this.spectrePath==null)
+                this.spectrePath = directory + numMesur.getText() + "=" + addedFileName;
+                else {
+                    this.spectrePath = spectrePath + "~#" + directory + numMesur.getText() + "=" + addedFileName;
+                }
             else this.imagesSpectresPath = directory + addedFileName;
 
             label.setText(addedFileName);
