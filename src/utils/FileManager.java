@@ -7,7 +7,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -119,7 +118,7 @@ public class FileManager extends Observable {
     public void openFTPConnection() throws IOException {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
         ftpClient = new SSLSessionReuseFTPSClient();
-        ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+        //ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         ftpClient.setConnectTimeout(1500);
         ftpClient.setDataTimeout(500);
 
