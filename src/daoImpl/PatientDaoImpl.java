@@ -51,7 +51,9 @@ public class PatientDaoImpl extends Dao implements PatientDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        try {
+        if (id <= 0)
+            return null;
+        else try {
             preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
@@ -93,7 +95,7 @@ public class PatientDaoImpl extends Dao implements PatientDao {
         ResultSet resultSet = null;
 
         try {
-            if(id != 0) {
+            if (id != -100) {
                 preparedStatement = PatientDaoImpl.connection.prepareStatement("SELECT * FROM patient WHERE ID = ? ORDER BY ID");
                 preparedStatement.setInt(1, id);
                 resultSet = preparedStatement.executeQuery();
@@ -214,7 +216,7 @@ public class PatientDaoImpl extends Dao implements PatientDao {
     public void update(Patient patient, int id) {
         PreparedStatement preparedStatement = null;
 
-        if (patient.getAnneeNaissance() < 1900)
+        if (patient.getAnneeNaissance() <= 1900)
             FileManager.openAlert("Annee invalide");
         else try {
             preparedStatement = PatientDaoImpl.connection.prepareStatement("UPDATE patient SET " + "GENRE = ?, ANNEE_NAISSANCE = ? WHERE ID = ?");

@@ -98,12 +98,14 @@ public class LesionsController extends Controller implements Initializable {
         this.removeButton.setDisable(!enable);
         this.editButton.setDisable(!enable);
 
-        if (selectedLesion != null) {
+        if (this.selectedLesion != null) {
             if (!this.selectedLesion.getPhotoFixe().equals("Aucun") || !this.selectedLesion.getPhotoSur().equals("Aucun") || !this.selectedLesion.getPhotoHors().equals("Aucun"))
                 this.photosButton.setDisable(!enable);
+            else this.photosButton.setDisable(true);
 
             if (!this.selectedLesion.getFileDiag().equals("Aucun"))
                 this.fileDiagButton.setDisable(!enable);
+            else this.fileDiagButton.setDisable(true);
         } else {
             this.photosButton.setDisable(!enable);
             this.fileDiagButton.setDisable(!enable);
