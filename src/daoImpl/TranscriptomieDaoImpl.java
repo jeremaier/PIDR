@@ -245,6 +245,7 @@ public class TranscriptomieDaoImpl extends Dao implements TranscriptomieDao {
         transcriptomicAnalysis.setIdCutaneousSite(resultSet.getInt("ID_SITE_CUTANE"));
         transcriptomicAnalysis.setFichierBrut(resultSet.getString("FICHIER_BRUT"));
         transcriptomicAnalysis.setRIN(resultSet.getDouble("RIN"));
+        transcriptomicAnalysis.setYield(resultSet.getDouble("RENDEMENT"));
         transcriptomicAnalysis.setConcentration(resultSet.getDouble("CONCENTRATION"));
         transcriptomicAnalysis.setARNC(resultSet.getDouble("ARNC"));
         transcriptomicAnalysis.setCyanine(resultSet.getDouble("CY3"));

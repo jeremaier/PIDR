@@ -120,6 +120,8 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.numeroSerie.setText(this.transcriptomicAnalysis.getSerialNumber());
             this.activiteSpecifique.setText(Double.toString(this.transcriptomicAnalysis.getSpecificActivity()));
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
+            this.RIN.setText(Double.toString(this.transcriptomicAnalysis.getRIN()));
+            this.enableButtons(true, false);
         }
 
         Pattern pattern = Pattern.compile("\\d*|\\d+\\.\\d*");
