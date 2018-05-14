@@ -168,8 +168,8 @@ public class AddTransciptomieController extends Controller implements Initializa
 
         this.numeroSerie.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue())
-                if (this.numeroSerie.getText().length() >= 14)
-                    this.numeroSerie.setText(this.numeroSerie.getText().substring(0, 14));
+                if (this.numeroSerie.getText().length() >= 16)
+                    this.numeroSerie.setText(this.numeroSerie.getText().substring(0, 16));
         });
 
         this.checkFichierBrut.textProperty().addListener((observable, oldValue, newValue) -> {
