@@ -117,7 +117,7 @@ public class AddTransciptomieController extends Controller implements Initializa
             this.concentration.setText(Double.toString(this.transcriptomicAnalysis.getConcentration()));
             this.ARNc.setText(Double.toString(this.transcriptomicAnalysis.getARNC()));
             this.cy3.setText(Double.toString(this.transcriptomicAnalysis.getCyanine()));
-            this.numeroSerie.setText(Integer.toString(this.transcriptomicAnalysis.getSerialNumber()));
+            this.numeroSerie.setText(this.transcriptomicAnalysis.getSerialNumber());
             this.activiteSpecifique.setText(Double.toString(this.transcriptomicAnalysis.getSpecificActivity()));
             this.critere.setText(this.transcriptomicAnalysis.getExclusionCriteria());
         }
@@ -186,14 +186,14 @@ public class AddTransciptomieController extends Controller implements Initializa
     @FXML
     private void accepteButton() {
         TranscriptomicAnalysis newTranscr;
-        int IdBdd, Emplacement, NumSerie;
+        int IdBdd, Emplacement;
         Double Activ, Cy3, Rendement, Concentration, Arnc, Rin;
-        String Crit;
+        String Crit, NumSerie;
 
         if (transcriptomicAnalysis == null) {
             IdBdd = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : 0;
             Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : 0;
-            NumSerie = numeroSerie.getText().length() > 0 ? Integer.parseInt(numeroSerie.getText()) : 0;
+            NumSerie = numeroSerie.getText();
             Cy3 = cy3.getText().length() > 0 ? Double.parseDouble(cy3.getText().replace(",", ".")) : (double) 0;
             Rendement = rendement.getText().length() > 0 ? Double.parseDouble(rendement.getText().replace(",", ".")) : (double) 0;
             Concentration = concentration.getText().length() > 0 ? Double.parseDouble(concentration.getText().replace(",", ".")) : (double) 0;
@@ -212,7 +212,7 @@ public class AddTransciptomieController extends Controller implements Initializa
         } else {
             IdBdd = id.getText().length() > 0 ? Integer.parseInt(id.getText()) : transcriptomicAnalysis.getIdBdd();
             Emplacement = emplacement.getText().length() > 0 ? Integer.parseInt(emplacement.getText()) : transcriptomicAnalysis.getLamellaLocation();
-            NumSerie = numeroSerie.getText().length() > 0 ? Integer.parseInt(numeroSerie.getText()) : transcriptomicAnalysis.getSerialNumber();
+            NumSerie = numeroSerie.getText().length() > 0 ? numeroSerie.getText() : transcriptomicAnalysis.getSerialNumber();
             Cy3 = cy3.getText().length() > 0 ? Double.parseDouble(cy3.getText()) : transcriptomicAnalysis.getCyanine();
             Rendement = rendement.getText().length() > 0 ? Double.parseDouble(rendement.getText()) : transcriptomicAnalysis.getYield();
             Concentration = concentration.getText().length() > 0 ? Double.parseDouble(concentration.getText()) : transcriptomicAnalysis.getConcentration();

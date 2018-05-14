@@ -101,7 +101,7 @@ public class TranscriptomieController extends Controller implements Initializabl
         if (transcriptomicAnalysis != null) {
             this.ID.setText(Integer.toString(transcriptomicAnalysis.getIdBdd()));
             this.emplacement.setText(Integer.toString(transcriptomicAnalysis.getLamellaLocation()));
-            this.numSerie.setText(Integer.toString(transcriptomicAnalysis.getSerialNumber()));
+            this.numSerie.setText(transcriptomicAnalysis.getSerialNumber());
             this.cy3.setText(Double.toString(transcriptomicAnalysis.getCyanine()));
             this.rendement.setText(Double.toString(transcriptomicAnalysis.getYield()));
             this.concentration.setText(Double.toString(transcriptomicAnalysis.getConcentration()));

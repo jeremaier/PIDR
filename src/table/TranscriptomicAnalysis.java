@@ -14,7 +14,7 @@ public class TranscriptomicAnalysis {
     private DoubleProperty yield;
     private DoubleProperty specificActivity;
     private StringProperty exclusionCriteria;
-    private IntegerProperty serialNumber;
+    private StringProperty serialNumber;
     private IntegerProperty lamellaLocation;
     private StringProperty qualityReport;
 
@@ -30,14 +30,14 @@ public class TranscriptomicAnalysis {
         this.yield = new SimpleDoubleProperty();
         this.specificActivity = new SimpleDoubleProperty();
         this.exclusionCriteria = new SimpleStringProperty();
-        this.serialNumber = new SimpleIntegerProperty();
+        this.serialNumber = new SimpleStringProperty();
         this.lamellaLocation = new SimpleIntegerProperty();
         this.qualityReport = new SimpleStringProperty();
     }
 
 
 
-    public TranscriptomicAnalysis( int id, int idBdd, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, int serialNumber, int lamellaLocation, String qualityReport) {
+    public TranscriptomicAnalysis( int id, int idBdd, int idCutaneousSite, String fichierBrut, double RIN, double concentration, double ARNC, double cyanine, double yield, double specificActivity, String exclusionCriteria, String serialNumber, int lamellaLocation, String qualityReport) {
         this();
         this.setId(id);
         this.setIdBdd(idBdd);
@@ -143,11 +143,11 @@ public class TranscriptomicAnalysis {
         this.exclusionCriteria.set(exclusionCriteria);
     }
 
-    public int getSerialNumber() {
+    public String getSerialNumber() {
         return this.serialNumber.get();
     }
 
-    public void setSerialNumber(int serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber.set(serialNumber);
     }
 
