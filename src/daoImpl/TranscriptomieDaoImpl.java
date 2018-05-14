@@ -251,7 +251,7 @@ public class TranscriptomieDaoImpl extends Dao implements TranscriptomieDao {
         transcriptomicAnalysis.setCyanine(resultSet.getDouble("CY3"));
         transcriptomicAnalysis.setSpecificActivity(resultSet.getDouble("ACTIVITE_SPECIFIQUE"));
         transcriptomicAnalysis.setExclusionCriteria(resultSet.getString("CRITERE_EXCLUSION"));
-        transcriptomicAnalysis.setSerialNumber(resultSet.getInt("NUM_SERIE"));
+        transcriptomicAnalysis.setSerialNumber(resultSet.getString("NUM_SERIE"));
         transcriptomicAnalysis.setLamellaLocation(resultSet.getInt("NUM_EMPLACEMENT"));
         transcriptomicAnalysis.setQualityReport(resultSet.getString("QUALITY_REPORT"));
 
@@ -276,7 +276,7 @@ public class TranscriptomieDaoImpl extends Dao implements TranscriptomieDao {
         preparedStatement.setDouble(indexDebut + 9, ((TranscriptomicAnalysis) object).getYield());
         preparedStatement.setDouble(indexDebut + 10, ((TranscriptomicAnalysis) object).getSpecificActivity());
         preparedStatement.setString(indexDebut + 11, ((TranscriptomicAnalysis) object).getExclusionCriteria());
-        preparedStatement.setInt(indexDebut + 12, ((TranscriptomicAnalysis) object).getSerialNumber());
+        preparedStatement.setString(indexDebut + 12, ((TranscriptomicAnalysis) object).getSerialNumber());
         preparedStatement.setInt(indexDebut + 13, ((TranscriptomicAnalysis) object).getLamellaLocation());
         preparedStatement.setString(indexDebut + 14, ((TranscriptomicAnalysis) object).getQualityReport());
 
