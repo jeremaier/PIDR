@@ -157,14 +157,10 @@ public class AddTransciptomieController extends Controller implements Initializa
 
         this.emplacement.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue())
-                if (this.emplacement.getText().length() >= 3)
-                    this.emplacement.setText(this.emplacement.getText().substring(0, 3));
+                if (this.emplacement.getText().length() >= 4)
+                    this.emplacement.setText(this.emplacement.getText().substring(0, 4));
         });
 
-        this.numeroSerie.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*"))
-                this.numeroSerie.setText(newValue.replaceAll("[^\\d]", ""));
-        });
 
         this.numeroSerie.lengthProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() > oldValue.intValue())
