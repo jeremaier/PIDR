@@ -138,23 +138,23 @@ public class TranscriptomieController extends Controller implements Initializabl
     @FXML
     private void retour() {
         this.setStage(this.retour);
-        new SiteView(this.stage, new LesionDaoImpl(connection).selectById(new SiteCutaneDaoImpl(connection).selectById(siteId).getIdLesion()), connection, fileManager);
+        new SiteView(this.stage, new LesionDaoImpl(this.connection).selectById(new SiteCutaneDaoImpl(this.connection).selectById(this.siteId).getIdLesion()), this.connection, this.fileManager);
 
         this.stage.close();
     }
 
     @FXML
     private void addButtonAction() {
-        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
+        this.transcriptomicAnalysis = this.transcriptomieDaoImpl.selectBySite(siteId);
         this.setStage(this.ajouter);
 
-        new AddTranscriptomieView(this.stage, this, connection, fileManager, this.transcriptomicAnalysis, siteId);
+        new AddTranscriptomieView(this.stage, this, this.connection, this.fileManager, this.transcriptomicAnalysis, this.siteId);
         this.stage.close();
     }
 
     @FXML
     private void dellButtonAction() {
-        this.transcriptomicAnalysis = transcriptomieDaoImpl.selectBySite(siteId);
+        this.transcriptomicAnalysis = this.transcriptomieDaoImpl.selectBySite(this.siteId);
         if (this.transcriptomicAnalysis != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmer la suppresion");
@@ -165,7 +165,7 @@ public class TranscriptomieController extends Controller implements Initializabl
             if (result.get() == ButtonType.OK) {
                 this.enableButtons(false, true);
                 RemoveTask removeTask = new RemoveTask(this, this.fileManager).setParameters(this.supprimer, null, this.progressBar, this.progressLabel);
-                this.remove(removeTask, transcriptomicAnalysis);
+                this.remove(removeTask, this.transcriptomicAnalysis);
             } else alert.close();
         }
     }

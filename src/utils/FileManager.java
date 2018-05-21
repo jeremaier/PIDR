@@ -96,7 +96,7 @@ public class FileManager extends Observable {
         }
 
         try {
-            for (FTPFile file : ftpClient.listFiles(directory))
+            for (FTPFile file : this.ftpClient.listFiles(directory))
                 fileList.add(file.getName());
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,40 +117,36 @@ public class FileManager extends Observable {
 
     public void openFTPConnection() throws IOException {
         System.setProperty("jdk.tls.useExtendedMasterSecret", "false");
-        ftpClient = new SSLSessionReuseFTPSClient();
+        this.ftpClient = new SSLSessionReuseFTPSClient();
         //ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-        ftpClient.setConnectTimeout(1500);
-        ftpClient.setDataTimeout(500);
+        this.ftpClient.setConnectTimeout(1500);
+        this.ftpClient.setDataTimeout(500);
+        this.ftpClient.connect("193.54.21.7");
+        this.ftpClient.setKeepAlive(true);
+        this.ftpClient.execPROT("P");
 
-        ftpClient.connect("193.54.21.7");
-        ftpClient.setKeepAlive(true);
+        if (!FTPReply.isPositiveCompletion(this.ftpClient.getReplyCode()))
+            this.ftpClient.disconnect();
 
-        ftpClient.execPROT("P");
-
-        int reply = ftpClient.getReplyCode();
-
-        if (!FTPReply.isPositiveCompletion(reply))
-            ftpClient.disconnect();
-
-        if (!ftpClient.login(this.user, this.password)) {
-            ftpClient.logout();
-            ftpClient.disconnect();
+        if (!this.ftpClient.login(this.user, this.password)) {
+            this.ftpClient.logout();
+            this.ftpClient.disconnect();
         }
 
-        ftpClient.setSoTimeout(5000);
-        ftpClient.setControlKeepAliveTimeout(120);
-        ftpClient.setControlKeepAliveReplyTimeout(120);
-        ftpClient.setBufferSize(1024 * 1024);
-        ftpClient.setAutodetectUTF8(true);
-        ftpClient.enterLocalPassiveMode();
-        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        this.ftpClient.setSoTimeout(4000);
+        this.ftpClient.setControlKeepAliveTimeout(120);
+        this.ftpClient.setControlKeepAliveReplyTimeout(120);
+        this.ftpClient.setBufferSize(1024 * 1024);
+        this.ftpClient.setAutodetectUTF8(true);
+        this.ftpClient.enterLocalPassiveMode();
+        this.ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
     }
 
     private void closeFTPConnection() {
         if (this.getConnection() != null) {
             try {
-                ftpClient.logout();
-                ftpClient.disconnect();
+                this.ftpClient.logout();
+                this.ftpClient.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -180,7 +176,7 @@ public class FileManager extends Observable {
             task.updateProgressBar(-1, "Suppression...");
 
             for (String url : urls)
-                ftpClient.deleteFile(url);
+                this.ftpClient.deleteFile(url);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,14 +206,14 @@ public class FileManager extends Observable {
                     if (fileName.toString().contains("=")) {
                         String[] splitFileName = fileName.toString().split("=");
 
-                        fileName = new StringBuilder("");
+                        fileName = new StringBuilder();
 
                         for (int i = 1; i < splitFileName.length; i++)
                             fileName.append(splitFileName[i]);
                     }
 
                     String filePath = selectedDirectory + "//" + fileName;
-                    FTPFile file = ftpClient.mlistFile(url);
+                    FTPFile file = this.ftpClient.mlistFile(url);
                     long fileSize = file.getSize();
 
                     OutputStream outputStream = new CountingOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
@@ -228,7 +224,7 @@ public class FileManager extends Observable {
                         }
                     };
 
-                    ftpClient.retrieveFile(url, outputStream);
+                    this.ftpClient.retrieveFile(url, outputStream);
                     outputStream.close();
                 }
             } catch (IOException e) {

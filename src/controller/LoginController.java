@@ -63,8 +63,8 @@ public class LoginController implements Initializable {
         if (!this.user.getText().equals("") && !this.password.getText().equals("")) {
             this.connectButton.setDisable(true);
 
-            SQLConnection sqlConnection = new SQLConnection(user.getText(), password.getText());
-            FileManager fileManager = new FileManager(user.getText(), password.getText());
+            SQLConnection sqlConnection = new SQLConnection(this.user.getText(), this.password.getText(), this.connectButton);
+            FileManager fileManager = new FileManager(this.user.getText(), this.password.getText());
             Connection connection = SQLConnection.getConnection();
 
             try {
@@ -75,7 +75,7 @@ public class LoginController implements Initializable {
                         this.saveLoginInFile();
                     else this.deleteLoginFile();
 
-                    Stage stage = (Stage) connectButton.getScene().getWindow();
+                    Stage stage = (Stage) this.connectButton.getScene().getWindow();
                     stage.close();
                     new InclusionsView(null, connection, fileManager);
                 } else {
@@ -91,6 +91,7 @@ public class LoginController implements Initializable {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                this.connectButton.setDisable(false);
                 FileManager.openAlert("Impossible de se connecter au serveur FTP");
             }
         }
